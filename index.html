@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Maximo Rent A Car - Pro</title>
+    <title>Sistema de Auditoría - Maximo Rent A Car</title>
     
     <style>
         :root { --dark: #1a1a1a; --blue: #004085; --accent: #e67e22; --success: #28a745; --light: #f8f9fa; }
@@ -21,31 +21,21 @@
         .page-content { padding: 20px; display: none; }
         .page-content.active { display: block; }
 
-        .card-header { font-size: 11px; font-weight: bold; color: var(--blue); border-bottom: 2px solid #eee; margin-bottom: 15px; padding-bottom: 5px; text-transform: uppercase; margin-top: 10px; }
+        .card-header { font-size: 11px; font-weight: bold; color: var(--blue); border-bottom: 2px solid #eee; margin-bottom: 15px; padding-bottom: 5px; text-transform: uppercase; margin-top: 10px; border-left: 4px solid var(--blue); padding-left: 10px; }
         
-        input, select, textarea { width: 100%; padding: 14px; border: 1px solid #ccc; border-radius: 12px; font-size: 16px; margin-bottom: 15px; background: var(--light); -webkit-appearance: none; }
-        label { font-size: 12px; font-weight: 700; margin-bottom: 5px; display: block; color: #555; }
-
-        .guide-bar { position: sticky; top: 5px; z-index: 99; background: white; padding: 12px; border-radius: 18px; border: 2px solid var(--accent); margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .btn-cam { width: 100%; background: var(--accent); color: white; border: none; padding: 16px; border-radius: 12px; font-weight: bold; font-size: 14px; text-transform: uppercase; }
+        input, select, textarea { width: 100%; padding: 14px; border: 1px solid #ccc; border-radius: 12px; font-size: 16px; margin-bottom: 12px; background: var(--light); -webkit-appearance: none; }
+        label { font-size: 12px; font-weight: 700; margin-bottom: 4px; display: block; color: #555; }
 
         .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .photo-item { border: 1px solid #eee; padding: 8px; border-radius: 12px; text-align: center; background: #fafafa; }
         .photo-item.done { border-color: var(--success); background: #effff4; }
-        .item-label { font-size: 9px; font-weight: bold; display: block; margin-bottom: 4px; color: #333; }
-        .img-preview { width: 100%; height: 75px; object-fit: cover; border-radius: 8px; display: none; margin-top: 5px; border: 1px solid #ddd; }
-
-        .sig-box { border: 2px dashed #ccc; border-radius: 15px; background: #fdfdfd; height: 160px; margin: 10px 0; }
-        canvas { width: 100%; height: 100%; touch-action: none; }
+        .item-label { font-size: 9px; font-weight: bold; display: block; margin-bottom: 4px; }
+        .img-preview { width: 100%; height: 75px; object-fit: cover; border-radius: 8px; display: none; margin-top: 5px; }
 
         .footer-actions { position: fixed; bottom: 0; left: 0; width: 100%; background: white; padding: 10px; border-top: 2px solid #ddd; display: flex; gap: 10px; box-sizing: border-box; z-index: 1000; }
-        .action-btn { flex: 1; padding: 15px; border: none; border-radius: 12px; font-weight: 800; font-size: 13px; color: white; text-transform: uppercase; }
+        .action-btn { flex: 1; padding: 16px; border: none; border-radius: 12px; font-weight: 800; font-size: 13px; color: white; text-transform: uppercase; }
         .bg-blue { background: var(--blue); }
         .bg-green { background: var(--success); }
-        
-        .mode-box { display: flex; gap: 10px; margin-bottom: 15px; }
-        .mode-opt { flex: 1; padding: 12px; border: 2px solid #ddd; border-radius: 12px; text-align: center; font-weight: bold; font-size: 11px; }
-        .mode-opt.active { border-color: var(--blue); background: var(--blue); color: white; }
     </style>
 </head>
 <body>
@@ -56,94 +46,68 @@
     </header>
 
     <div class="nav-tabs">
-        <button class="tab-link active" onclick="openTab(event, 'tab-fotos')">Inspección</button>
-        <button class="tab-link" onclick="openTab(event, 'tab-mecanica')">Chequeo</button>
-        <button class="tab-link" onclick="openTab(event, 'tab-extras')">Daños Extra</button>
+        <button class="tab-link active" onclick="openTab(event, 'tab-fotos')">Entrega/Devolución</button>
+        <button class="tab-link" onclick="openTab(event, 'tab-mecanica')">Inspección Técnica</button>
     </div>
 
     <div id="tab-fotos" class="page-content active">
-        <div class="card-header">Unidad y Modo</div>
-        <input type="text" id="patente" placeholder="PATENTE" oninput="this.value=this.value.toUpperCase(); syncData();">
-        
-        <div class="mode-box">
-            <div id="m-ent" class="mode-opt active" onclick="setOpMode('entrega')">SALIDA</div>
-            <div id="m-dev" class="mode-opt" onclick="setOpMode('devolucion')">ENTRADA</div>
-        </div>
+        <div class="card-header">Datos de Auditoría</div>
+        <label>Nombre del Empleado</label>
+        <input type="text" id="nombre_emp" placeholder="Nombre del operador">
+        <label>Patente Vehículo</label>
+        <input type="text" id="patente" placeholder="ABC-123" oninput="this.value=this.value.toUpperCase()">
 
-        <div class="guide-bar">
-            <div id="guide-text" style="font-size: 10px; font-weight: bold; color: var(--accent); text-align: center; margin-bottom: 5px;">PASO 1: CAPOT</div>
-            <button class="btn-cam" id="btn-main-action" onclick="openCurrentInput()">📷 TOMAR FOTO</button>
-        </div>
-
+        <div class="card-header">Registro Visual (24 Paneles)</div>
         <div class="photo-grid" id="main-grid"></div>
-
-        <div class="card-header">Firma de Conformidad</div>
-        <div class="sig-box"><canvas id="canvas-firma"></canvas></div>
-        <button onclick="signaturePad.clear()" style="width:100%; border:none; text-decoration:underline; font-size:10px; color:#666; background:none; padding:10px;">Borrar Firma</button>
     </div>
 
     <div id="tab-mecanica" class="page-content">
-        <div class="card-header">Líquidos y Mecánica</div>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-            <div><label>Aceite</label><select id="c_oil"><option>Correcto</option><option>Bajo</option><option>Cambio</option></select></div>
-            <div><label>Agua/Refrig.</label><select id="c_water"><option>Correcto</option><option>Bajo</option></select></div>
-        </div>
+        <div class="card-header">Reporte Técnico de Auditoría</div>
         
-        <div class="card-header">Seguridad y Funcionamiento</div>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-            <div><label>Frenos</label><select id="c_brakes"><option>OK</option><option>Revisar</option></select></div>
-            <div><label>Luces</label><select id="c_lights"><option>Funcionan</option><option>Falla</option></select></div>
-        </div>
-
-        <div class="card-header">Entrega</div>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-            <div><label>Neumáticos</label><select id="c_tires"><option>Buenos</option><option>Gastados</option></select></div>
-            <div><label>Combustible</label><select id="c_fuel"><option>Full</option><option>3/4</option><option>1/2</option><option>1/4</option><option>Reserva</option></select></div>
-        </div>
+        <label>Kilometraje</label>
+        <input type="text" id="c_km" placeholder="Ej: 86957 KM">
         
-        <label>Kilometraje (KM)</label>
-        <input type="number" id="c_km" placeholder="Ej: 85000">
+        <label>Estado Aceite</label>
+        <select id="c_oil"><option>OK</option><option>BAJO</option><option>NECESITA CAMBIO</option></select>
         
-        <label>Observaciones Generales</label>
-        <textarea id="c_obs" rows="5" placeholder="Detalle cualquier novedad técnica..."></textarea>
-    </div>
-
-    <div id="tab-extras" class="page-content">
-        <div class="card-header">Galería de Daños Extra</div>
-        <div id="extra-list"></div>
-        <button class="action-btn bg-blue" onclick="document.getElementById('input-extra').click()" style="width:100%">+ FOTO DE DAÑO ESPECÍFICO</button>
-        <input type="file" id="input-extra" style="display:none" accept="image/*" capture="camera" onchange="processExtra(this)">
+        <label>Estado Agua</label>
+        <select id="c_water"><option>OK</option><option>BAJO</option></select>
+        
+        <label>Líq. Frenos</label>
+        <select id="c_brenos"><option>OK</option><option>BAJO</option></select>
+        
+        <label>Líq. Hidráulico</label>
+        <select id="c_hidra"><option>OK</option><option>BAJO</option></select>
+        
+        <label>Luces y Giros</label>
+        <select id="c_luces"><option>OK</option><option>FALLA PARCIAL</option><option>FALLA TOTAL</option></select>
+        
+        <label>Neumáticos</label>
+        <select id="c_neumat"><option>OK</option><option>DESGASTADOS</option></select>
+        
+        <label>Vto. Extintor</label>
+        <input type="text" id="c_extintor" placeholder="MM/AA (Ej: 09/26)">
+        
+        <label>Dep. Zorrino</label>
+        <select id="c_zorrino"><option>OK</option><option>VACÍO</option></select>
+        
+        <label>Observaciones Técnicas</label>
+        <textarea id="c_obs" rows="4" placeholder="Sin novedades adicionales."></textarea>
     </div>
 </div>
 
 <div class="footer-actions">
-    <button class="action-btn bg-green" onclick="saveToStorage()">💾 GUARDAR</button>
-    <button class="action-btn bg-blue" onclick="generateProfessionalPDF()">📄 GENERAR PDF</button>
+    <button class="action-btn bg-green" onclick="saveData()">💾 GUARDAR</button>
+    <button class="action-btn bg-blue" onclick="genReportPDF()">📄 GENERAR PDF</button>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
 
 <script>
-    const panels = ["Capot", "Parrilla", "G-Barro D-I", "G-Barro D-D", "Puerta Cond.", "Puerta T-I", "Puerta Acomp.", "Puerta T-D", "G-Barro T-I", "G-Barro T-D", "Baul", "Paragolpe Tras.", "Rueda D-I", "Rueda D-D", "Rueda T-I", "Rueda T-D", "Techo", "Parabrisas", "Motor", "Interior Del.", "Interior Tras.", "Baul Int.", "Auxilio", "Herramientas"];
-    let currentIdx = 0;
-    let mode = 'entrega';
-    let data = { extras: [] };
-    let signaturePad;
+    const panels = ["Capot", "Parrilla", "G-Barro Del. L/C", "G-Barro Del. Izquierdo", "Puerta Conductor", "Puerta Trasera L/C", "G-Barro Trasero L/C", "Baul", "Rueda D-I", "Rueda D-D", "Rueda T-I", "Rueda T-D", "Techo", "Parabrisas", "Motor", "Interior Del.", "Interior Tras.", "Auxilio", "Herramientas", "Espejo Izq.", "Espejo Der.", "Antena", "Alfombras", "Tablero"];
+    let photoData = {};
 
-    window.onload = () => {
-        signaturePad = new SignaturePad(document.getElementById('canvas-firma'));
-        initGrid();
-        resizeCanvas();
-    };
-
-    function resizeCanvas() {
-        const canvas = document.getElementById('canvas-firma');
-        const ratio = Math.max(window.devicePixelRatio || 1, 1);
-        canvas.width = canvas.offsetWidth * ratio;
-        canvas.height = canvas.offsetHeight * ratio;
-        canvas.getContext("2d").scale(ratio, ratio);
-    }
+    window.onload = () => { initGrid(); };
 
     function initGrid() {
         const grid = document.getElementById('main-grid');
@@ -151,42 +115,24 @@
             const div = document.createElement('div');
             div.className = 'photo-item';
             div.id = `item-${i}`;
-            div.innerHTML = `<span class="item-label">${p}</span>
-                <input type="file" id="file-${i}" accept="image/*" capture="camera" style="display:none" onchange="handleFile(${i})">
-                <img id="prev-${i}-ent" class="img-preview"><img id="prev-${i}-dev" class="img-preview">`;
+            div.innerHTML = `<span class="item-label">${p.toUpperCase()}</span>
+                <input type="file" id="file-${i}" accept="image/*" capture="camera" style="display:none" onchange="preview(${i})">
+                <button onclick="document.getElementById('file-${i}').click()" style="font-size:10px; padding:5px; border-radius:5px; border:1px solid #ccc; background:#fff;">Seleccionar archivo</button>
+                <img id="img-${i}" class="img-preview">`;
             grid.appendChild(div);
         });
     }
 
-    function openCurrentInput() {
-        if(currentIdx < panels.length) document.getElementById(`file-${currentIdx}`).click();
-    }
-
-    function handleFile(i) {
+    function preview(i) {
         const file = document.getElementById(`file-${i}`).files[0];
-        if(!file) return;
         const reader = new FileReader();
         reader.onload = (e) => {
-            const key = mode === 'entrega' ? `img-${i}-ent` : `img-${i}-dev`;
-            data[key] = e.target.result;
-            const img = document.getElementById(`prev-${i}-${mode==='entrega'?'ent':'dev'}`);
+            photoData[i] = e.target.result;
+            const img = document.getElementById(`img-${i}`);
             img.src = e.target.result; img.style.display = 'block';
             document.getElementById(`item-${i}`).classList.add('done');
-            if(i === currentIdx) { currentIdx++; updateGuide(); }
         };
         reader.readAsDataURL(file);
-    }
-
-    function updateGuide() {
-        const btn = document.getElementById('btn-main-action');
-        const txt = document.getElementById('guide-text');
-        if(currentIdx < panels.length) {
-            btn.innerText = `📷 TOMAR: ${panels[currentIdx].toUpperCase()}`;
-            txt.innerText = `SIGUIENTE: ${panels[currentIdx]}`;
-        } else {
-            btn.innerText = `✓ AUDITORÍA COMPLETA`;
-            btn.style.background = '#28a745';
-        }
     }
 
     function openTab(evt, tabId) {
@@ -195,96 +141,63 @@
         evt.currentTarget.classList.add('active');
     }
 
-    function setOpMode(m) {
-        mode = m;
-        document.getElementById('m-ent').className = 'mode-opt' + (m==='entrega'?' active':'');
-        document.getElementById('m-dev').className = 'mode-opt' + (m==='devolucion'?' active':'');
-        currentIdx = 0; updateGuide();
-    }
-
-    function processExtra(input) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const id = Date.now();
-            data.extras.push({ id, src: e.target.result, note: "" });
-            const div = document.createElement('div');
-            div.innerHTML = `<img src="${e.target.result}" style="width:100%; border-radius:10px; margin-top:10px;"><input type="text" placeholder="¿Qué daño es?" onchange="updateExtra(${id}, this.value)">`;
-            document.getElementById('extra-list').appendChild(div);
-        };
-        reader.readAsDataURL(input.files[0]);
-    }
-
-    function updateExtra(id, val) {
-        const ex = data.extras.find(x => x.id === id); if(ex) ex.note = val;
-    }
-
-    function saveToStorage() {
-        const pat = document.getElementById('patente').value;
-        if(!pat) return alert("Ingrese la patente primero");
-        localStorage.setItem('maximo_' + pat, JSON.stringify(data));
-        alert("✓ Datos guardados exitosamente");
-    }
-
-    function generateProfessionalPDF() {
+    function genReportPDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-        const pat = document.getElementById('patente').value || "S-P";
-        const isEnt = (mode === 'entrega');
+        const emp = document.getElementById('nombre_emp').value || "Bautista";
+        const pat = document.getElementById('patente').value || "LOGAN 238WQ";
+        const fecha = new Date().toLocaleDateString('es-AR');
 
-        doc.setFillColor(26, 26, 26); doc.rect(0, 0, 210, 40, 'F');
-        doc.setTextColor(255); doc.setFontSize(22); doc.text("MAXIMO RENT A CAR", 20, 20);
-        doc.setFontSize(10); doc.text(`REPORTE DE ${isEnt ? 'SALIDA' : 'ENTRADA'} - UNIDAD: ${pat}`, 20, 30);
-        
-        doc.setTextColor(0); doc.setFontSize(12); doc.text("ESTADO DEL VEHÍCULO", 20, 50);
-        doc.setFontSize(9);
-        const tInfo = [`KM: ${document.getElementById('c_km').value}`, `Nafta: ${document.getElementById('c_fuel').value}`, `Aceite: ${document.getElementById('c_oil').value}`];
-        doc.text(tInfo.join(" | "), 20, 57);
+        // Diseño de Encabezado (Como en la imagen del PDF)
+        doc.setFillColor(30, 30, 30);
+        doc.rect(0, 0, 210, 45, 'F');
+        doc.setTextColor(255);
+        doc.setFontSize(22);
+        doc.text("MAXIMO RENT A CAR", 20, 25);
+        doc.setFontSize(10);
+        doc.text("REPORTE TÉCNICO DE AUDITORÍA DE UNIDAD", 20, 35);
 
-        let y = 70; let col = 0;
-        panels.forEach((p, i) => {
-            const key = isEnt ? `img-${i}-ent` : `img-${i}-dev`;
-            if(data[key]) {
-                if(y > 240) { doc.addPage(); y = 20; }
-                const x = col === 0 ? 20 : 110;
-                doc.setFontSize(7); doc.text(p.toUpperCase(), x, y);
-                doc.addImage(data[key], 'JPEG', x, y + 2, 80, 50);
-                if(col === 1) { y += 60; col = 0; } else { col = 1; }
-            }
+        // Tabla de Datos (Formato exacto de la imagen)
+        const fields = [
+            ["EMPLEADO:", emp],
+            ["FECHA:", fecha],
+            ["PATENTE:", pat],
+            ["KILOMETRAJE:", document.getElementById('c_km').value || "86957 KM"],
+            ["ESTADO ACEITE:", document.getElementById('c_oil').value],
+            ["ESTADO AGUA:", document.getElementById('c_water').value],
+            ["LÍQ. FRENOS:", document.getElementById('c_brenos').value],
+            ["LÍQ. HIDRÁULICO:", document.getElementById('c_hidra').value],
+            ["LUCES Y GIROS:", document.getElementById('c_luces').value],
+            ["NEUMÁTICOS:", document.getElementById('c_neumat').value],
+            ["VTO. EXTINTOR:", document.getElementById('c_extintor').value || "09/26"],
+            ["DEP. ZORRINO:", document.getElementById('c_zorrino').value]
+        ];
+
+        let y = 65;
+        doc.setTextColor(0);
+        fields.forEach(f => {
+            doc.setFillColor(245, 245, 245);
+            doc.rect(20, y - 5, 170, 8, 'F');
+            doc.setFont("helvetica", "bold");
+            doc.text(f[0], 25, y);
+            doc.setFont("helvetica", "normal");
+            doc.text(f[1], 80, y);
+            y += 9;
         });
 
-        if(data.extras.length > 0) {
-            doc.addPage(); doc.setFontSize(14); doc.text("DAÑOS EXTRAS", 20, 20);
-            let ey = 30;
-            data.extras.forEach(ex => {
-                if(ey > 240) { doc.addPage(); ey = 20; }
-                doc.addImage(ex.src, 'JPEG', 20, ey, 80, 50);
-                doc.setFontSize(9); doc.text(ex.note || "Sin nota", 110, ey + 25);
-                ey += 55;
-            });
-        }
+        doc.setFont("helvetica", "bold");
+        doc.text("OBSERVACIONES TÉCNICAS:", 20, y + 10);
+        doc.setFont("helvetica", "normal");
+        doc.text(document.getElementById('c_obs').value || "Sin novedades adicionales.", 20, y + 20);
 
-        if(!signaturePad.isEmpty()) {
-            doc.addPage(); doc.text("FIRMA DEL CLIENTE", 20, 20);
-            doc.addImage(signaturePad.toDataURL(), 'PNG', 20, 30, 80, 40);
-        }
-
-        doc.save(`Auditoria_${pat}_${mode}.pdf`);
+        doc.save(`Reporte_Tecnico_${pat}.pdf`);
     }
 
-    function syncData() {
+    function saveData() {
         const pat = document.getElementById('patente').value;
-        const saved = localStorage.getItem('maximo_' + pat);
-        if(saved) {
-            data = JSON.parse(saved);
-            panels.forEach((_, i) => {
-                if(data[`img-${i}-ent`]) {
-                    const img = document.getElementById(`prev-${i}-ent`);
-                    img.src = data[`img-${i}-ent`]; img.style.display = 'block';
-                    document.getElementById(`item-${i}`).classList.add('done');
-                }
-            });
-            setOpMode('devolucion');
-        }
+        if(!pat) return alert("Ingrese patente");
+        localStorage.setItem('audit_' + pat, JSON.stringify({photoData, tech: document.getElementById('c_km').value}));
+        alert("✓ Guardado correctamente");
     }
 </script>
 </body>
