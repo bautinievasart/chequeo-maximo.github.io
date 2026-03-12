@@ -11,7 +11,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
     <style>
-        :root { --main: #1a1a1a; --blue: #0056b3; --orange: #e67e22; --gray: #f4f7f6; }
+        :root { --main: #1a1a1a; --blue: #0056b3; --orange: #e67e22; --green: #27ae60; --gray: #f4f7f6; }
         body { font-family: -apple-system, sans-serif; background: #d1d8e0; margin: 0; padding: 10px; }
         .container { max-width: 500px; margin: auto; background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         
@@ -19,7 +19,7 @@
         .logo-img { max-width: 120px; height: auto; margin-bottom: 10px; display: block; margin-left: auto; margin-right: auto; }
         
         .tabs { display: flex; background: #eee; padding: 5px; }
-        .tab-btn { flex: 1; padding: 15px; border: none; font-weight: bold; cursor: pointer; background: none; transition: 0.3s; font-size: 14px; border-radius: 10px; }
+        .tab-btn { flex: 1; padding: 12px 5px; border: none; font-weight: bold; cursor: pointer; background: none; transition: 0.3s; font-size: 11px; border-radius: 10px; }
         .tab-btn.active { background: white; color: var(--blue); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
 
         .content { padding: 20px; display: none; }
@@ -37,6 +37,7 @@
         .btn-main { width: 100%; padding: 20px; border: none; border-radius: 15px; font-weight: bold; font-size: 16px; color: white; cursor: pointer; margin-top: 20px; }
         .btn-check { background: var(--blue); }
         .btn-danos { background: var(--orange); }
+        .btn-entrega { background: var(--green); }
 
         .card-foto { border: 1px solid #eee; padding: 15px; border-radius: 15px; margin-bottom: 20px; background: #fdfdfd; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .img-prev { width: 100%; border-radius: 10px; margin-top: 10px; display: none; }
@@ -53,17 +54,16 @@
     <div class="tabs">
         <button id="t1" class="tab-btn active" onclick="switchTab('mecanica')">INSPECCIÓN</button>
         <button id="t2" class="tab-btn" onclick="switchTab('danos')">DAÑOS</button>
+        <button id="t3" class="tab-btn" onclick="switchTab('entregas')">ENTREGAS</button>
     </div>
 
     <div id="mecanica" class="content active">
         <label>Nombre del Empleado</label>
         <input type="text" id="emp" placeholder="Escriba su nombre">
-        
         <div class="grid">
             <div><label>Patente</label><input type="text" id="pat1" placeholder="ABC-123"></div>
             <div><label>KM</label><input type="number" id="km"></div>
         </div>
-
         <div class="section-title">Fluidos y Mecánica</div>
         <div class="grid">
             <div><label>Aceite</label><select id="oil"><option>OK</option><option>BAJO</option></select></div>
@@ -73,7 +73,6 @@
             <div><label>Frenos</label><select id="fre"><option>OK</option><option>BAJO</option></select></div>
             <div><label>Hidráulico</label><select id="hid"><option>OK</option><option>BAJO</option><option>N/A</option></select></div>
         </div>
-
         <div class="section-title">Seguridad</div>
         <div class="grid">
             <div><label>Luces</label><select id="luc"><option>OK</option><option>FALLA</option></select></div>
@@ -83,26 +82,36 @@
             <div><label>Extintor</label><input type="text" id="ext" placeholder="Vto"></div>
             <div><label>Zorrino</label><select id="zor"><option>OK</option><option>VACÍO</option></select></div>
         </div>
-
         <label>Observaciones</label>
         <textarea id="obs" rows="2"></textarea>
-
         <div class="section-title">Firma del Responsable</div>
         <div class="sig-container"><canvas id="signature-pad"></canvas></div>
         <button onclick="signaturePad.clear()" style="width:100%; margin-top:10px; padding:10px; border-radius:10px;">BORRAR FIRMA</button>
-
         <button class="btn-main btn-check" onclick="generarCheck()">DESCARGAR REPORTE TÉCNICO</button>
     </div>
 
     <div id="danos" class="content">
         <label>Patente Vehículo</label>
         <input type="text" id="pat2" placeholder="Patente para daños">
-        
         <div id="lista-fotos" style="margin-top:20px;"></div>
-        
         <button onclick="nuevaFoto()" style="width:100%; padding:15px; background:#666; color:white; border:none; border-radius:12px; font-weight:bold;">+ AGREGAR FOTO DE DAÑO</button>
-        
         <button class="btn-main btn-danos" onclick="generarDanos()">DESCARGAR REPORTE DE DAÑOS</button>
+    </div>
+
+    <div id="entregas" class="content">
+        <label>Tipo de Movimiento</label>
+        <select id="mov_tipo"><option>ENTREGA</option><option>DEVOLUCIÓN</option></select>
+        <div class="grid">
+            <div><label>Patente</label><input type="text" id="pat3" placeholder="ABC-123"></div>
+            <div><label>Kilometraje</label><input type="number" id="km_mov"></div>
+        </div>
+        <label>Nivel de Combustible</label>
+        <select id="fuel_mov">
+            <option>1/8 (Reserva)</option><option>1/4</option><option>1/2</option><option>3/4</option><option>Lleno</option>
+        </select>
+        <label>Estado General / Limpieza</label>
+        <textarea id="obs_mov" rows="3" placeholder="Ej: Auto limpio, alfombras secas..."></textarea>
+        <button class="btn-main btn-entrega" onclick="generarMovimiento()">DESCARGAR REPORTE MOVIMIENTO</button>
     </div>
 </div>
 
@@ -126,16 +135,15 @@
     function switchTab(tab) {
         document.getElementById('mecanica').classList.remove('active');
         document.getElementById('danos').classList.remove('active');
+        document.getElementById('entregas').classList.remove('active');
         document.getElementById('t1').classList.remove('active');
         document.getElementById('t2').classList.remove('active');
+        document.getElementById('t3').classList.remove('active');
         
-        if(tab === 'mecanica') {
-            document.getElementById('mecanica').classList.add('active');
-            document.getElementById('t1').classList.add('active');
-        } else {
-            document.getElementById('danos').classList.add('active');
-            document.getElementById('t2').classList.add('active');
-        }
+        document.getElementById(tab).classList.add('active');
+        if(tab === 'mecanica') document.getElementById('t1').classList.add('active');
+        if(tab === 'danos') document.getElementById('t2').classList.add('active');
+        if(tab === 'entregas') document.getElementById('t3').classList.add('active');
     }
 
     function nuevaFoto() {
@@ -165,11 +173,9 @@
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
         const p = (document.getElementById('pat1').value || "S/D").toUpperCase();
-        
         doc.setFillColor(26, 26, 26); doc.rect(0, 0, 210, 45, 'F');
         doc.setTextColor(255); doc.setFontSize(24); doc.text("MAXIMO RENT A CAR", 20, 25);
         doc.setFontSize(10); doc.text("REPORTE TÉCNICO DE AUDITORÍA DE UNIDAD", 20, 35);
-        
         doc.setTextColor(0); doc.setFontSize(10);
         let y = 60;
         const fila = (tit, val) => {
@@ -178,7 +184,6 @@
             doc.setFont("helvetica", "normal"); doc.text(String(val), 80, y);
             y += 10;
         };
-
         fila("EMPLEADO:", document.getElementById('emp').value);
         fila("FECHA:", new Date().toLocaleDateString());
         fila("PATENTE:", p);
@@ -191,11 +196,9 @@
         fila("NEUMÁTICOS:", document.getElementById('neu').value);
         fila("VTO. EXTINTOR:", document.getElementById('ext').value);
         fila("DEP. ZORRINO:", document.getElementById('zor').value);
-
         doc.setFont("helvetica", "bold"); doc.text("OBSERVACIONES TÉCNICAS:", 20, y + 5);
         doc.setFont("helvetica", "normal"); 
         doc.text(doc.splitTextToSize(document.getElementById('obs').value || "Sin novedades adicionales.", 170), 20, y + 15);
-
         if(!signaturePad.isEmpty()) {
             doc.text("FIRMA DEL RESPONSABLE:", 20, 250);
             doc.addImage(signaturePad.toDataURL(), 'PNG', 20, 255, 50, 20);
@@ -208,14 +211,11 @@
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
         const p = (document.getElementById('pat2').value || "S/D").toUpperCase();
-
         doc.setFillColor(230, 126, 34); doc.rect(0, 0, 210, 45, 'F');
         doc.setTextColor(255); doc.setFontSize(24); doc.text("REPORTE DE DAÑOS", 20, 25);
         doc.setFontSize(10); doc.text("INFORME VISUAL DE CARROCERÍA Y FALTANTES", 20, 35);
-        
         doc.setTextColor(0); doc.text(`Vehículo Dominio: ${p}`, 20, 55);
         doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 150, 55);
-        
         let y = 70;
         for(let i=1; i<=fotoCount; i++) {
             const img = document.getElementById(`p${i}`);
@@ -231,6 +231,35 @@
             }
         }
         doc.save(`Danos_${p}.pdf`);
+    }
+
+    function generarMovimiento() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        const tipo = document.getElementById('mov_tipo').value;
+        const p = (document.getElementById('pat3').value || "S/D").toUpperCase();
+        
+        doc.setFillColor(39, 174, 96); doc.rect(0, 0, 210, 45, 'F');
+        doc.setTextColor(255); doc.setFontSize(24); doc.text(tipo, 20, 25);
+        doc.setFontSize(10); doc.text("COMPROBANTE DE ESTADO DE UNIDAD", 20, 35);
+        
+        doc.setTextColor(0); doc.setFontSize(11);
+        let y = 65;
+        const fila = (tit, val) => {
+            doc.setFont("helvetica", "bold"); doc.text(tit, 20, y);
+            doc.setFont("helvetica", "normal"); doc.text(String(val), 80, y);
+            y += 12;
+        };
+        fila("PATENTE:", p);
+        fila("FECHA:", new Date().toLocaleString());
+        fila("KM:", document.getElementById('km_mov').value);
+        fila("COMBUSTIBLE:", document.getElementById('fuel_mov').value);
+        
+        doc.setFont("helvetica", "bold"); doc.text("NOTAS DE ESTADO:", 20, y);
+        doc.setFont("helvetica", "normal");
+        doc.text(doc.splitTextToSize(document.getElementById('obs_mov').value || "Unidad en condiciones estándar.", 170), 20, y + 10);
+        
+        doc.save(`${tipo}_${p}.pdf`);
     }
 </script>
 </body>
