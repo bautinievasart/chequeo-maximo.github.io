@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Maximo Rent A Car v3</title>
+    
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="apple-touch-icon" href="logo.png">
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
     <style>
@@ -11,7 +15,9 @@
         body { font-family: -apple-system, sans-serif; background: #d1d8e0; margin: 0; padding: 10px; }
         .container { max-width: 500px; margin: auto; background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         
-        header { background: var(--main); color: white; padding: 20px; text-align: center; border-bottom: 5px solid var(--blue); }
+        /* ESTILO PARA EL LOGO */
+        header { background: var(--main); color: white; padding: 15px; text-align: center; border-bottom: 5px solid var(--blue); }
+        .logo-img { max-width: 120px; height: auto; margin-bottom: 10px; display: block; margin-left: auto; margin-right: auto; }
         
         .tabs { display: flex; background: #eee; padding: 5px; }
         .tab-btn { flex: 1; padding: 15px; border: none; font-weight: bold; cursor: pointer; background: none; transition: 0.3s; font-size: 14px; border-radius: 10px; }
@@ -41,7 +47,8 @@
 
 <div class="container">
     <header>
-        <h2 style="margin:0; letter-spacing: 1px;">MAXIMO <span style="color:var(--blue)">RENT A CAR</span></h2>
+        <img src="logo.png" alt="Maximo Rent A Car" class="logo-img">
+        <h2 style="margin:0; letter-spacing: 1px; font-size: 18px;">MAXIMO <span style="color:var(--blue)">RENT A CAR</span></h2>
     </header>
 
     <div class="tabs">
@@ -228,3 +235,4 @@
 </script>
 </body>
 </html>
+
