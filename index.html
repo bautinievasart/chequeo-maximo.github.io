@@ -3,20 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Maximo Check</title>
+    <title>Maximo Check Pro</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <link rel="apple-touch-icon" href="logo.png">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <meta name="apple-mobile-web-app-capable" content="yes">
     <style>
         :root { --primary: #1a1a1a; --accent: #0056b3; --bg: #f4f7f6; }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 15px; padding-bottom: 50px; }
-        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        header { text-align: center; border-bottom: 3px solid var(--accent); margin-bottom: 20px; padding-bottom: 10px; }
-        .section { background: var(--primary); color: white; padding: 8px 15px; font-weight: bold; margin: 20px 0 10px; border-radius: 6px; font-size: 0.85em; text-transform: uppercase; }
-        label { display: block; margin: 12px 0 5px; font-weight: 600; font-size: 0.9em; color: #333; }
-        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; box-sizing: border-box; background: #fff; }
-        button { width: 100%; background: var(--accent); color: white; border: none; padding: 18px; border-radius: 12px; font-weight: bold; font-size: 1.1em; margin-top: 25px; cursor: pointer; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 10px; padding-bottom: 50px; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        
+        /* Pestañas */
+        .tabs { display: flex; gap: 5px; margin-bottom: 20px; background: #ddd; padding: 5px; border-radius: 10px; }
+        .tab-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; background: none; color: #666; transition: 0.3s; }
+        .tab-btn.active { background: white; color: var(--accent); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        header { text-align: center; border-bottom: 3px solid var(--accent); margin-bottom: 15px; padding-bottom: 10px; }
+        .section { background: var(--primary); color: white; padding: 8px 12px; font-weight: bold; margin: 15px 0 10px; border-radius: 6px; font-size: 0.8em; text-transform: uppercase; }
+        label { display: block; margin: 10px 0 5px; font-weight: 600; font-size: 0.9em; }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; box-sizing: border-box; }
+        
+        /* Estilo para fotos */
+        .photo-card { border: 2px dashed #ccc; padding: 10px; border-radius: 10px; margin-bottom: 15px; text-align: center; }
+        .preview-img { width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px; margin-top: 10px; display: none; }
+        
+        .btn-pdf { width: 100%; background: var(--accent); color: white; border: none; padding: 18px; border-radius: 12px; font-weight: bold; font-size: 1.1em; margin-top: 20px; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     </style>
 </head>
@@ -24,144 +34,129 @@
 
 <div class="container">
     <header>
-        <h2 style="margin:0; color: var(--primary);">Maximo Rent A Car</h2>
-        <small style="color: #666; letter-spacing: 1px;">SISTEMA DE INSPECCIÓN</small>
+        <h2 style="margin:0">Maximo Rent A Car</h2>
+        <small id="sub-title">CONTROL DE UNIDADES</small>
     </header>
 
-    <div class="section">1. Datos de la Unidad</div>
-    <label>Vehículo / Patente</label>
-    <input type="text" id="auto" placeholder="Ej: Fiat Cronos - AE123CC">
-    <label>Kilometraje Actual</label>
-    <input type="number" id="km" placeholder="Ingrese KM">
-
-    <div class="section">2. Estado de Fluidos</div>
-    <div class="grid">
-        <div>
-            <label>Aceite Motor</label>
-            <select id="aceite"><option>OK</option><option>BAJO</option><option>REQUIERE CAMBIO</option></select>
-        </div>
-        <div>
-            <label>Refrigerante</label>
-            <select id="agua"><option>OK</option><option>BAJO</option></select>
-        </div>
-    </div>
-    <div class="grid">
-        <div>
-            <label>Líq. Frenos</label>
-            <select id="frenos"><option>OK</option><option>BAJO</option></select>
-        </div>
-        <div>
-            <label>Líq. Hidráulico</label>
-            <select id="hidraulico"><option>OK</option><option>BAJO</option><option>N/A</option></select>
-        </div>
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab(event, 'mecanica')">Inspección</button>
+        <button class="tab-btn" onclick="openTab(event, 'danos')">Fotos de Daños</button>
     </div>
 
-    <div class="section">3. Seguridad y Eléctrica</div>
-    <div class="grid">
-        <div>
-            <label>Luces y Giros</label>
-            <select id="luces"><option>FUNCIONAN</option><option>FALLA</option></select>
+    <div id="mecanica" class="tab-content active">
+        <div class="section">Datos de la Unidad</div>
+        <input type="text" id="auto_m" placeholder="Patente (Ej: AE123CC)">
+        <input type="number" id="km_m" placeholder="KM actuales" style="margin-top:10px">
+
+        <div class="section">Estado de Fluidos</div>
+        <div class="grid">
+            <select id="aceite"><option>Aceite: OK</option><option>Aceite: BAJO</option></select>
+            <select id="agua"><option>Agua: OK</option><option>Agua: BAJO</option></select>
         </div>
-        <div>
-            <label>Presión Neumát.</label>
-            <select id="ruedas"><option>OK</option><option>REVISAR</option></select>
+        
+        <div class="section">Seguridad</div>
+        <div class="grid">
+            <select id="luces"><option>Luces: OK</option><option>Luces: FALLA</option></select>
+            <select id="ruedas"><option>Ruedas: OK</option><option>Ruedas: BAJA</option></select>
         </div>
-    </div>
-    <div class="grid">
-        <div>
-            <label>Vto. Extintor</label>
-            <input type="text" id="extintor" placeholder="Mes/Año">
-        </div>
-        <div>
-            <label>Agua Zorrino</label>
-            <select id="zorrino"><option>OK</option><option>VACÍO</option></select>
-        </div>
+        <textarea id="obs_m" rows="3" placeholder="Observaciones generales..." style="margin-top:10px"></textarea>
+        <button class="btn-pdf" onclick="generarPDFMecanico()">GENERAR REPORTE MECÁNICO</button>
     </div>
 
-    <div class="section">4. Comentarios</div>
-    <textarea id="obs" rows="3" placeholder="Daños detectados, faltantes, etc."></textarea>
+    <div id="danos" class="tab-content">
+        <div class="section">Datos del Vehículo</div>
+        <input type="text" id="auto_d" placeholder="Patente del vehículo">
+        
+        <div class="section">Registro de Evidencia</div>
+        
+        <div class="photo-card">
+            <label>Foto Daño #1</label>
+            <input type="file" accept="image/*" capture="camera" onchange="previewFile(this, 'p1')">
+            <img id="p1" class="preview-img">
+            <textarea id="t1" placeholder="Descripción del daño 1..." style="margin-top:5px"></textarea>
+        </div>
 
-    <button onclick="generarPDF()">GENERAR REPORTE PROFESIONAL</button>
+        <div class="photo-card">
+            <label>Foto Daño #2</label>
+            <input type="file" accept="image/*" capture="camera" onchange="previewFile(this, 'p2')">
+            <img id="p2" class="preview-img">
+            <textarea id="t2" placeholder="Descripción del daño 2..." style="margin-top:5px"></textarea>
+        </div>
+
+        <button class="btn-pdf" onclick="generarPDFDanos()" style="background: #e67e22;">GENERAR PDF DE DAÑOS</button>
+    </div>
 </div>
 
 <script>
-    function generarPDF() {
+    function openTab(evt, tabName) {
+        let i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabcontent.length; i++) tabcontent[i].classList.remove("active");
+        tablinks = document.getElementsByClassName("tab-btn");
+        for (i = 0; i < tablinks.length; i++) tablinks[i].classList.remove("active");
+        document.getElementById(tabName).classList.add("active");
+        evt.currentTarget.classList.add("active");
+    }
+
+    function previewFile(input, imgId) {
+        const preview = document.getElementById(imgId);
+        const file = input.files[0];
+        const reader = new FileReader();
+        reader.onloadend = () => { preview.src = reader.result; preview.style.display = "block"; }
+        if (file) reader.readAsDataURL(file);
+    }
+
+    function generarPDFMecanico() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        doc.setFillColor(30, 30, 30); doc.rect(0, 0, 210, 30, 'F');
+        doc.setTextColor(255); doc.setFontSize(18); doc.text("MAXIMO RENT A CAR - MECÁNICA", 20, 20);
+        doc.setTextColor(0); doc.setFontSize(12);
+        let y = 45;
+        const line = (t, v) => { doc.text(`${t} ${v}`, 20, y); y += 10; };
+        line("FECHA:", new Date().toLocaleDateString());
+        line("PATENTE:", document.getElementById('auto_m').value);
+        line("KM:", document.getElementById('km_m').value);
+        line("-", document.getElementById('aceite').value);
+        line("-", document.getElementById('agua').value);
+        line("-", document.getElementById('luces').value);
+        line("-", document.getElementById('ruedas').value);
+        doc.text("OBSERVACIONES:", 20, y+5);
+        doc.text(document.getElementById('obs_m').value, 20, y+15);
+        doc.save("Inspeccion.pdf");
+    }
+
+    async function generarPDFDanos() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
         
-        // Estética del PDF
-        doc.setFillColor(30, 30, 30);
-        doc.rect(0, 0, 210, 35, 'F');
-        doc.setTextColor(255, 255, 255);
-        doc.setFontSize(22);
-        doc.setFont("helvetica", "bold");
-        doc.text("MAXIMO RENT A CAR", 20, 22);
-        doc.setFontSize(10);
-        doc.text("REPORTE DE ESTADO DE UNIDAD", 20, 28);
+        doc.setFillColor(230, 126, 34); doc.rect(0, 0, 210, 30, 'F');
+        doc.setTextColor(255); doc.setFontSize(18); doc.text("REPORTE DE DAÑOS - MAXIMO", 20, 20);
         
-        doc.setTextColor(0);
-        let y = 50;
-        
-        const fila = (titulo, valor) => {
-            doc.setFont("helvetica", "bold");
-            doc.setFontSize(10);
-            doc.setTextColor(100);
-            doc.text(titulo, 20, y);
-            doc.setFont("helvetica", "normal");
-            doc.setTextColor(0);
-            doc.text(String(valor || "---"), 80, y);
-            doc.setDrawColor(220);
-            doc.line(20, y + 2, 190, y + 2);
-            y += 11;
+        doc.setTextColor(0); doc.text(`Vehículo: ${document.getElementById('auto_d').value}`, 20, 40);
+        doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 20, 48);
+
+        const addPhoto = async (imgId, textId, yPos) => {
+            const img = document.getElementById(imgId);
+            if (img.src) {
+                try {
+                    doc.addImage(img.src, 'JPEG', 20, yPos, 80, 60);
+                    doc.setFontSize(10);
+                    doc.text("ACLARACIÓN:", 110, yPos + 5);
+                    const desc = doc.splitTextToSize(document.getElementById(textId).value, 80);
+                    doc.text(desc, 110, yPos + 12);
+                    return yPos + 70;
+                } catch (e) { return yPos; }
+            }
+            return yPos;
         };
 
-        // Sección 1
-        doc.setFont("helvetica", "bold");
-        doc.setTextColor(0, 86, 179);
-        doc.text("1. DATOS GENERALES", 20, y);
-        y += 8;
-        fila("FECHA:", new Date().toLocaleDateString());
-        fila("VEHÍCULO / PATENTE:", document.getElementById('auto').value.toUpperCase());
-        fila("KILOMETRAJE:", document.getElementById('km').value + " KM");
-        y += 5;
+        let currentY = 60;
+        currentY = await addPhoto('p1', 't1', currentY);
+        currentY = await addPhoto('p2', 't2', currentY);
 
-        // Sección 2
-        doc.setFont("helvetica", "bold");
-        doc.setTextColor(0, 86, 179);
-        doc.text("2. FLUIDOS Y MECÁNICA", 20, y);
-        y += 8;
-        fila("ACEITE MOTOR:", document.getElementById('aceite').value);
-        fila("REFRIGERANTE:", document.getElementById('agua').value);
-        fila("LÍQUIDO DE FRENOS:", document.getElementById('frenos').value);
-        fila("LÍQ. HIDRÁULICO:", document.getElementById('hidraulico').value);
-        y += 5;
-
-        // Sección 3
-        doc.setFont("helvetica", "bold");
-        doc.setTextColor(0, 86, 179);
-        doc.text("3. SEGURIDAD", 20, y);
-        y += 8;
-        fila("SISTEMA DE LUCES:", document.getElementById('luces').value);
-        fila("NEUMÁTICOS:", document.getElementById('ruedas').value);
-        fila("EXTINTOR VTO:", document.getElementById('extintor').value);
-        fila("AGUA ZORRINO:", document.getElementById('zorrino').value);
-        y += 10;
-
-        // Observaciones
-        doc.setFont("helvetica", "bold");
-        doc.setTextColor(0);
-        doc.text("OBSERVACIONES Y DAÑOS:", 20, y);
-        y += 7;
-        doc.setFont("helvetica", "normal");
-        const obs = document.getElementById('obs').value || "Sin observaciones adicionales.";
-        const lineas = doc.splitTextToSize(obs, 170);
-        doc.text(lineas, 20, y);
-
-        // Guardar
-        const idUnidad = document.getElementById('auto').value || "Check";
-        doc.save(`Checklist_Maximo_${idUnidad}.pdf`);
+        doc.save("Reporte_Danos.pdf");
     }
 </script>
-
 </body>
 </html>
