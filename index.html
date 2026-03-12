@@ -2,203 +2,195 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Sistema de Auditoría - Maximo Rent A Car</title>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Auditoría - Maximo Rent A Car</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
-        :root { --dark: #1a1a1a; --blue: #004085; --accent: #e67e22; --success: #28a745; --light: #f8f9fa; }
-        body { font-family: -apple-system, system-ui, sans-serif; background: #cbd3da; margin: 0; padding: 10px; color: #333; padding-bottom: 90px; }
-        .app-container { max-width: 600px; margin: auto; background: white; border-radius: 25px; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
+        :root { --blue: #004085; --accent: #e67e22; --bg: #f4f7f9; --card: #ffffff; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 0; color: #333; }
         
-        header { background: var(--dark); color: white; padding: 20px; text-align: center; border-bottom: 4px solid var(--blue); }
-        .logo-text { font-size: 18px; font-weight: 800; letter-spacing: 1px; }
-        .logo-text span { color: var(--accent); }
+        /* Header Estilo App */
+        header { background: #1a1a1a; color: white; padding: 25px 15px; text-align: center; border-bottom: 5px solid var(--blue); }
+        .logo-main { width: 60px; margin-bottom: 10px; }
+        .brand { font-weight: 800; font-size: 20px; letter-spacing: 1px; }
+        .brand span { color: #3498db; }
 
-        .nav-tabs { display: flex; background: #eee; padding: 6px; gap: 4px; }
-        .tab-link { flex: 1; padding: 14px 5px; border: none; font-weight: 700; background: none; font-size: 10px; border-radius: 10px; text-transform: uppercase; color: #777; }
-        .tab-link.active { background: white; color: var(--blue); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        /* Tabs Modernas */
+        .nav-tabs { display: flex; background: white; border-bottom: 1px solid #ddd; position: sticky; top: 0; z-index: 100; }
+        .tab-btn { flex: 1; padding: 15px; border: none; background: none; font-weight: bold; color: #888; border-bottom: 3px solid transparent; font-size: 13px; cursor: pointer; }
+        .tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); background: #f8f9fa; }
 
-        .page-content { padding: 20px; display: none; }
-        .page-content.active { display: block; }
+        .container { max-width: 500px; margin: 20px auto; padding: 0 15px; padding-bottom: 100px; }
+        .section-title { font-size: 12px; font-weight: 800; color: var(--blue); text-transform: uppercase; margin: 20px 0 10px 5px; border-left: 4px solid var(--blue); padding-left: 10px; }
 
-        .card-header { font-size: 11px; font-weight: bold; color: var(--blue); border-bottom: 2px solid #eee; margin-bottom: 15px; padding-bottom: 5px; text-transform: uppercase; margin-top: 10px; border-left: 4px solid var(--blue); padding-left: 10px; }
+        /* Tarjetas de Input */
+        .card { background: var(--card); border-radius: 15px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 15px; }
+        label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; color: #555; }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; font-size: 15px; background: #fafafa; box-sizing: border-box; margin-bottom: 15px; }
         
-        input, select, textarea { width: 100%; padding: 14px; border: 1px solid #ccc; border-radius: 12px; font-size: 16px; margin-bottom: 12px; background: var(--light); -webkit-appearance: none; }
-        label { font-size: 12px; font-weight: 700; margin-bottom: 4px; display: block; color: #555; }
+        /* Grid de Fotos Limpio */
+        .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .photo-box { background: #fff; border: 1px solid #eee; border-radius: 12px; padding: 10px; text-align: center; }
+        .photo-box span { font-size: 10px; font-weight: bold; display: block; margin-bottom: 8px; color: #444; }
+        .btn-upload { background: #f0f0f0; border: 1px dashed #bbb; padding: 10px; border-radius: 8px; font-size: 11px; cursor: pointer; width: 100%; }
+        .photo-box.captured { border-color: #27ae60; background: #f0fff4; }
 
-        .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .photo-item { border: 1px solid #eee; padding: 8px; border-radius: 12px; text-align: center; background: #fafafa; }
-        .photo-item.done { border-color: var(--success); background: #effff4; }
-        .item-label { font-size: 9px; font-weight: bold; display: block; margin-bottom: 4px; }
-        .img-preview { width: 100%; height: 75px; object-fit: cover; border-radius: 8px; display: none; margin-top: 5px; }
+        /* Botones de Acción Flotantes */
+        .footer-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; padding: 15px; gap: 10px; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); box-sizing: border-box; }
+        .btn-main { flex: 1; padding: 15px; border: none; border-radius: 12px; font-weight: 800; color: white; cursor: pointer; font-size: 14px; }
+        .btn-pdf { background: var(--blue); }
+        .btn-save { background: #27ae60; }
 
-        .footer-actions { position: fixed; bottom: 0; left: 0; width: 100%; background: white; padding: 10px; border-top: 2px solid #ddd; display: flex; gap: 10px; box-sizing: border-box; z-index: 1000; }
-        .action-btn { flex: 1; padding: 16px; border: none; border-radius: 12px; font-weight: 800; font-size: 13px; color: white; text-transform: uppercase; }
-        .bg-blue { background: var(--blue); }
-        .bg-green { background: var(--success); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    <header>
-        <div class="logo-text">MAXIMO <span>RENT A CAR</span></div>
-    </header>
+<header>
+    <div class="brand">MAXIMO <span>RENT A CAR</span></div>
+</header>
 
-    <div class="nav-tabs">
-        <button class="tab-link active" onclick="openTab(event, 'tab-fotos')">Entrega/Devolución</button>
-        <button class="tab-link" onclick="openTab(event, 'tab-mecanica')">Inspección Técnica</button>
+<div class="nav-tabs">
+    <button class="tab-btn active" onclick="openTab(event, 'entrega')">ENTREGA/DEVOLUCIÓN</button>
+    <button class="tab-btn" onclick="openTab(event, 'tecnico')">INSPECCIÓN TÉCNICA</button>
+</div>
+
+<div class="container">
+    <div id="entrega" class="tab-content active">
+        <div class="section-title">Datos de Auditoría</div>
+        <div class="card">
+            <label>Patente Vehículo</label>
+            <input type="text" id="patente" placeholder="Ej: LOGAN 238WQ" oninput="this.value=this.value.toUpperCase()">
+            <label>Nombre del Empleado</label>
+            <input type="text" id="empleado" placeholder="Nombre del operador">
+        </div>
+
+        <div class="section-title">Registro Visual (24 Paneles)</div>
+        <div class="photo-grid" id="grid-fotos"></div>
     </div>
 
-    <div id="tab-fotos" class="page-content active">
-        <div class="card-header">Datos de Auditoría</div>
-        <label>Nombre del Empleado</label>
-        <input type="text" id="nombre_emp" placeholder="Nombre del operador">
-        <label>Patente Vehículo</label>
-        <input type="text" id="patente" placeholder="ABC-123" oninput="this.value=this.value.toUpperCase()">
+    <div id="tecnico" class="tab-content">
+        <div class="section-title">Estado Mecánico</div>
+        <div class="card">
+            <label>Kilometraje</label>
+            <input type="text" id="km" placeholder="86957 KM">
+            
+            <label>Estado Aceite</label>
+            <select id="aceite"><option>OK</option><option>Bajo</option><option>Cambio Necesario</option></select>
+            
+            <label>Estado Agua</label>
+            <select id="agua"><option>OK</option><option>Bajo</option></select>
+            
+            <label>Líq. Frenos</label>
+            <select id="frenos"><option>OK</option><option>Bajo</option></select>
+            
+            <label>Líq. Hidráulico</label>
+            <select id="hidraulico"><option>OK</option><option>Bajo</option></select>
+            
+            <label>Luces y Giros</label>
+            <select id="luces"><option>OK</option><option>Falla Parcial</option><option>Falla Total</option></select>
+            
+            <label>Neumáticos</label>
+            <select id="neumaticos"><option>OK</option><option>Desgastados</option></select>
+            
+            <label>Vto. Extintor</label>
+            <input type="text" id="extintor" placeholder="MM/AA">
+            
+            <label>Dep. Zorrino</label>
+            <select id="zorrino"><option>OK</option><option>Vacío</option></select>
+        </div>
 
-        <div class="card-header">Registro Visual (24 Paneles)</div>
-        <div class="photo-grid" id="main-grid"></div>
-    </div>
-
-    <div id="tab-mecanica" class="page-content">
-        <div class="card-header">Reporte Técnico de Auditoría</div>
-        
-        <label>Kilometraje</label>
-        <input type="text" id="c_km" placeholder="Ej: 86957 KM">
-        
-        <label>Estado Aceite</label>
-        <select id="c_oil"><option>OK</option><option>BAJO</option><option>NECESITA CAMBIO</option></select>
-        
-        <label>Estado Agua</label>
-        <select id="c_water"><option>OK</option><option>BAJO</option></select>
-        
-        <label>Líq. Frenos</label>
-        <select id="c_brenos"><option>OK</option><option>BAJO</option></select>
-        
-        <label>Líq. Hidráulico</label>
-        <select id="c_hidra"><option>OK</option><option>BAJO</option></select>
-        
-        <label>Luces y Giros</label>
-        <select id="c_luces"><option>OK</option><option>FALLA PARCIAL</option><option>FALLA TOTAL</option></select>
-        
-        <label>Neumáticos</label>
-        <select id="c_neumat"><option>OK</option><option>DESGASTADOS</option></select>
-        
-        <label>Vto. Extintor</label>
-        <input type="text" id="c_extintor" placeholder="MM/AA (Ej: 09/26)">
-        
-        <label>Dep. Zorrino</label>
-        <select id="c_zorrino"><option>OK</option><option>VACÍO</option></select>
-        
-        <label>Observaciones Técnicas</label>
-        <textarea id="c_obs" rows="4" placeholder="Sin novedades adicionales."></textarea>
+        <div class="section-title">Observaciones</div>
+        <div class="card">
+            <textarea id="obs" rows="4" placeholder="Sin novedades adicionales."></textarea>
+        </div>
     </div>
 </div>
 
-<div class="footer-actions">
-    <button class="action-btn bg-green" onclick="saveData()">💾 GUARDAR</button>
-    <button class="action-btn bg-blue" onclick="genReportPDF()">📄 GENERAR PDF</button>
+<div class="footer-nav">
+    <button class="btn-main btn-save" onclick="alert('Datos guardados en el dispositivo')">GUARDAR</button>
+    <button class="btn-main btn-pdf" onclick="generatePDF()">GENERAR PDF</button>
 </div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
-    const panels = ["Capot", "Parrilla", "G-Barro Del. L/C", "G-Barro Del. Izquierdo", "Puerta Conductor", "Puerta Trasera L/C", "G-Barro Trasero L/C", "Baul", "Rueda D-I", "Rueda D-D", "Rueda T-I", "Rueda T-D", "Techo", "Parabrisas", "Motor", "Interior Del.", "Interior Tras.", "Auxilio", "Herramientas", "Espejo Izq.", "Espejo Der.", "Antena", "Alfombras", "Tablero"];
-    let photoData = {};
-
-    window.onload = () => { initGrid(); };
+    const panels = ["Capot", "Parrilla", "G-Barro Del. L/C", "G-Barro Del. Izq", "Puerta Cond.", "Puerta Tras. L/C", "G-Barro Tras. L/C", "Baul", "Rueda D-I", "Rueda D-D", "Rueda T-I", "Rueda T-D", "Techo", "Parabrisas", "Motor", "Interior Del.", "Interior Tras.", "Auxilio", "Herramientas", "Espejo Izq.", "Espejo Der.", "Antena", "Alfombras", "Tablero"];
 
     function initGrid() {
-        const grid = document.getElementById('main-grid');
+        const grid = document.getElementById('grid-fotos');
         panels.forEach((p, i) => {
             const div = document.createElement('div');
-            div.className = 'photo-item';
-            div.id = `item-${i}`;
-            div.innerHTML = `<span class="item-label">${p.toUpperCase()}</span>
-                <input type="file" id="file-${i}" accept="image/*" capture="camera" style="display:none" onchange="preview(${i})">
-                <button onclick="document.getElementById('file-${i}').click()" style="font-size:10px; padding:5px; border-radius:5px; border:1px solid #ccc; background:#fff;">Seleccionar archivo</button>
-                <img id="img-${i}" class="img-preview">`;
+            div.className = 'photo-box';
+            div.innerHTML = `<span>${p.toUpperCase()}</span>
+                             <input type="file" id="f-${i}" accept="image/*" capture="camera" style="display:none" onchange="markDone(${i})">
+                             <button class="btn-upload" onclick="document.getElementById('f-${i}').click()">CÁMARA</button>`;
             grid.appendChild(div);
         });
     }
 
-    function preview(i) {
-        const file = document.getElementById(`file-${i}`).files[0];
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            photoData[i] = e.target.result;
-            const img = document.getElementById(`img-${i}`);
-            img.src = e.target.result; img.style.display = 'block';
-            document.getElementById(`item-${i}`).classList.add('done');
-        };
-        reader.readAsDataURL(file);
+    function markDone(i) {
+        document.getElementById(`f-${i}`).parentElement.classList.add('captured');
     }
 
     function openTab(evt, tabId) {
-        document.querySelectorAll('.page-content, .tab-link').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(tabId).classList.add('active');
         evt.currentTarget.classList.add('active');
     }
 
-    function genReportPDF() {
+    function generatePDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-        const emp = document.getElementById('nombre_emp').value || "Bautista";
-        const pat = document.getElementById('patente').value || "LOGAN 238WQ";
+        const pat = document.getElementById('patente').value || "S/D";
+        const emp = document.getElementById('empleado').value || "Bautista";
         const fecha = new Date().toLocaleDateString('es-AR');
 
-        // Diseño de Encabezado (Como en la imagen del PDF)
-        doc.setFillColor(30, 30, 30);
-        doc.rect(0, 0, 210, 45, 'F');
+        // Estilo del Reporte (Igual a la imagen 3)
+        doc.setFillColor(33, 33, 33);
+        doc.rect(0, 0, 210, 40, 'F');
         doc.setTextColor(255);
         doc.setFontSize(22);
-        doc.text("MAXIMO RENT A CAR", 20, 25);
+        doc.text("MAXIMO RENT A CAR", 20, 22);
         doc.setFontSize(10);
-        doc.text("REPORTE TÉCNICO DE AUDITORÍA DE UNIDAD", 20, 35);
+        doc.text("REPORTE TÉCNICO DE AUDITORÍA DE UNIDAD", 20, 32);
 
-        // Tabla de Datos (Formato exacto de la imagen)
-        const fields = [
+        doc.setTextColor(0);
+        const data = [
             ["EMPLEADO:", emp],
             ["FECHA:", fecha],
             ["PATENTE:", pat],
-            ["KILOMETRAJE:", document.getElementById('c_km').value || "86957 KM"],
-            ["ESTADO ACEITE:", document.getElementById('c_oil').value],
-            ["ESTADO AGUA:", document.getElementById('c_water').value],
-            ["LÍQ. FRENOS:", document.getElementById('c_brenos').value],
-            ["LÍQ. HIDRÁULICO:", document.getElementById('c_hidra').value],
-            ["LUCES Y GIROS:", document.getElementById('c_luces').value],
-            ["NEUMÁTICOS:", document.getElementById('c_neumat').value],
-            ["VTO. EXTINTOR:", document.getElementById('c_extintor').value || "09/26"],
-            ["DEP. ZORRINO:", document.getElementById('c_zorrino').value]
+            ["KILOMETRAJE:", document.getElementById('km').value],
+            ["ESTADO ACEITE:", document.getElementById('aceite').value],
+            ["ESTADO AGUA:", document.getElementById('agua').value],
+            ["LÍQ. FRENOS:", document.getElementById('frenos').value],
+            ["LÍQ. HIDRÁULICO:", document.getElementById('hidraulico').value],
+            ["LUCES Y GIROS:", document.getElementById('luces').value],
+            ["NEUMÁTICOS:", document.getElementById('neumaticos').value],
+            ["VTO. EXTINTOR:", document.getElementById('extintor').value],
+            ["DEP. ZORRINO:", document.getElementById('zorrino').value]
         ];
 
-        let y = 65;
-        doc.setTextColor(0);
-        fields.forEach(f => {
+        let y = 60;
+        data.forEach(row => {
             doc.setFillColor(245, 245, 245);
-            doc.rect(20, y - 5, 170, 8, 'F');
+            doc.rect(20, y-5, 170, 8, 'F');
             doc.setFont("helvetica", "bold");
-            doc.text(f[0], 25, y);
+            doc.text(row[0], 25, y);
             doc.setFont("helvetica", "normal");
-            doc.text(f[1], 80, y);
-            y += 9;
+            doc.text(row[1], 70, y);
+            y += 10;
         });
 
         doc.setFont("helvetica", "bold");
         doc.text("OBSERVACIONES TÉCNICAS:", 20, y + 10);
         doc.setFont("helvetica", "normal");
-        doc.text(document.getElementById('c_obs').value || "Sin novedades adicionales.", 20, y + 20);
+        doc.text(document.getElementById('obs').value || "Sin novedades adicionales.", 20, y + 20);
 
-        doc.save(`Reporte_Tecnico_${pat}.pdf`);
+        doc.save(`Reporte_${pat}.pdf`);
     }
 
-    function saveData() {
-        const pat = document.getElementById('patente').value;
-        if(!pat) return alert("Ingrese patente");
-        localStorage.setItem('audit_' + pat, JSON.stringify({photoData, tech: document.getElementById('c_km').value}));
-        alert("✓ Guardado correctamente");
-    }
+    initGrid();
 </script>
 </body>
 </html>
