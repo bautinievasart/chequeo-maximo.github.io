@@ -3,235 +3,235 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Auditoría - Maximo Rent A Car</title>
+    <title>Maximo Rent A Car v3</title>
+    
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="apple-touch-icon" href="logo.png">
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
     <style>
-        :root { --blue: #004085; --accent: #e67e22; --bg: #f4f7f9; --card: #ffffff; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 0; color: #333; }
+        :root { --main: #1a1a1a; --blue: #0056b3; --orange: #e67e22; --gray: #f4f7f6; }
+        body { font-family: -apple-system, sans-serif; background: #d1d8e0; margin: 0; padding: 10px; }
+        .container { max-width: 500px; margin: auto; background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         
-        header { background: #1a1a1a; color: white; padding: 25px 15px; text-align: center; border-bottom: 5px solid var(--blue); }
-        .brand { font-weight: 800; font-size: 20px; letter-spacing: 1px; }
-        .brand span { color: #3498db; }
-
-        .nav-tabs { display: flex; background: white; border-bottom: 1px solid #ddd; sticky; top: 0; z-index: 100; }
-        .tab-btn { flex: 1; padding: 15px; border: none; background: none; font-weight: bold; color: #888; border-bottom: 3px solid transparent; font-size: 11px; cursor: pointer; }
-        .tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); background: #f8f9fa; }
-
-        .container { max-width: 500px; margin: 10px auto; padding: 0 15px; padding-bottom: 40px; }
-        .section-title { font-size: 12px; font-weight: 800; color: var(--blue); text-transform: uppercase; margin: 20px 0 10px 5px; border-left: 4px solid var(--blue); padding-left: 10px; }
-
-        .card { background: var(--card); border-radius: 15px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 15px; }
-        label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; color: #555; }
-        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; font-size: 15px; background: #fafafa; box-sizing: border-box; margin-bottom: 15px; }
+        /* ESTILO PARA EL LOGO */
+        header { background: var(--main); color: white; padding: 15px; text-align: center; border-bottom: 5px solid var(--blue); }
+        .logo-img { max-width: 120px; height: auto; margin-bottom: 10px; display: block; margin-left: auto; margin-right: auto; }
         
-        /* Botones de Selección Entrega/Devolución */
-        .type-selector { display: flex; gap: 10px; margin-bottom: 15px; }
-        .type-btn { flex: 1; padding: 10px; border: 2px solid #ddd; border-radius: 10px; background: white; font-weight: bold; cursor: pointer; color: #777; }
-        .type-btn.active { border-color: var(--blue); color: var(--blue); background: #eef6ff; }
+        .tabs { display: flex; background: #eee; padding: 5px; }
+        .tab-btn { flex: 1; padding: 15px; border: none; font-weight: bold; cursor: pointer; background: none; transition: 0.3s; font-size: 14px; border-radius: 10px; }
+        .tab-btn.active { background: white; color: var(--blue); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
 
-        /* Grid de Fotos con Botón Naranja */
-        .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .photo-box { background: #fff; border: 1px solid #eee; border-radius: 12px; padding: 10px; text-align: center; }
-        .photo-box span { font-size: 10px; font-weight: bold; display: block; margin-bottom: 8px; color: #444; }
-        .btn-orange { background: var(--accent); color: white; border: none; padding: 10px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; width: 100%; text-transform: uppercase; }
-        .photo-box.captured { border: 2px solid #27ae60; background: #f0fff4; }
+        .content { padding: 20px; display: none; }
+        .content.active { display: block !important; }
 
-        /* Canvas de Firma */
-        .signature-pad { border: 2px dashed #ccc; border-radius: 10px; background: #fff; width: 100%; height: 150px; touch-action: none; }
-        .clear-btn { font-size: 10px; color: red; cursor: pointer; background: none; border: none; padding: 5px; }
+        .section-title { background: #f8f9fa; color: var(--blue); padding: 8px; font-weight: bold; border-left: 4px solid var(--blue); margin: 20px 0 10px; font-size: 13px; text-transform: uppercase; }
+        
+        label { display: block; margin: 15px 0 5px; font-weight: 700; font-size: 14px; color: #444; }
+        input, select, textarea { width: 100%; padding: 14px; border: 2px solid #ddd; border-radius: 12px; font-size: 16px; box-sizing: border-box; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-        /* Acciones al Final (No Fijas) */
-        .actions-area { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
-        .btn-main { width: 100%; padding: 18px; border: none; border-radius: 12px; font-weight: 800; color: white; cursor: pointer; font-size: 15px; }
-        .btn-pdf { background: var(--blue); }
-        .btn-save { background: #27ae60; }
+        .sig-container { border: 2px dashed #ccc; background: #fafafa; border-radius: 15px; margin-top: 10px; height: 180px; }
+        #signature-pad { width: 100%; height: 100%; touch-action: none; }
+        
+        .btn-main { width: 100%; padding: 20px; border: none; border-radius: 15px; font-weight: bold; font-size: 16px; color: white; cursor: pointer; margin-top: 20px; }
+        .btn-check { background: var(--blue); }
+        .btn-danos { background: var(--orange); }
 
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
+        .card-foto { border: 1px solid #eee; padding: 15px; border-radius: 15px; margin-bottom: 20px; background: #fdfdfd; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .img-prev { width: 100%; border-radius: 10px; margin-top: 10px; display: none; }
     </style>
 </head>
 <body>
 
-<header>
-    <div class="brand">MAXIMO <span>RENT A CAR</span></div>
-</header>
-
-<div class="nav-tabs">
-    <button class="tab-btn active" onclick="openTab(event, 'entrega')">ENTREGA/DEVOLUCIÓN</button>
-    <button class="tab-btn" onclick="openTab(event, 'tecnico')">INSPECCIÓN TÉCNICA</button>
-</div>
-
 <div class="container">
-    <div id="entrega" class="tab-content active">
-        <div class="section-title">Tipo de Movimiento</div>
-        <div class="type-selector">
-            <button class="type-btn active" onclick="setType(this, 'ENTREGA')">ENTREGA</button>
-            <button class="type-btn" onclick="setType(this, 'DEVOLUCION')">DEVOLUCIÓN</button>
+    <header>
+        <img src="logo.png" alt="Maximo Rent A Car" class="logo-img">
+        <h2 style="margin:0; letter-spacing: 1px; font-size: 18px;">MAXIMO <span style="color:var(--blue)">RENT A CAR</span></h2>
+    </header>
+
+    <div class="tabs">
+        <button id="t1" class="tab-btn active" onclick="switchTab('mecanica')">INSPECCIÓN</button>
+        <button id="t2" class="tab-btn" onclick="switchTab('danos')">DAÑOS</button>
+    </div>
+
+    <div id="mecanica" class="content active">
+        <label>Nombre del Empleado</label>
+        <input type="text" id="emp" placeholder="Escriba su nombre">
+        
+        <div class="grid">
+            <div><label>Patente</label><input type="text" id="pat1" placeholder="ABC-123"></div>
+            <div><label>KM</label><input type="number" id="km"></div>
         </div>
 
-        <div class="section-title">Datos de Auditoría</div>
-        <div class="card">
-            <label>Patente Vehículo</label>
-            <input type="text" id="patente" placeholder="ABC-123" oninput="this.value=this.value.toUpperCase()">
-            <label>Nombre del Empleado</label>
-            <input type="text" id="empleado" placeholder="Nombre del operador">
+        <div class="section-title">Fluidos y Mecánica</div>
+        <div class="grid">
+            <div><label>Aceite</label><select id="oil"><option>OK</option><option>BAJO</option></select></div>
+            <div><label>Agua</label><select id="wat"><option>OK</option><option>BAJO</option></select></div>
+        </div>
+        <div class="grid">
+            <div><label>Frenos</label><select id="fre"><option>OK</option><option>BAJO</option></select></div>
+            <div><label>Hidráulico</label><select id="hid"><option>OK</option><option>BAJO</option><option>N/A</option></select></div>
         </div>
 
-        <div class="section-title">Registro Visual (24 Paneles)</div>
-        <div class="photo-grid" id="grid-fotos"></div>
+        <div class="section-title">Seguridad</div>
+        <div class="grid">
+            <div><label>Luces</label><select id="luc"><option>OK</option><option>FALLA</option></select></div>
+            <div><label>Gomas</label><select id="neu"><option>OK</option><option>REVISAR</option></select></div>
+        </div>
+        <div class="grid">
+            <div><label>Extintor</label><input type="text" id="ext" placeholder="Vto"></div>
+            <div><label>Zorrino</label><select id="zor"><option>OK</option><option>VACÍO</option></select></div>
+        </div>
+
+        <label>Observaciones</label>
+        <textarea id="obs" rows="2"></textarea>
 
         <div class="section-title">Firma del Responsable</div>
-        <div class="card">
-            <canvas id="sig-canvas-1" class="signature-pad"></canvas>
-            <button class="clear-btn" onclick="clearSig(1)">Borrar Firma</button>
-        </div>
+        <div class="sig-container"><canvas id="signature-pad"></canvas></div>
+        <button onclick="signaturePad.clear()" style="width:100%; margin-top:10px; padding:10px; border-radius:10px;">BORRAR FIRMA</button>
+
+        <button class="btn-main btn-check" onclick="generarCheck()">DESCARGAR REPORTE TÉCNICO</button>
     </div>
 
-    <div id="tecnico" class="tab-content">
-        <div class="section-title">Estado Mecánico</div>
-        <div class="card">
-            <label>Kilometraje</label>
-            <input type="text" id="km" placeholder="86957 KM">
-            <label>Estado Aceite</label>
-            <select id="aceite"><option>OK</option><option>Bajo</option><option>Cambio Necesario</option></select>
-            <label>Estado Agua</label>
-            <select id="agua"><option>OK</option><option>Bajo</option></select>
-            <label>Líq. Frenos</label>
-            <select id="frenos"><option>OK</option><option>Bajo</option></select>
-            <label>Líq. Hidráulico</label>
-            <select id="hidraulico"><option>OK</option><option>Bajo</option></select>
-            <label>Luces y Giros</label>
-            <select id="luces"><option>OK</option><option>Falla Parcial</option><option>Falla Total</option></select>
-            <label>Neumáticos</label>
-            <select id="neumaticos"><option>OK</option><option>Desgastados</option></select>
-            <label>Vto. Extintor</label>
-            <input type="text" id="extintor" placeholder="MM/AA">
-            <label>Dep. Zorrino</label>
-            <select id="zorrino"><option>OK</option><option>Vacío</option></select>
-        </div>
-
-        <div class="section-title">Observaciones</div>
-        <div class="card">
-            <textarea id="obs" rows="4" placeholder="Sin novedades adicionales."></textarea>
-        </div>
-
-        <div class="section-title">Firma de Conformidad</div>
-        <div class="card">
-            <canvas id="sig-canvas-2" class="signature-pad"></canvas>
-            <button class="clear-btn" onclick="clearSig(2)">Borrar Firma</button>
-        </div>
-    </div>
-
-    <div class="actions-area">
-        <button class="btn-main btn-save" onclick="alert('Auditoría guardada localmente')">GUARDAR BORRADOR</button>
-        <button class="btn-main btn-pdf" onclick="generatePDF()">GENERAR PDF FINAL</button>
+    <div id="danos" class="content">
+        <label>Patente Vehículo</label>
+        <input type="text" id="pat2" placeholder="Patente para daños">
+        
+        <div id="lista-fotos" style="margin-top:20px;"></div>
+        
+        <button onclick="nuevaFoto()" style="width:100%; padding:15px; background:#666; color:white; border:none; border-radius:12px; font-weight:bold;">+ AGREGAR FOTO DE DAÑO</button>
+        
+        <button class="btn-main btn-danos" onclick="generarDanos()">DESCARGAR REPORTE DE DAÑOS</button>
     </div>
 </div>
 
 <script>
-    const panels = ["Capot", "Parrilla", "G-Barro Del. L/C", "G-Barro Del. Izq", "Puerta Cond.", "Puerta Tras. L/C", "G-Barro Tras. L/C", "Baul", "Rueda D-I", "Rueda D-D", "Rueda T-I", "Rueda T-D", "Techo", "Parabrisas", "Motor", "Interior Del.", "Interior Tras.", "Auxilio", "Herramientas", "Espejo Izq.", "Espejo Der.", "Antena", "Alfombras", "Tablero"];
-    let currentType = "ENTREGA";
+    let signaturePad;
+    let fotoCount = 0;
 
-    function initGrid() {
-        const grid = document.getElementById('grid-fotos');
-        panels.forEach((p, i) => {
-            const div = document.createElement('div');
-            div.className = 'photo-box';
-            div.innerHTML = `<span>${p.toUpperCase()}</span>
-                             <input type="file" id="f-${i}" accept="image/*" capture="camera" style="display:none" onchange="markDone(${i})">
-                             <button class="btn-orange" onclick="document.getElementById('f-${i}').click()">CÁMARA</button>`;
-            grid.appendChild(div);
-        });
+    window.onload = () => {
+        const canvas = document.getElementById('signature-pad');
+        signaturePad = new SignaturePad(canvas);
+        const resize = () => {
+            const ratio = Math.max(window.devicePixelRatio || 1, 1);
+            canvas.width = canvas.offsetWidth * ratio;
+            canvas.height = canvas.offsetHeight * ratio;
+            canvas.getContext("2d").scale(ratio, ratio);
+        };
+        window.onresize = resize; resize();
+        nuevaFoto();
+    };
+
+    function switchTab(tab) {
+        document.getElementById('mecanica').classList.remove('active');
+        document.getElementById('danos').classList.remove('active');
+        document.getElementById('t1').classList.remove('active');
+        document.getElementById('t2').classList.remove('active');
+        
+        if(tab === 'mecanica') {
+            document.getElementById('mecanica').classList.add('active');
+            document.getElementById('t1').classList.add('active');
+        } else {
+            document.getElementById('danos').classList.add('active');
+            document.getElementById('t2').classList.add('active');
+        }
     }
 
-    function setType(btn, type) {
-        document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentType = type;
+    function nuevaFoto() {
+        fotoCount++;
+        const div = document.createElement('div');
+        div.className = 'card-foto';
+        div.innerHTML = `
+            <label style="color:var(--orange)">EVIDENCIA #${fotoCount}</label>
+            <input type="file" accept="image/*" capture="camera" onchange="readImg(this, 'p${fotoCount}')">
+            <img id="p${fotoCount}" class="img-prev">
+            <textarea id="t${fotoCount}" placeholder="Describa el daño..." style="margin-top:10px"></textarea>`;
+        document.getElementById('lista-fotos').appendChild(div);
     }
 
-    function markDone(i) {
-        document.getElementById(`f-${i}`).parentElement.classList.add('captured');
+    function readImg(input, id) {
+        const reader = new FileReader();
+        reader.onload = (e) => { 
+            const img = document.getElementById(id);
+            img.src = e.target.result; img.style.display = 'block'; 
+        };
+        reader.readAsDataURL(input.files[0]);
     }
 
-    function openTab(evt, tabId) {
-        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(tabId).classList.add('active');
-        evt.currentTarget.classList.add('active');
-    }
-
-    // Lógica simple de firma
-    function setupCanvas(id) {
-        const canvas = document.getElementById(`sig-canvas-${id}`);
-        const ctx = canvas.getContext('2d');
-        let drawing = false;
-
-        const start = (e) => { drawing = true; ctx.beginPath(); ctx.moveTo(e.offsetX || e.touches[0].clientX - canvas.getBoundingClientRect().left, e.offsetY || e.touches[0].clientY - canvas.getBoundingClientRect().top); };
-        const draw = (e) => { if(!drawing) return; ctx.lineTo(e.offsetX || e.touches[0].clientX - canvas.getBoundingClientRect().left, e.offsetY || e.touches[0].clientY - canvas.getBoundingClientRect().top); ctx.stroke(); };
-        const stop = () => drawing = false;
-
-        canvas.addEventListener('mousedown', start); canvas.addEventListener('mousemove', draw); canvas.addEventListener('mouseup', stop);
-        canvas.addEventListener('touchstart', start); canvas.addEventListener('touchmove', draw); canvas.addEventListener('touchend', stop);
-    }
-
-    function clearSig(id) {
-        const canvas = document.getElementById(`sig-canvas-${id}`);
-        canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
-    }
-
-    function generatePDF() {
+    function generarCheck() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-        const pat = document.getElementById('patente').value || "S/D";
-        const emp = document.getElementById('empleado').value || "Bautista";
-        const fecha = new Date().toLocaleDateString('es-AR');
-
-        doc.setFillColor(33, 33, 33);
-        doc.rect(0, 0, 210, 40, 'F');
-        doc.setTextColor(255);
-        doc.setFontSize(22);
-        doc.text("MAXIMO RENT A CAR", 20, 22);
-        doc.setFontSize(10);
-        doc.text(`REPORTE DE ${currentType} - AUDITORÍA DE UNIDAD`, 20, 32);
-
-        doc.setTextColor(0);
-        const data = [
-            ["TIPO:", currentType],
-            ["EMPLEADO:", emp],
-            ["FECHA:", fecha],
-            ["PATENTE:", pat],
-            ["KILOMETRAJE:", document.getElementById('km').value],
-            ["ESTADO ACEITE:", document.getElementById('aceite').value],
-            ["ESTADO AGUA:", document.getElementById('agua').value],
-            ["LÍQ. FRENOS:", document.getElementById('frenos').value],
-            ["LÍQ. HIDRÁULICO:", document.getElementById('hidraulico').value],
-            ["LUCES Y GIROS:", document.getElementById('luces').value],
-            ["NEUMÁTICOS:", document.getElementById('neumaticos').value],
-            ["VTO. EXTINTOR:", document.getElementById('extintor').value],
-            ["DEP. ZORRINO:", document.getElementById('zorrino').value]
-        ];
-
+        const p = (document.getElementById('pat1').value || "S/D").toUpperCase();
+        
+        // DISEÑO PDF PRO
+        doc.setFillColor(26, 26, 26); doc.rect(0, 0, 210, 45, 'F');
+        doc.setTextColor(255); doc.setFontSize(24); doc.text("MAXIMO RENT A CAR", 20, 25);
+        doc.setFontSize(10); doc.text("REPORTE TÉCNICO DE AUDITORÍA DE UNIDAD", 20, 35);
+        
+        doc.setTextColor(0); doc.setFontSize(10);
         let y = 60;
-        data.forEach(row => {
-            doc.setFillColor(245, 245, 245);
-            doc.rect(20, y-5, 170, 8, 'F');
-            doc.setFont("helvetica", "bold");
-            doc.text(row[0], 25, y);
-            doc.setFont("helvetica", "normal");
-            doc.text(row[1], 70, y);
+        const fila = (tit, val) => {
+            doc.setFillColor(245); doc.rect(20, y-5, 170, 8, 'F');
+            doc.setFont("helvetica", "bold"); doc.text(tit, 25, y);
+            doc.setFont("helvetica", "normal"); doc.text(String(val), 80, y);
             y += 10;
-        });
+        };
 
-        doc.setFont("helvetica", "bold");
-        doc.text("OBSERVACIONES:", 20, y + 10);
-        doc.setFont("helvetica", "normal");
-        doc.text(document.getElementById('obs').value || "Sin novedades adicionales.", 20, y + 20);
+        fila("EMPLEADO:", document.getElementById('emp').value);
+        fila("FECHA:", new Date().toLocaleDateString());
+        fila("PATENTE:", p);
+        fila("KILOMETRAJE:", document.getElementById('km').value + " KM");
+        fila("ESTADO ACEITE:", document.getElementById('oil').value);
+        fila("ESTADO AGUA:", document.getElementById('wat').value);
+        fila("LÍQ. FRENOS:", document.getElementById('fre').value);
+        fila("LÍQ. HIDRÁULICO:", document.getElementById('hid').value);
+        fila("LUCES Y GIROS:", document.getElementById('luc').value);
+        fila("NEUMÁTICOS:", document.getElementById('neu').value);
+        fila("VTO. EXTINTOR:", document.getElementById('ext').value);
+        fila("DEP. ZORRINO:", document.getElementById('zor').value);
 
-        doc.save(`Auditoria_${pat}.pdf`);
+        doc.setFont("helvetica", "bold"); doc.text("OBSERVACIONES TÉCNICAS:", 20, y + 5);
+        doc.setFont("helvetica", "normal"); 
+        doc.text(doc.splitTextToSize(document.getElementById('obs').value || "Sin novedades adicionales.", 170), 20, y + 15);
+
+        if(!signaturePad.isEmpty()) {
+            doc.text("FIRMA DEL RESPONSABLE:", 20, 250);
+            doc.addImage(signaturePad.toDataURL(), 'PNG', 20, 255, 50, 20);
+            doc.line(20, 275, 70, 275);
+        }
+        doc.save(Check_${p}.pdf);
     }
 
-    window.onload = () => { initGrid(); setupCanvas(1); setupCanvas(2); };
+    async function generarDanos() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        const p = (document.getElementById('pat2').value || "S/D").toUpperCase();
+
+        doc.setFillColor(230, 126, 34); doc.rect(0, 0, 210, 45, 'F');
+        doc.setTextColor(255); doc.setFontSize(24); doc.text("REPORTE DE DAÑOS", 20, 25);
+        doc.setFontSize(10); doc.text("INFORME VISUAL DE CARROCERÍA Y FALTANTES", 20, 35);
+        
+        doc.setTextColor(0); doc.text(Vehículo Dominio: ${p}, 20, 55);
+        doc.text(Fecha: ${new Date().toLocaleDateString()}, 150, 55);
+        
+        let y = 70;
+        for(let i=1; i<=fotoCount; i++) {
+            const img = document.getElementById(p${i});
+            if(img && img.src.startsWith('data')) {
+                if(y > 210) { doc.addPage(); y = 30; }
+                doc.setDrawColor(230, 126, 34); doc.setLineWidth(0.5);
+                doc.rect(19, y - 5, 172, 85);
+                doc.addImage(img.src, 'JPEG', 25, y, 95, 75);
+                doc.setFont("helvetica", "bold"); doc.text(EVIDENCIA #${i}, 130, y + 10);
+                doc.setFont("helvetica", "normal");
+                doc.text(doc.splitTextToSize(document.getElementById(t${i}).value || "Sin descripción.", 55), 130, y + 20);
+                y += 95;
+            }
+        }
+        doc.save(Danos_${p}.pdf);
+    }
 </script>
 </body>
 </html>
