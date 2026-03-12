@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Maximo Rent A Car - Pro</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
     <style>
         :root { --primary: #1a1a1a; --accent: #0056b3; --bg: #f4f7f6; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); margin: 0; padding: 10px; padding-bottom: 50px; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 10px; padding-bottom: 50px; }
         .container { max-width: 500px; margin: auto; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         
         .tabs { display: flex; gap: 5px; margin-bottom: 20px; background: #eee; padding: 5px; border-radius: 10px; }
@@ -20,13 +21,17 @@
         .section { background: var(--primary); color: white; padding: 8px 12px; font-weight: bold; margin: 15px 0 10px; border-radius: 6px; font-size: 0.8em; text-transform: uppercase; letter-spacing: 1px; }
         label { display: block; margin: 10px 0 5px; font-weight: 600; font-size: 0.85em; color: #444; }
         input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; box-sizing: border-box; outline: none; }
-        input:focus { border-color: var(--accent); }
         
-        .photo-entry { border: 1px solid #ddd; padding: 12px; border-radius: 12px; margin-bottom: 15px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .preview-img { width: 100%; max-height: 250px; object-fit: cover; border-radius: 6px; margin-top: 10px; display: none; border: 1px solid #eee; }
+        /* Firma */
+        .signature-wrapper { border: 2px dashed #ccc; background: #f9f9f9; border-radius: 10px; margin-top: 10px; position: relative; }
+        #signature-pad { width: 100%; height: 200px; touch-action: none; }
+        .btn-clear { background: #666; color: white; border: none; padding: 8px 15px; border-radius: 5px; font-size: 0.8em; margin-top: 5px; cursor: pointer; }
+
+        .photo-entry { border: 1px solid #ddd; padding: 12px; border-radius: 12px; margin-bottom: 15px; background: #fff; }
+        .preview-img { width: 100%; max-height: 250px; object-fit: cover; border-radius: 6px; margin-top: 10px; display: none; }
         
-        .btn-add { background: #28a745; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; margin: 10px 0 20px; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-pdf { width: 100%; background: var(--accent); color: white; border: none; padding: 18px; border-radius: 12px; font-weight: bold; font-size: 1.1em; margin-top: 10px; box-shadow: 0 4px 10px rgba(0,86,179,0.3); }
+        .btn-add { background: #28a745; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; margin: 10px 0 20px; width: 100%; cursor: pointer; }
+        .btn-pdf { width: 100%; background: var(--accent); color: white; border: none; padding: 18px; border-radius: 12px; font-weight: bold; font-size: 1.1em; margin-top: 10px; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     </style>
 </head>
@@ -34,185 +39,10 @@
 
 <div class="container">
     <header>
-        <h2 style="margin:0; letter-spacing: -1px;">MAXIMO <span style="color:var(--accent)">RENT A CAR</span></h2>
-        <small style="text-transform: uppercase; color: #888; font-weight: 700;">Vehicle Inspection System</small>
+        <h2 style="margin:0;">MAXIMO <span style="color:var(--accent)">RENT A CAR</span></h2>
+        <small style="color: #888; font-weight: 700;">SISTEMA DE CONTROL PROFESIONAL</small>
     </header>
 
     <div class="tabs">
-        <button class="tab-btn active" onclick="openTab(event, 'mecanica')">Mecánica</button>
-        <button class="tab-btn" onclick="openTab(event, 'danos')">Reporte de Daños</button>
-    </div>
-
-    <div id="mecanica" class="tab-content active">
-        <div class="section">1. Datos del Vehículo</div>
-        <label>Patente</label>
-        <input type="text" id="auto_m" placeholder="Ej: AE123CC">
-        <label>Kilometraje</label>
-        <input type="number" id="km_m" placeholder="000000">
-
-        <div class="section">2. Checklist de Fluidos</div>
-        <div class="grid">
-            <div><label>Aceite</label><select id="aceite"><option>OK</option><option>BAJO</option><option>CAMBIO</option></select></div>
-            <div><label>Refrigerante</label><select id="agua"><option>OK</option><option>BAJO</option></select></div>
-        </div>
-        <div class="grid">
-            <div><label>Líq. Frenos</label><select id="frenos"><option>OK</option><option>BAJO</option></select></div>
-            <div><label>Líq. Hidráulico</label><select id="hidraulico"><option>OK</option><option>BAJO</option><option>N/A</option></select></div>
-        </div>
-
-        <div class="section">3. Seguridad y Luces</div>
-        <div class="grid">
-            <div><label>Ópticas/Giros</label><select id="luces"><option>OK</option><option>FALLA</option></select></div>
-            <div><label>Neumáticos</label><select id="ruedas"><option>OK</option><option>REVISAR</option></select></div>
-        </div>
-        <div class="grid">
-            <div><label>Extintor Vto.</label><input type="text" id="extintor" placeholder="MM/AA"></div>
-            <div><label>Agua Zorrino</label><select id="zorrino"><option>OK</option><option>VACÍO</option></select></div>
-        </div>
-
-        <label>Observaciones Adicionales</label>
-        <textarea id="obs_m" rows="3" placeholder="Detalle cualquier novedad..."></textarea>
-        <button class="btn-pdf" onclick="generarPDFMecanico()">GENERAR REPORTE TÉCNICO</button>
-    </div>
-
-    <div id="danos" class="tab-content">
-        <div class="section">Vehículo a Reportar</div>
-        <input type="text" id="auto_d" placeholder="Patente">
-        
-        <div id="lista-fotos" style="margin-top: 15px;"></div>
-        
-        <button class="btn-add" onclick="agregarFoto()">+ AGREGAR FOTO DE DAÑO</button>
-        <button class="btn-pdf" onclick="generarPDFDanos()" style="background: #d35400;">GENERAR INFORME DE DAÑOS</button>
-    </div>
-</div>
-
-<script>
-    let fotoCount = 0;
-
-    function openTab(evt, tabName) {
-        let i, tabcontent, tablinks;
-        tabcontent = document.getElementsByClassName("tab-content");
-        for (i = 0; i < tabcontent.length; i++) tabcontent[i].classList.remove("active");
-        tablinks = document.getElementsByClassName("tab-btn");
-        for (i = 0; i < tablinks.length; i++) tablinks[i].classList.remove("active");
-        document.getElementById(tabName).classList.add("active");
-        evt.currentTarget.classList.add("active");
-    }
-
-    function agregarFoto() {
-        fotoCount++;
-        const div = document.createElement('div');
-        div.className = 'photo-entry';
-        div.innerHTML = `
-            <div style="display:flex; justify-content:space-between; align-items:center">
-                <label style="margin:0">EVIDENCIA #${fotoCount}</label>
-            </div>
-            <input type="file" accept="image/*" capture="camera" onchange="previewFile(this, 'img-${fotoCount}')" style="margin-top:10px; font-size:12px">
-            <img id="img-${fotoCount}" class="preview-img">
-            <textarea id="txt-${fotoCount}" placeholder="Descripción específica del daño detectado..." style="margin-top:10px; font-size:14px"></textarea>
-        `;
-        document.getElementById('lista-fotos').appendChild(div);
-    }
-
-    function previewFile(input, imgId) {
-        const preview = document.getElementById(imgId);
-        const file = input.files[0];
-        const reader = new FileReader();
-        reader.onloadend = () => { preview.src = reader.result; preview.style.display = "block"; }
-        if (file) reader.readAsDataURL(file);
-    }
-
-    function generarPDFMecanico() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        const pat = document.getElementById('auto_m').value.toUpperCase() || "S-D";
-        
-        // Estilo Header
-        doc.setFillColor(26, 26, 26); doc.rect(0, 0, 210, 40, 'F');
-        doc.setTextColor(255, 255, 255); doc.setFontSize(22); doc.setFont("helvetica", "bold");
-        doc.text("MAXIMO RENT A CAR", 20, 22);
-        doc.setFontSize(10); doc.setFont("helvetica", "normal");
-        doc.text("INFORME TÉCNICO DE ESTADO Y MANTENIMIENTO", 20, 30);
-        
-        // Info Box
-        doc.setFillColor(240, 240, 240); doc.rect(140, 10, 60, 20, 'F');
-        doc.setTextColor(50); doc.setFontSize(8); doc.text("DOMINIO:", 145, 18);
-        doc.setFontSize(12); doc.setFont("helvetica", "bold"); doc.text(pat, 145, 25);
-
-        let y = 55;
-        const row = (label, value) => {
-            doc.setFontSize(9); doc.setTextColor(100); doc.setFont("helvetica", "bold"); doc.text(label, 20, y);
-            doc.setFontSize(10); doc.setTextColor(0); doc.setFont("helvetica", "normal"); doc.text(String(value), 85, y);
-            doc.setDrawColor(200); doc.line(20, y+2, 190, y+2); y += 11;
-        };
-
-        row("FECHA DE INSPECCIÓN", new Date().toLocaleDateString());
-        row("KILOMETRAJE", document.getElementById('km_m').value + " KM");
-        row("NIVEL DE ACEITE", document.getElementById('aceite').value);
-        row("LÍQUIDO REFRIGERANTE", document.getElementById('agua').value);
-        row("LÍQUIDO DE FRENOS", document.getElementById('frenos').value);
-        row("LÍQUIDO HIDRÁULICO", document.getElementById('hidraulico').value);
-        row("ESTADO DE ÓPTICAS", document.getElementById('luces').value);
-        row("ESTADO NEUMÁTICOS", document.getElementById('ruedas').value);
-        row("VENCIMIENTO EXTINTOR", document.getElementById('extintor').value);
-        row("DEPÓSITO ZORRINO", document.getElementById('zorrino').value);
-
-        y += 10;
-        doc.setFont("helvetica", "bold"); doc.text("OBSERVACIONES TÉCNICAS:", 20, y);
-        doc.setFont("helvetica", "normal");
-        const lines = doc.splitTextToSize(document.getElementById('obs_m').value || "Sin observaciones.", 170);
-        doc.text(lines, 20, y + 8);
-        
-        doc.save(`Mecanica_${pat}.pdf`);
-    }
-
-    async function generarPDFDanos() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        const pat = document.getElementById('auto_d').value.toUpperCase() || "S-D";
-
-        // Header Daños
-        doc.setFillColor(211, 84, 0); doc.rect(0, 0, 210, 40, 'F');
-        doc.setTextColor(255); doc.setFontSize(22); doc.setFont("helvetica", "bold");
-        doc.text("REPORTE DE DAÑOS", 20, 22);
-        doc.setFontSize(10); doc.setFont("helvetica", "normal");
-        doc.text("RELEVAMIENTO VISUAL DE CARROCERÍA Y FALTANTES", 20, 30);
-        
-        doc.setTextColor(0); doc.setFontSize(11);
-        doc.text(`Vehículo: ${pat}`, 20, 52);
-        doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 150, 52);
-        doc.setDrawColor(211, 84, 0); doc.setLineWidth(1); doc.line(20, 55, 190, 55);
-
-        let y = 65;
-        for (let i = 1; i <= fotoCount; i++) {
-            const img = document.getElementById(`img-${i}`);
-            const txt = document.getElementById(`txt-${i}`).value;
-            
-            if (img && img.src.startsWith('data:image')) {
-                if (y > 200) { doc.addPage(); y = 30; }
-                
-                // Marco de foto
-                doc.setDrawColor(200); doc.setLineWidth(0.2);
-                doc.rect(19, y - 5, 172, 85); 
-                
-                doc.setFont("helvetica", "bold"); doc.setFontSize(9);
-                doc.text(`EVIDENCIA FOTOGRÁFICA #${i}`, 25, y);
-                
-                // Foto con aspecto controlado
-                doc.addImage(img.src, 'JPEG', 25, y + 5, 100, 65);
-                
-                // Texto descriptivo al lado o debajo si es largo
-                doc.setFont("helvetica", "bold"); doc.text("DESCRIPCIÓN:", 130, y + 10);
-                doc.setFont("helvetica", "normal"); doc.setFontSize(9);
-                const desc = doc.splitTextToSize(txt || "Sin detalles adicionales.", 55);
-                doc.text(desc, 130, y + 16);
-                
-                y += 95;
-            }
-        }
-        doc.save(`Danos_${pat}.pdf`);
-    }
-    agregarFoto(); // Iniciar con una
-</script>
-</body>
-</html>
+        <button class="tab-btn active" onclick="openTab(event, 'mecanica')">Check Técnico</button>
+        <button class="tab-btn" onclick="openTab(event,
