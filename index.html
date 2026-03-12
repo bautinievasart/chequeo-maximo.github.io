@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chequeo Vehicular | Maximo</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root { --primary: #1a1a1a; --accent: #0056b3; --bg: #f8f9fa; --border: #dee2e6; }
+        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); margin: 0; padding: 15px; color: var(--primary); }
+        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        h2 { text-align: center; font-size: 1.4em; margin-bottom: 5px; color: var(--accent); }
+        p.subtitle { text-align: center; color: #666; font-size: 0.9em; margin-bottom: 25px; }
+        
+        .section-header { background: #f1f3f5; padding: 8px 12px; border-radius: 6px; font-weight: bold; font-size: 0.85em; text-transform: uppercase; margin: 20px 0 12px; color: #495057; border-left: 4px solid var(--accent); }
+        
+        .field { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 6px; font-size: 0.95em; font-weight: 500; }
+        input, select { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 16px; transition: border 0.2s; }
+        input:focus { border-color: var(--accent); outline: none; }
+        
+        button { width: 100%; background: var(--accent); color: white; border: none; padding: 16px; border-radius: 10px; font-weight: bold; font-size: 1.1em; margin-top: 25px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+        button:active { transform: scale(0.98); opacity: 0.9; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Maximo Rent A Car</h2>
+    <p class="subtitle">Inspección de Flota</p>
+
+    <div class="section-header">Información General</div>
+    <div class="field">
+        <label>Fecha</label>
+        <input type="date" id="fecha">
+    </div>
+    <div class="field">
+        <label>Vehículo (Patente/Modelo)</label>
+        <input type="text" id="auto" placeholder="Ej: Toyota Corolla - AE123CC">
+    </div>
+    <div class="field">
+        <label>Kilometraje Actual</label>
+        <input type="number" id="km" placeholder="Ingresar KM">
+    </div>
+
+    <div class="section-header">Niveles y Líquidos</div>
+    <div class="field">
+        <label>Aceite de Motor</label>
+        <select id="aceite"><option>Óptimo</option><option>Bajo (Completar)</option><option>Requiere Cambio</option></select>
+    </div>
+    <div class="field">
+        <label>Refrigerante</label>
+        <select id="refrigerante"><option>Nivel Correcto</option><option>Bajo</option></select>
+    </div>
+    <div class="field">
+        <label>Líquido de Frenos</label>
+        <select id="frenos"><option>Óptimo</option><option>Revisar Desgaste</option></select>
+    </div>
+    <div class="field">
+        <label>Líquido Hidráulico</label>
+        <select id="hidraulico"><option>Normal</option><option>Fuga/Bajo</option></select>
+    </div>
+    <div class="field">
+        <label>Agua Zorrino (Limpiaparabrisas)</label>
+        <select id="zorrino"><option>Lleno</option><option>Vacío</option></select>
+    </div>
+
+    <div class="section-header">Componentes y Seguridad</div>
+    <div class="field">
+        <label>Luces (Altas/Bajas)</label>
+        <select id="luces"><option>Funcionan Todas</option><option>Falla en Lámpara</option></select>
+    </div>
+    <div class="field">
+        <label>Balizas y Giros</label>
+        <select id="balizas"><option>Funcionan Todas</option><option>Falla en Relé/Lámpara</option></select>
+    </div>
+    <div class="field">
+        <label>Presión de Neumáticos</label>
+        <select id="neumaticos"><option>Correcta</option><option>Baja (Ajustada)</option><option>Desgaste Excesivo</option></select>
+    </div>
+    <div class="field">
+        <label>Lubricación de Cerraduras</label>
+        <select id="cerraduras"><option>Lubricadas</option><option>Secas/Trabas</option></select>
+    </div>
+    <div class="field">
+        <label>Vencimiento Extintor</label>
+        <input type="date" id="extintor">
+    </div>
+
+    <button onclick="generarPDF()">FINALIZAR Y DESCARGAR PDF</button>
+</div>
+
+<script>
+    function generarPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        // Estilo de encabezado
+        doc.setFillColor(240, 240, 240);
+        doc.rect(0, 0, 210, 40, 'F');
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(22);
+        doc.setTextColor(0, 86, 179);
+        doc.text("MAXIMO RENT A CAR", 105, 20, { align: "center" });
+        doc.setFontSize(12);
+        doc.setTextColor(100);
+        doc.text("REPORTE TÉCNICO DE CHEQUEO VEHICULAR", 105, 30, { align: "center" });
+
+        // Función auxiliar para filas
+        let y = 55;
+        const fila = (label, valor) => {
+            doc.setFont("helvetica", "bold");
+            doc.setTextColor(50);
+            doc.text(label, 20, y);
+            doc.setFont("helvetica", "normal");
+            doc.setTextColor(0);
+            doc.text(String(valor), 85, y);
+            doc.setDrawColor(230);
+            doc.line(20, y + 2, 190, y + 2);
+            y += 12;
+        };
+
+        // Contenido del PDF
