@@ -32,7 +32,7 @@
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
         .sig-container { border: 2px dashed #ccc; background: #fafafa; border-radius: 15px; margin-top: 10px; height: 180px; }
-        #signature-pad { width: 100%; height: 100%; touch-action: none; }
+        #signature-pad, #signature-pad-mov { width: 100%; height: 100%; touch-action: none; }
         
         .btn-main { width: 100%; padding: 20px; border: none; border-radius: 15px; font-weight: bold; font-size: 16px; color: white; cursor: pointer; margin-top: 20px; }
         .btn-check { background: var(--blue); }
@@ -42,7 +42,6 @@
         .card-foto { border: 1px solid #eee; padding: 15px; border-radius: 15px; margin-bottom: 20px; background: #fdfdfd; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .img-prev { width: 100%; border-radius: 10px; margin-top: 10px; display: none; }
 
-        /* Estilos específicos para el secuenciador de fotos */
         #foto-indicador { background: #fff3cd; padding: 10px; border-radius: 10px; text-align: center; border: 1px solid #ffeeba; margin-bottom: 10px; font-weight: bold; color: #856404; }
         .btn-secuencial { background: #444; color: white; padding: 15px; border-radius: 12px; border: none; width: 100%; font-weight: bold; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .progreso-fotos { font-size: 12px; color: #666; margin-top: 5px; text-align: center; }
@@ -117,27 +116,25 @@
         
         <div class="section-title">Registro Fotográfico Unidad</div>
         <div id="foto-indicador">SIGUIENTE: <span id="nombre-parte">RUEDA C/D</span></div>
-        
         <input type="file" id="input-secuencial" accept="image/*" capture="camera" style="display:none" onchange="capturarFotoSecuencial(this)">
-        <button class="btn-secuencial" onclick="document.getElementById('input-secuencial').click()">
-            📸 TOMAR FOTO
-        </button>
+        <button class="btn-secuencial" onclick="document.getElementById('input-secuencial').click()">📸 TOMAR FOTO</button>
         <div id="progreso-texto" class="progreso-fotos">0 de 21 fotos tomadas</div>
-
-        <div id="lista-fotos-entrega" style="margin-top:20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-            </div>
+        <div id="lista-fotos-entrega" style="margin-top:20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;"></div>
 
         <label>Estado General / Limpieza</label>
         <textarea id="obs_mov" rows="3" placeholder="Ej: Auto limpio..."></textarea>
+
+        <div class="section-title">Firma Conformidad</div>
+        <div class="sig-container"><canvas id="signature-pad-mov"></canvas></div>
+        <button onclick="signaturePadMov.clear()" style="width:100%; margin-top:10px; padding:10px; border-radius:10px;">BORRAR FIRMA</button>
+
         <button class="btn-main btn-entrega" onclick="generarMovimiento()">DESCARGAR REPORTE MOVIMIENTO</button>
     </div>
 </div>
 
 <script>
-    let signaturePad;
+    let signaturePad, signaturePadMov;
     let fotoCount = 0;
-    
-    // Lista secuencial de fotos
     const listaPartes = [
         "RUEDA C/D", "RUEDA C/T", "RUEDA A/D", "RUEDA A/T", "CAPOT", "PARAGOLPE D", 
         "GUARDABARRO C/D", "PUERTA C", "PUERTA C/T", "GUARDABARRO C/T", "BAUL", 
@@ -148,174 +145,113 @@
     let fotosEntregas = [];
 
     window.onload = () => {
-        const canvas = document.getElementById('signature-pad');
-        signaturePad = new SignaturePad(canvas);
+        const canvas1 = document.getElementById('signature-pad');
+        const canvas2 = document.getElementById('signature-pad-mov');
+        signaturePad = new SignaturePad(canvas1);
+        signaturePadMov = new SignaturePad(canvas2);
+
         const resize = () => {
             const ratio = Math.max(window.devicePixelRatio || 1, 1);
-            canvas.width = canvas.offsetWidth * ratio;
-            canvas.height = canvas.offsetHeight * ratio;
-            canvas.getContext("2d").scale(ratio, ratio);
+            [canvas1, canvas2].forEach(c => {
+                c.width = c.offsetWidth * ratio;
+                c.height = c.offsetHeight * ratio;
+                c.getContext("2d").scale(ratio, ratio);
+            });
         };
         window.onresize = resize; resize();
     };
 
     function switchTab(tab) {
-        document.getElementById('mecanica').classList.remove('active');
-        document.getElementById('danos').classList.remove('active');
-        document.getElementById('entregas').classList.remove('active');
-        document.getElementById('t1').classList.remove('active');
-        document.getElementById('t2').classList.remove('active');
-        document.getElementById('t3').classList.remove('active');
+        document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(tab).classList.add('active');
         if(tab === 'mecanica') document.getElementById('t1').classList.add('active');
         if(tab === 'danos') document.getElementById('t2').classList.add('active');
         if(tab === 'entregas') document.getElementById('t3').classList.add('active');
     }
 
-    // Función para DAÑOS (Tradicional)
     function nuevaFoto(contenedorId) {
         fotoCount++;
         const div = document.createElement('div');
         div.className = 'card-foto';
-        div.innerHTML = `
-            <label style="color:var(--orange)">DAÑO #${fotoCount}</label>
-            <input type="file" accept="image/*" capture="camera" onchange="readImg(this, 'p${fotoCount}')">
-            <img id="p${fotoCount}" class="img-prev img-danos-file">
-            <textarea placeholder="Descripción del daño..." style="margin-top:10px"></textarea>`;
+        div.innerHTML = `<label style="color:var(--orange)">DAÑO #${fotoCount}</label><input type="file" accept="image/*" capture="camera" onchange="readImg(this, 'p${fotoCount}')"><img id="p${fotoCount}" class="img-prev img-danos-file"><textarea placeholder="Descripción..." style="margin-top:10px"></textarea>`;
         document.getElementById(contenedorId).appendChild(div);
     }
 
-    // Captura secuencial para ENTREGAS
     function capturarFotoSecuencial(input) {
         if (input.files && input.files[0] && parteActualIndex < listaPartes.length) {
             const reader = new FileReader();
             reader.onload = (e) => {
-                const nombreParte = listaPartes[parteActualIndex];
-                
-                // Guardar en array de datos
-                fotosEntregas.push({
-                    nombre: nombreParte,
-                    src: e.target.result
-                });
-
-                // Crear miniatura en pantalla
+                fotosEntregas.push({ nombre: listaPartes[parteActualIndex], src: e.target.result });
                 const div = document.createElement('div');
                 div.style = "background:#eee; border-radius:10px; padding:5px; text-align:center; font-size:10px;";
-                div.innerHTML = `<img src="${e.target.result}" style="width:100%; border-radius:5px;"><br><b>${nombreParte}</b>`;
+                div.innerHTML = `<img src="${e.target.result}" style="width:100%; border-radius:5px;"><br><b>${listaPartes[parteActualIndex]}</b>`;
                 document.getElementById('lista-fotos-entrega').appendChild(div);
-
-                // Avanzar al siguiente
                 parteActualIndex++;
                 actualizarInterfazSecuencial();
             };
             reader.readAsDataURL(input.files[0]);
-            input.value = ""; // Limpiar input para re-uso
+            input.value = "";
         }
     }
 
     function actualizarInterfazSecuencial() {
         const indicador = document.getElementById('nombre-parte');
         const progreso = document.getElementById('progreso-texto');
-        
         if (parteActualIndex < listaPartes.length) {
             indicador.innerText = listaPartes[parteActualIndex];
             progreso.innerText = `${parteActualIndex} de 21 fotos tomadas`;
         } else {
-            document.getElementById('foto-indicador').innerHTML = "✅ TODAS LAS FOTOS TOMADAS";
+            document.getElementById('foto-indicador').innerHTML = "✅ FOTOS COMPLETAS";
             document.querySelector('.btn-secuencial').style.display = 'none';
-            progreso.innerText = "21 de 21 fotos completadas";
         }
     }
 
     function readImg(input, id) {
         if (input.files && input.files[0]) {
             const reader = new FileReader();
-            reader.onload = (e) => { 
-                const img = document.getElementById(id);
-                img.src = e.target.result; img.style.display = 'block'; 
-            };
+            reader.onload = (e) => { const img = document.getElementById(id); img.src = e.target.result; img.style.display = 'block'; };
             reader.readAsDataURL(input.files[0]);
         }
     }
 
-    // GENERACIÓN DE PDFs
     function generarCheck() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
+        const { jsPDF } = window.jspdf; const doc = new jsPDF();
         const p = (document.getElementById('pat1').value || "S/D").toUpperCase();
         doc.setFillColor(26, 26, 26); doc.rect(0, 0, 210, 45, 'F');
         doc.setTextColor(255); doc.setFontSize(24); doc.text("MAXIMO RENT A CAR", 20, 25);
-        doc.setFontSize(10); doc.text("REPORTE TÉCNICO DE AUDITORÍA", 20, 35);
         let y = 60;
-        const fila = (tit, val) => {
-            doc.setFillColor(245); doc.rect(20, y-5, 170, 8, 'F');
-            doc.setFont("helvetica", "bold"); doc.setTextColor(0); doc.text(tit, 25, y);
-            doc.setFont("helvetica", "normal"); doc.text(String(val), 80, y);
-            y += 10;
-        };
-        fila("EMPLEADO:", document.getElementById('emp').value);
-        fila("FECHA:", new Date().toLocaleDateString());
-        fila("PATENTE:", p);
-        fila("KILOMETRAJE:", document.getElementById('km').value + " KM");
-        fila("ACEITE:", document.getElementById('oil').value);
-        fila("AGUA:", document.getElementById('wat').value);
-        fila("FRENOS:", document.getElementById('fre').value);
-        fila("HIDRÁULICO:", document.getElementById('hid').value);
-        fila("LUCES:", document.getElementById('luc').value);
-        fila("NEUMÁTICOS:", document.getElementById('neu').value);
-        fila("EXTINTOR:", document.getElementById('ext').value);
-        fila("ZORRINO:", document.getElementById('zor').value);
-        if(!signaturePad.isEmpty()) {
-            doc.text("FIRMA:", 20, 250);
-            doc.addImage(signaturePad.toDataURL(), 'PNG', 20, 255, 50, 20);
-        }
+        const fila = (tit, val) => { doc.setFillColor(245); doc.rect(20, y-5, 170, 8, 'F'); doc.setFont("helvetica", "bold"); doc.setTextColor(0); doc.text(tit, 25, y); doc.setFont("helvetica", "normal"); doc.text(String(val), 80, y); y += 10; };
+        fila("EMPLEADO:", document.getElementById('emp').value); fila("FECHA:", new Date().toLocaleDateString()); fila("PATENTE:", p);
+        fila("KM:", document.getElementById('km').value); fila("ACEITE:", document.getElementById('oil').value);
+        if(!signaturePad.isEmpty()) { doc.text("FIRMA:", 20, 250); doc.addImage(signaturePad.toDataURL(), 'PNG', 20, 255, 50, 20); }
         doc.save(`Check_${p}.pdf`);
     }
 
     async function generarDanos() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
+        const { jsPDF } = window.jspdf; const doc = new jsPDF();
         const p = (document.getElementById('pat2').value || "S/D").toUpperCase();
-        doc.setFillColor(230, 126, 34); doc.rect(0, 0, 210, 45, 'F');
-        doc.setTextColor(255); doc.text("REPORTE DE DAÑOS", 20, 25);
+        doc.setFillColor(230, 126, 34); doc.rect(0, 0, 210, 45, 'F'); doc.setTextColor(255); doc.text("REPORTE DE DAÑOS", 20, 25);
         let y = 60;
-        const imgs = document.querySelectorAll('.img-danos-file');
-        imgs.forEach((img, i) => {
-            if(img.src.startsWith('data')) {
-                if(y > 200) { doc.addPage(); y = 30; }
-                doc.addImage(img.src, 'JPEG', 20, y, 90, 70);
-                doc.text(`Daño #${i+1}`, 120, y+10);
-                y += 80;
-            }
+        document.querySelectorAll('.img-danos-file').forEach((img, i) => {
+            if(img.src.startsWith('data')) { if(y > 200) { doc.addPage(); y = 30; } doc.addImage(img.src, 'JPEG', 20, y, 90, 70); doc.text(`Daño #${i+1}`, 120, y+10); y += 80; }
         });
         doc.save(`Danos_${p}.pdf`);
     }
 
     function generarMovimiento() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
+        const { jsPDF } = window.jspdf; const doc = new jsPDF();
         const tipo = document.getElementById('mov_tipo').value;
         const p = (document.getElementById('pat3').value || "S/D").toUpperCase();
-        
         doc.setFillColor(39, 174, 96); doc.rect(0, 0, 210, 45, 'F');
         doc.setTextColor(255); doc.setFontSize(24); doc.text(tipo, 20, 25);
-        
-        doc.setTextColor(0); doc.setFontSize(11);
-        let y = 60;
-        doc.text(`PATENTE: ${p}`, 20, y); y+=10;
-        doc.text(`FECHA: ${new Date().toLocaleString()}`, 20, y); y+=10;
+        doc.setTextColor(0); doc.setFontSize(11); let y = 60;
+        doc.text(`PATENTE: ${p}`, 20, y); y+=10; doc.text(`FECHA: ${new Date().toLocaleString()}`, 20, y); y+=10;
         doc.text(`KM: ${document.getElementById('km_mov').value}`, 20, y); y+=10;
         doc.text(`COMBUSTIBLE: ${document.getElementById('fuel_mov').value}`, 20, y); y+=15;
-        
-        doc.setFontSize(14); doc.text("REGISTRO FOTOGRÁFICO DE ESTADO", 20, y); y+=10;
-        
-        fotosEntregas.forEach((foto, index) => {
-            if(y > 220) { doc.addPage(); y = 20; }
-            doc.addImage(foto.src, 'JPEG', 20, y, 70, 50);
-            doc.setFontSize(10); doc.text(foto.nombre, 95, y + 25);
-            y += 55;
-        });
-        
+        doc.setFontSize(14); doc.text("REGISTRO FOTOGRÁFICO", 20, y); y+=10;
+        fotosEntregas.forEach((foto) => { if(y > 220) { doc.addPage(); y = 20; } doc.addImage(foto.src, 'JPEG', 20, y, 70, 50); doc.setFontSize(10); doc.text(foto.nombre, 95, y + 25); y += 55; });
+        if(!signaturePadMov.isEmpty()) { if(y > 230) doc.addPage(); doc.setFontSize(12); doc.text("FIRMA DE CONFORMIDAD:", 20, 250); doc.addImage(signaturePadMov.toDataURL(), 'PNG', 20, 255, 50, 20); }
         doc.save(`${tipo}_${p}.pdf`);
     }
 </script>
