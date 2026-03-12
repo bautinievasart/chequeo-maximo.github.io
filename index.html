@@ -94,7 +94,7 @@
         <label>Patente Vehículo</label>
         <input type="text" id="pat2" placeholder="Patente para daños">
         <div id="lista-fotos" style="margin-top:20px;"></div>
-        <button onclick="nuevaFoto()" style="width:100%; padding:15px; background:#666; color:white; border:none; border-radius:12px; font-weight:bold;">+ AGREGAR FOTO DE DAÑO</button>
+        <button onclick="nuevaFoto('lista-fotos')" style="width:100%; padding:15px; background:#666; color:white; border:none; border-radius:12px; font-weight:bold;">+ AGREGAR FOTO DE DAÑO</button>
         <button class="btn-main btn-danos" onclick="generarDanos()">DESCARGAR REPORTE DE DAÑOS</button>
     </div>
 
@@ -109,6 +109,11 @@
         <select id="fuel_mov">
             <option>1/8 (Reserva)</option><option>1/4</option><option>1/2</option><option>3/4</option><option>Lleno</option>
         </select>
+        
+        <div class="section-title">Fotos de Entrega/Devolución</div>
+        <div id="lista-fotos-entrega" style="margin-top:10px;"></div>
+        <button onclick="nuevaFoto('lista-fotos-entrega')" style="width:100%; padding:15px; background:#666; color:white; border:none; border-radius:12px; font-weight:bold;">+ TOMAR FOTO UNIDAD</button>
+
         <label>Estado General / Limpieza</label>
         <textarea id="obs_mov" rows="3" placeholder="Ej: Auto limpio, alfombras secas..."></textarea>
         <button class="btn-main btn-entrega" onclick="generarMovimiento()">DESCARGAR REPORTE MOVIMIENTO</button>
@@ -129,7 +134,9 @@
             canvas.getContext("2d").scale(ratio, ratio);
         };
         window.onresize = resize; resize();
-        nuevaFoto();
+        // Inicializamos una foto en cada sección de fotos
+        nuevaFoto('lista-fotos');
+        nuevaFoto('lista-fotos-entrega');
     };
 
     function switchTab(tab) {
@@ -146,16 +153,19 @@
         if(tab === 'entregas') document.getElementById('t3').classList.add('active');
     }
 
-    function nuevaFoto() {
+    function nuevaFoto(contenedorId) {
         fotoCount++;
         const div = document.createElement('div');
         div.className = 'card-foto';
+        // Usamos una clase para identificar las imágenes de cada contenedor luego en el PDF
+        const tipoClase = contenedorId === 'lista-fotos-entrega' ? 'img-entrega' : 'img-danos';
+        
         div.innerHTML = `
             <label style="color:var(--orange)">EVIDENCIA #${fotoCount}</label>
             <input type="file" accept="image/*" capture="camera" onchange="readImg(this, 'p${fotoCount}')">
-            <img id="p${fotoCount}" class="img-prev">
-            <textarea id="t${fotoCount}" placeholder="Describa el daño..." style="margin-top:10px"></textarea>`;
-        document.getElementById('lista-fotos').appendChild(div);
+            <img id="p${fotoCount}" class="img-prev ${tipoClase}">
+            <textarea id="t${fotoCount}" placeholder="Descripción..." style="margin-top:10px"></textarea>`;
+        document.getElementById(contenedorId).appendChild(div);
     }
 
     function readImg(input, id) {
@@ -216,20 +226,21 @@
         doc.setFontSize(10); doc.text("INFORME VISUAL DE CARROCERÍA Y FALTANTES", 20, 35);
         doc.setTextColor(0); doc.text(`Vehículo Dominio: ${p}`, 20, 55);
         doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 150, 55);
+        
         let y = 70;
-        for(let i=1; i<=fotoCount; i++) {
-            const img = document.getElementById(`p${i}`);
-            if(img && img.src.startsWith('data')) {
+        const imagenes = document.querySelectorAll('.img-danos');
+        imagenes.forEach((img, index) => {
+            if(img.src.startsWith('data')) {
                 if(y > 210) { doc.addPage(); y = 30; }
-                doc.setDrawColor(230, 126, 34); doc.setLineWidth(0.5);
-                doc.rect(19, y - 5, 172, 85);
+                const txt = img.nextElementSibling.value || "Sin descripción.";
+                doc.setDrawColor(230, 126, 34); doc.rect(19, y - 5, 172, 85);
                 doc.addImage(img.src, 'JPEG', 25, y, 95, 75);
-                doc.setFont("helvetica", "bold"); doc.text(`EVIDENCIA #${i}`, 130, y + 10);
+                doc.setFont("helvetica", "bold"); doc.text(`EVIDENCIA #${index+1}`, 130, y + 10);
                 doc.setFont("helvetica", "normal");
-                doc.text(doc.splitTextToSize(document.getElementById(`t${i}`).value || "Sin descripción.", 55), 130, y + 20);
+                doc.text(doc.splitTextToSize(txt, 55), 130, y + 20);
                 y += 95;
             }
-        }
+        });
         doc.save(`Danos_${p}.pdf`);
     }
 
@@ -258,6 +269,18 @@
         doc.setFont("helvetica", "bold"); doc.text("NOTAS DE ESTADO:", 20, y);
         doc.setFont("helvetica", "normal");
         doc.text(doc.splitTextToSize(document.getElementById('obs_mov').value || "Unidad en condiciones estándar.", 170), 20, y + 10);
+        
+        y += 30;
+        // Agregar fotos al reporte de movimiento
+        const imagenes = document.querySelectorAll('.img-entrega');
+        imagenes.forEach((img, index) => {
+            if(img.src.startsWith('data')) {
+                if(y > 200) { doc.addPage(); y = 30; }
+                doc.addImage(img.src, 'JPEG', 20, y, 80, 60);
+                doc.text(`Foto Unidad #${index+1}`, 110, y + 10);
+                y += 70;
+            }
+        });
         
         doc.save(`${tipo}_${p}.pdf`);
     }
