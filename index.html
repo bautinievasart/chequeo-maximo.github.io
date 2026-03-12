@@ -3,40 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Maximo Check Pro</title>
+    <title>Maximo Rent A Car - Sistema Pro</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
     <style>
         :root { --primary: #1a1a1a; --accent: #0056b3; --bg: #f4f7f6; }
         body { font-family: -apple-system, sans-serif; background: #e9ecef; margin: 0; padding: 10px; }
-        
-        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.15); min-height: 90vh; }
-        
+        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.15); }
         header { text-align: center; border-bottom: 4px solid var(--accent); padding-bottom: 15px; margin-bottom: 20px; }
         
-        /* Pestañas Ultra Visibles */
         .tabs { display: flex; gap: 10px; margin-bottom: 25px; }
-        .tab-btn { flex: 1; padding: 15px 5px; border: 2px solid #ddd; border-radius: 10px; cursor: pointer; font-weight: bold; background: #f8f9fa; color: #555; font-size: 0.9em; }
+        .tab-btn { flex: 1; padding: 15px; border: 2px solid #ddd; border-radius: 10px; cursor: pointer; font-weight: bold; background: #f8f9fa; color: #555; }
         .tab-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
 
-        .tab-content { display: none; visibility: hidden; }
-        .tab-content.active { display: block; visibility: visible; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
 
         .section { background: var(--primary); color: white; padding: 10px; font-weight: bold; margin: 20px 0 10px; border-radius: 5px; font-size: 0.8em; text-transform: uppercase; }
         label { display: block; margin: 15px 0 5px; font-weight: bold; color: #333; }
         input, select, textarea { width: 100%; padding: 15px; border: 2px solid #ced4da; border-radius: 10px; font-size: 16px; box-sizing: border-box; }
-        
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
 
-        /* Firma */
-        .sig-box { border: 2px dashed #adb5bd; background: #f1f3f5; border-radius: 10px; margin-top: 10px; }
+        .sig-box { border: 2px dashed #adb5bd; background: #f1f3f5; border-radius: 10px; margin-top: 10px; overflow: hidden; }
         #signature-pad { width: 100%; height: 200px; touch-action: none; }
         
-        .btn-pdf { width: 100%; background: #28a745; color: white; border: none; padding: 20px; border-radius: 12px; font-weight: bold; font-size: 1.1em; margin-top: 30px; }
+        .btn-pdf { width: 100%; background: #28a745; color: white; border: none; padding: 20px; border-radius: 12px; font-weight: bold; font-size: 1.1em; margin-top: 30px; cursor: pointer; }
         .btn-danos { background: #fd7e14; }
 
         .photo-entry { border: 2px solid #dee2e6; padding: 15px; border-radius: 12px; margin-bottom: 20px; background: #fff; }
-        .preview-img { width: 100%; border-radius: 8px; margin: 10px 0; display: none; border: 1px solid #ddd; }
+        .preview-img { width: 100%; border-radius: 8px; margin: 10px 0; display: none; }
     </style>
 </head>
 <body>
@@ -44,97 +39,71 @@
 <div class="container">
     <header>
         <h2 style="margin:0">MAXIMO <span style="color:var(--accent)">RENT A CAR</span></h2>
-        <p style="margin:5px 0 0; font-size: 0.8em; color: #666;">CONTROL DE FLOTA PROFESIONAL</p>
+        <p style="margin:5px 0 0; font-size: 0.8em; color: #666;">CONTROL PROFESIONAL DE UNIDADES</p>
     </header>
 
     <div class="tabs">
         <button class="tab-btn active" onclick="openTab(event, 'mecanica')">INSPECCIÓN</button>
-        <button class="tab-btn" onclick="openTab(event, 'danos')">DAÑOS/FOTOS</button>
+        <button class="tab-btn" onclick="openTab(event, 'danos')">DAÑOS</button>
     </div>
 
     <div id="mecanica" class="tab-content active">
         <label>Empleado Encargado</label>
-        <input type="text" id="emp_m" placeholder="Tu nombre" oninput="sync(this.value)">
+        <input type="text" id="emp_m" placeholder="Nombre completo" oninput="sync(this.value)">
         
         <div class="grid">
-            <div><label>Patente</label><input type="text" id="pat_m" placeholder="ABC-123"></div>
+            <div><label>Patente</label><input type="text" id="pat_m" placeholder="AE123CC"></div>
             <div><label>KM</label><input type="number" id="km_m"></div>
         </div>
 
-        <div class="section">Revisión de Fluidos</div>
+        <div class="section">Chequeo de Fluidos</div>
         <div class="grid">
             <div><label>Aceite</label><select id="aceite"><option>OK</option><option>BAJO</option></select></div>
             <div><label>Agua</label><select id="agua"><option>OK</option><option>BAJO</option></select></div>
         </div>
         <div class="grid">
-            <div><label>Frenos</label><select id="frenos"><option>OK</option><option>REVISAR</option></select></div>
+            <div><label>Frenos</label><select id="frenos"><option>OK</option><option>BAJO</option></select></div>
+            <div><label>Hidráulico</label><select id="hidraulico"><option>OK</option><option>BAJO</option></select></div>
+        </div>
+
+        <div class="section">Seguridad y Luces</div>
+        <div class="grid">
             <div><label>Luces</label><select id="luces"><option>OK</option><option>FALLA</option></select></div>
+            <div><label>Neumáticos</label><select id="ruedas"><option>OK</option><option>REVISAR</option></select></div>
+        </div>
+        <div class="grid">
+            <div><label>Extintor</label><input type="text" id="ext_m" placeholder="Vencimiento"></div>
+            <div><label>Zorrino</label><select id="zorrino"><option>OK</option><option>VACÍO</option></select></div>
         </div>
 
         <label>Observaciones</label>
         <textarea id="obs_m" rows="3"></textarea>
 
-        <div class="section">Firma Digital</div>
+        <div class="section">Firma del Encargado</div>
         <div class="sig-box"><canvas id="signature-pad"></canvas></div>
-        <button onclick="signaturePad.clear()" style="margin-top:5px; padding:5px">Borrar Firma</button>
+        <button onclick="signaturePad.clear()" style="margin-top:10px; width: 100%; padding: 10px;">Limpiar Firma</button>
 
-        <button class="btn-pdf" onclick="pdfMecanico()">DESCARGAR REPORTE TÉCNICO</button>
+        <button class="btn-pdf" onclick="pdfMecanico()">GENERAR REPORTE TÉCNICO</button>
     </div>
 
     <div id="danos" class="tab-content">
         <label>Empleado</label>
         <input type="text" id="emp_d" readonly>
         
-        <label>Patente</label>
-        <input type="text" id="pat_d" placeholder="Patente del vehículo">
+        <label>Patente del Vehículo</label>
+        <input type="text" id="pat_d" placeholder="Patente para reporte">
 
-        <div id="lista-fotos" style="margin-top:20px"></div>
+        <div id="lista-fotos"></div>
         
-        <button onclick="addFoto()" style="width:100%; padding:15px; margin-top:10px; background:#6c757d; color:white; border:none; border-radius:10px; font-weight:bold">+ AGREGAR OTRA FOTO</button>
+        <button onclick="addFoto()" style="width:100%; padding:15px; margin-top:15px; background:#6c757d; color:white; border:none; border-radius:10px; font-weight:bold">+ AGREGAR OTRA FOTO</button>
         
-        <button class="btn-pdf btn-danos" onclick="pdfDanos()">DESCARGAR REPORTE DE DAÑOS</button>
+        <button class="btn-pdf btn-danos" onclick="pdfDanos()">GENERAR REPORTE DE DAÑOS</button>
     </div>
 </div>
 
 <script>
-    let sigPad;
+    let signaturePad;
     let fCount = 0;
 
     window.onload = () => {
-        const canvas = document.getElementById('signature-pad');
-        signaturePad = new SignaturePad(canvas);
-        const resize = () => {
-            const ratio = Math.max(window.devicePixelRatio || 1, 1);
-            canvas.width = canvas.offsetWidth * ratio;
-            canvas.height = canvas.offsetHeight * ratio;
-            canvas.getContext("2d").scale(ratio, ratio);
-        };
-        window.onresize = resize; resize();
-        addFoto();
-    };
-
-    function openTab(evt, name) {
-        const contents = document.getElementsByClassName("tab-content");
-        for (let c of contents) c.classList.remove("active");
-        const btns = document.getElementsByClassName("tab-btn");
-        for (let b of btns) b.classList.remove("active");
-        document.getElementById(name).classList.add("active");
-        evt.currentTarget.classList.add("active");
-    }
-
-    function sync(v) { document.getElementById('emp_d').value = v; }
-
-    function addFoto() {
-        fCount++;
-        const d = document.createElement('div');
-        d.className = 'photo-entry';
-        d.innerHTML = `<label>Foto #${fCount}</label>
-            <input type="file" accept="image/*" capture="camera" onchange="prev(this, 'i${fCount}')">
-            <img id="i${fCount}" class="preview-img">
-            <textarea id="t${fCount}" placeholder="Descripción del daño..." style="margin-top:10px"></textarea>`;
-        document.getElementById('lista-fotos').appendChild(d);
-    }
-
-    function prev(i, id) {
-        const r = new FileReader();
-        r.onload = (e) => { const m = document.getElementById(id); m.src = e.target.result
+        const canvas = document.getElementById
