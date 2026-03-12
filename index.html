@@ -9,35 +9,40 @@
         :root { --blue: #004085; --accent: #e67e22; --bg: #f4f7f9; --card: #ffffff; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 0; color: #333; }
         
-        /* Header Estilo App */
         header { background: #1a1a1a; color: white; padding: 25px 15px; text-align: center; border-bottom: 5px solid var(--blue); }
-        .logo-main { width: 60px; margin-bottom: 10px; }
         .brand { font-weight: 800; font-size: 20px; letter-spacing: 1px; }
         .brand span { color: #3498db; }
 
-        /* Tabs Modernas */
-        .nav-tabs { display: flex; background: white; border-bottom: 1px solid #ddd; position: sticky; top: 0; z-index: 100; }
-        .tab-btn { flex: 1; padding: 15px; border: none; background: none; font-weight: bold; color: #888; border-bottom: 3px solid transparent; font-size: 13px; cursor: pointer; }
+        .nav-tabs { display: flex; background: white; border-bottom: 1px solid #ddd; sticky; top: 0; z-index: 100; }
+        .tab-btn { flex: 1; padding: 15px; border: none; background: none; font-weight: bold; color: #888; border-bottom: 3px solid transparent; font-size: 11px; cursor: pointer; }
         .tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); background: #f8f9fa; }
 
-        .container { max-width: 500px; margin: 20px auto; padding: 0 15px; padding-bottom: 100px; }
+        .container { max-width: 500px; margin: 10px auto; padding: 0 15px; padding-bottom: 40px; }
         .section-title { font-size: 12px; font-weight: 800; color: var(--blue); text-transform: uppercase; margin: 20px 0 10px 5px; border-left: 4px solid var(--blue); padding-left: 10px; }
 
-        /* Tarjetas de Input */
         .card { background: var(--card); border-radius: 15px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 15px; }
         label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; color: #555; }
         input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; font-size: 15px; background: #fafafa; box-sizing: border-box; margin-bottom: 15px; }
         
-        /* Grid de Fotos Limpio */
+        /* Botones de Selección Entrega/Devolución */
+        .type-selector { display: flex; gap: 10px; margin-bottom: 15px; }
+        .type-btn { flex: 1; padding: 10px; border: 2px solid #ddd; border-radius: 10px; background: white; font-weight: bold; cursor: pointer; color: #777; }
+        .type-btn.active { border-color: var(--blue); color: var(--blue); background: #eef6ff; }
+
+        /* Grid de Fotos con Botón Naranja */
         .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .photo-box { background: #fff; border: 1px solid #eee; border-radius: 12px; padding: 10px; text-align: center; }
         .photo-box span { font-size: 10px; font-weight: bold; display: block; margin-bottom: 8px; color: #444; }
-        .btn-upload { background: #f0f0f0; border: 1px dashed #bbb; padding: 10px; border-radius: 8px; font-size: 11px; cursor: pointer; width: 100%; }
-        .photo-box.captured { border-color: #27ae60; background: #f0fff4; }
+        .btn-orange { background: var(--accent); color: white; border: none; padding: 10px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; width: 100%; text-transform: uppercase; }
+        .photo-box.captured { border: 2px solid #27ae60; background: #f0fff4; }
 
-        /* Botones de Acción Flotantes */
-        .footer-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; padding: 15px; gap: 10px; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); box-sizing: border-box; }
-        .btn-main { flex: 1; padding: 15px; border: none; border-radius: 12px; font-weight: 800; color: white; cursor: pointer; font-size: 14px; }
+        /* Canvas de Firma */
+        .signature-pad { border: 2px dashed #ccc; border-radius: 10px; background: #fff; width: 100%; height: 150px; touch-action: none; }
+        .clear-btn { font-size: 10px; color: red; cursor: pointer; background: none; border: none; padding: 5px; }
+
+        /* Acciones al Final (No Fijas) */
+        .actions-area { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+        .btn-main { width: 100%; padding: 18px; border: none; border-radius: 12px; font-weight: 800; color: white; cursor: pointer; font-size: 15px; }
         .btn-pdf { background: var(--blue); }
         .btn-save { background: #27ae60; }
 
@@ -58,16 +63,28 @@
 
 <div class="container">
     <div id="entrega" class="tab-content active">
+        <div class="section-title">Tipo de Movimiento</div>
+        <div class="type-selector">
+            <button class="type-btn active" onclick="setType(this, 'ENTREGA')">ENTREGA</button>
+            <button class="type-btn" onclick="setType(this, 'DEVOLUCION')">DEVOLUCIÓN</button>
+        </div>
+
         <div class="section-title">Datos de Auditoría</div>
         <div class="card">
             <label>Patente Vehículo</label>
-            <input type="text" id="patente" placeholder="Ej: LOGAN 238WQ" oninput="this.value=this.value.toUpperCase()">
+            <input type="text" id="patente" placeholder="ABC-123" oninput="this.value=this.value.toUpperCase()">
             <label>Nombre del Empleado</label>
             <input type="text" id="empleado" placeholder="Nombre del operador">
         </div>
 
         <div class="section-title">Registro Visual (24 Paneles)</div>
         <div class="photo-grid" id="grid-fotos"></div>
+
+        <div class="section-title">Firma del Responsable</div>
+        <div class="card">
+            <canvas id="sig-canvas-1" class="signature-pad"></canvas>
+            <button class="clear-btn" onclick="clearSig(1)">Borrar Firma</button>
+        </div>
     </div>
 
     <div id="tecnico" class="tab-content">
@@ -75,28 +92,20 @@
         <div class="card">
             <label>Kilometraje</label>
             <input type="text" id="km" placeholder="86957 KM">
-            
             <label>Estado Aceite</label>
             <select id="aceite"><option>OK</option><option>Bajo</option><option>Cambio Necesario</option></select>
-            
             <label>Estado Agua</label>
             <select id="agua"><option>OK</option><option>Bajo</option></select>
-            
             <label>Líq. Frenos</label>
             <select id="frenos"><option>OK</option><option>Bajo</option></select>
-            
             <label>Líq. Hidráulico</label>
             <select id="hidraulico"><option>OK</option><option>Bajo</option></select>
-            
             <label>Luces y Giros</label>
             <select id="luces"><option>OK</option><option>Falla Parcial</option><option>Falla Total</option></select>
-            
             <label>Neumáticos</label>
             <select id="neumaticos"><option>OK</option><option>Desgastados</option></select>
-            
             <label>Vto. Extintor</label>
             <input type="text" id="extintor" placeholder="MM/AA">
-            
             <label>Dep. Zorrino</label>
             <select id="zorrino"><option>OK</option><option>Vacío</option></select>
         </div>
@@ -105,16 +114,23 @@
         <div class="card">
             <textarea id="obs" rows="4" placeholder="Sin novedades adicionales."></textarea>
         </div>
-    </div>
-</div>
 
-<div class="footer-nav">
-    <button class="btn-main btn-save" onclick="alert('Datos guardados en el dispositivo')">GUARDAR</button>
-    <button class="btn-main btn-pdf" onclick="generatePDF()">GENERAR PDF</button>
+        <div class="section-title">Firma de Conformidad</div>
+        <div class="card">
+            <canvas id="sig-canvas-2" class="signature-pad"></canvas>
+            <button class="clear-btn" onclick="clearSig(2)">Borrar Firma</button>
+        </div>
+    </div>
+
+    <div class="actions-area">
+        <button class="btn-main btn-save" onclick="alert('Auditoría guardada localmente')">GUARDAR BORRADOR</button>
+        <button class="btn-main btn-pdf" onclick="generatePDF()">GENERAR PDF FINAL</button>
+    </div>
 </div>
 
 <script>
     const panels = ["Capot", "Parrilla", "G-Barro Del. L/C", "G-Barro Del. Izq", "Puerta Cond.", "Puerta Tras. L/C", "G-Barro Tras. L/C", "Baul", "Rueda D-I", "Rueda D-D", "Rueda T-I", "Rueda T-D", "Techo", "Parabrisas", "Motor", "Interior Del.", "Interior Tras.", "Auxilio", "Herramientas", "Espejo Izq.", "Espejo Der.", "Antena", "Alfombras", "Tablero"];
+    let currentType = "ENTREGA";
 
     function initGrid() {
         const grid = document.getElementById('grid-fotos');
@@ -123,9 +139,15 @@
             div.className = 'photo-box';
             div.innerHTML = `<span>${p.toUpperCase()}</span>
                              <input type="file" id="f-${i}" accept="image/*" capture="camera" style="display:none" onchange="markDone(${i})">
-                             <button class="btn-upload" onclick="document.getElementById('f-${i}').click()">CÁMARA</button>`;
+                             <button class="btn-orange" onclick="document.getElementById('f-${i}').click()">CÁMARA</button>`;
             grid.appendChild(div);
         });
+    }
+
+    function setType(btn, type) {
+        document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentType = type;
     }
 
     function markDone(i) {
@@ -139,6 +161,25 @@
         evt.currentTarget.classList.add('active');
     }
 
+    // Lógica simple de firma
+    function setupCanvas(id) {
+        const canvas = document.getElementById(`sig-canvas-${id}`);
+        const ctx = canvas.getContext('2d');
+        let drawing = false;
+
+        const start = (e) => { drawing = true; ctx.beginPath(); ctx.moveTo(e.offsetX || e.touches[0].clientX - canvas.getBoundingClientRect().left, e.offsetY || e.touches[0].clientY - canvas.getBoundingClientRect().top); };
+        const draw = (e) => { if(!drawing) return; ctx.lineTo(e.offsetX || e.touches[0].clientX - canvas.getBoundingClientRect().left, e.offsetY || e.touches[0].clientY - canvas.getBoundingClientRect().top); ctx.stroke(); };
+        const stop = () => drawing = false;
+
+        canvas.addEventListener('mousedown', start); canvas.addEventListener('mousemove', draw); canvas.addEventListener('mouseup', stop);
+        canvas.addEventListener('touchstart', start); canvas.addEventListener('touchmove', draw); canvas.addEventListener('touchend', stop);
+    }
+
+    function clearSig(id) {
+        const canvas = document.getElementById(`sig-canvas-${id}`);
+        canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+    }
+
     function generatePDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
@@ -146,17 +187,17 @@
         const emp = document.getElementById('empleado').value || "Bautista";
         const fecha = new Date().toLocaleDateString('es-AR');
 
-        // Estilo del Reporte (Igual a la imagen 3)
         doc.setFillColor(33, 33, 33);
         doc.rect(0, 0, 210, 40, 'F');
         doc.setTextColor(255);
         doc.setFontSize(22);
         doc.text("MAXIMO RENT A CAR", 20, 22);
         doc.setFontSize(10);
-        doc.text("REPORTE TÉCNICO DE AUDITORÍA DE UNIDAD", 20, 32);
+        doc.text(`REPORTE DE ${currentType} - AUDITORÍA DE UNIDAD`, 20, 32);
 
         doc.setTextColor(0);
         const data = [
+            ["TIPO:", currentType],
             ["EMPLEADO:", emp],
             ["FECHA:", fecha],
             ["PATENTE:", pat],
@@ -183,14 +224,14 @@
         });
 
         doc.setFont("helvetica", "bold");
-        doc.text("OBSERVACIONES TÉCNICAS:", 20, y + 10);
+        doc.text("OBSERVACIONES:", 20, y + 10);
         doc.setFont("helvetica", "normal");
         doc.text(document.getElementById('obs').value || "Sin novedades adicionales.", 20, y + 20);
 
-        doc.save(`Reporte_${pat}.pdf`);
+        doc.save(`Auditoria_${pat}.pdf`);
     }
 
-    initGrid();
+    window.onload = () => { initGrid(); setupCanvas(1); setupCanvas(2); };
 </script>
 </body>
 </html>
