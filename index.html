@@ -13,13 +13,13 @@
     <style>
         :root { --main: #1a1a1a; --blue: #0056b3; --orange: #e67e22; --gray: #f4f7f6; --success: #27ae60; }
         body { font-family: -apple-system, sans-serif; background: #d1d8e0; margin: 0; padding: 10px; }
-        .container { max-width: 500px; margin: auto; background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .container { max-width: 600px; margin: auto; background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         
         header { background: var(--main); color: white; padding: 15px; text-align: center; border-bottom: 5px solid var(--blue); }
         .logo-img { max-width: 100px; height: auto; margin-bottom: 5px; display: block; margin-left: auto; margin-right: auto; }
         
         .tabs { display: flex; background: #eee; padding: 5px; gap: 2px; }
-        .tab-btn { flex: 1; padding: 12px 5px; border: none; font-weight: bold; cursor: pointer; background: none; transition: 0.3s; font-size: 11px; border-radius: 8px; text-transform: uppercase; }
+        .tab-btn { flex: 1; padding: 12px 2px; border: none; font-weight: bold; cursor: pointer; background: none; transition: 0.3s; font-size: 10px; border-radius: 8px; text-transform: uppercase; }
         .tab-btn.active { background: white; color: var(--blue); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
 
         .content { padding: 20px; display: none; }
@@ -30,20 +30,19 @@
         label { display: block; margin: 15px 0 5px; font-weight: 700; font-size: 14px; color: #444; }
         input, select, textarea { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 12px; font-size: 16px; box-sizing: border-box; }
         
-        /* MÓDULO COMPARATIVO */
         .panel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
         .panel-card { border: 1px solid #ddd; padding: 10px; border-radius: 12px; text-align: center; background: #fafafa; }
-        .panel-label { font-size: 11px; font-weight: bold; margin-bottom: 5px; display: block; }
-        .thumb-container { display: flex; gap: 5px; margin-top: 5px; }
-        .thumb { width: 100%; height: 60px; object-fit: cover; border-radius: 5px; border: 1px solid #ccc; display: none; }
+        .panel-label { font-size: 10px; font-weight: bold; margin-bottom: 5px; display: block; height: 25px; overflow: hidden; }
+        
+        .thumb-container { display: flex; gap: 5px; margin-top: 8px; justify-content: center; }
+        .thumb { width: 45%; height: 50px; object-fit: cover; border-radius: 5px; border: 1px solid #ccc; display: none; }
         
         .sig-container { border: 2px dashed #ccc; background: #fafafa; border-radius: 15px; margin-top: 10px; height: 150px; }
         canvas { width: 100%; height: 100%; touch-action: none; }
         
-        .btn-main { width: 100%; padding: 18px; border: none; border-radius: 15px; font-weight: bold; font-size: 15px; color: white; cursor: pointer; margin-top: 20px; text-transform: uppercase; }
+        .btn-main { width: 100%; padding: 18px; border: none; border-radius: 15px; font-weight: bold; font-size: 15px; color: white; cursor: pointer; margin-top: 10px; text-transform: uppercase; }
         .btn-blue { background: var(--blue); }
-        .btn-orange { background: var(--orange); }
-        .btn-save { background: var(--success); margin-top: 10px; }
+        .btn-save { background: var(--success); margin-top: 20px; }
     </style>
 </head>
 <body>
@@ -55,81 +54,52 @@
     </header>
 
     <div class="tabs">
-        <button id="t1" class="tab-btn active" onclick="switchTab('mecanica')">Inspección</button>
-        <button id="t3" class="tab-btn" onclick="switchTab('entrega')">Entrega/Devolución</button>
-        <button id="t2" class="tab-btn" onclick="switchTab('danos')">Diferencias</button>
+        <button id="t3" class="tab-btn active" onclick="switchTab('entrega')">Entrega/Devolución</button>
+        <button id="t1" class="tab-btn" onclick="switchTab('mecanica')">Inspección Técnica</button>
     </div>
 
-    <div id="entrega" class="content">
-        <div class="section-title">Registro de Unidad</div>
+    <div id="entrega" class="content active">
+        <div class="section-title">Datos de Auditoría</div>
         <label>Patente Vehículo</label>
         <input type="text" id="pat_comp" placeholder="ABC-123" oninput="loadHistory()">
         
         <label>Nombre del Empleado</label>
-        <input type="text" id="emp_comp" placeholder="Operador de turno">
+        <input type="text" id="emp_comp" placeholder="Nombre del operador">
 
-        <div id="status-msg" style="font-size: 12px; color: var(--blue); margin-top: 10px; font-weight: bold;"></div>
+        <div id="status-msg" style="font-size: 12px; color: var(--blue); margin-top: 10px; font-weight: bold; text-align: center;"></div>
 
-        <div class="section-title">Registro de Paneles</div>
-        <div class="panel-grid">
-            <div class="panel-card">
-                <span class="panel-label">FRONTAL</span>
-                <input type="file" accept="image/*" capture="camera" onchange="processPanel(this, 'front')">
-                <div class="thumb-container">
-                    <img id="prev_front_old" class="thumb" title="Entrega">
-                    <img id="prev_front_new" class="thumb" title="Devolución">
-                </div>
-            </div>
-            <div class="panel-card">
-                <span class="panel-label">TRASERO</span>
-                <input type="file" accept="image/*" capture="camera" onchange="processPanel(this, 'back')">
-                <div class="thumb-container">
-                    <img id="prev_back_old" class="thumb">
-                    <img id="prev_back_new" class="thumb">
-                </div>
-            </div>
-            <div class="panel-card">
-                <span class="panel-label">LAT. IZQUIERDO</span>
-                <input type="file" accept="image/*" capture="camera" onchange="processPanel(this, 'left')">
-                <div class="thumb-container">
-                    <img id="prev_left_old" class="thumb">
-                    <img id="prev_left_new" class="thumb">
-                </div>
-            </div>
-            <div class="panel-card">
-                <span class="panel-label">LAT. DERECHO</span>
-                <input type="file" accept="image/*" capture="camera" onchange="processPanel(this, 'right')">
-                <div class="thumb-container">
-                    <img id="prev_right_old" class="thumb">
-                    <img id="prev_right_new" class="thumb">
-                </div>
-            </div>
-        </div>
+        <div class="section-title">Registro Visual (24 Paneles)</div>
+        <div class="panel-grid" id="grid-paneles"></div>
 
-        <div class="section-title">Firma del Cliente</div>
+        <div class="section-title">Conformidad del Cliente</div>
         <div class="sig-container"><canvas id="sig-cliente"></canvas></div>
-        <button onclick="clearSig()" style="width:100%; margin-top:5px; font-size:10px; padding:5px;">LIMPIAR FIRMA</button>
+        <button onclick="sigCliente.clear()" style="width:100%; margin-top:5px; font-size:10px; padding:5px; border:none; background:none; text-decoration:underline;">LIMPIAR FIRMA</button>
 
-        <button class="btn-main btn-save" onclick="saveToLocal()">GUARDAR EN MEMORIA (SALIDA)</button>
+        <button class="btn-main btn-save" onclick="saveToLocal()">GUARDAR FOTOS DE ENTREGA</button>
         <button class="btn-main btn-blue" onclick="genPDFComp()">DESCARGAR REPORTE COMPARATIVO</button>
     </div>
 
-    <div id="mecanica" class="content active">
-        <p style="text-align:center; color:#888; font-size:12px;">Complete los datos en la pestaña Entrega para habilitar comparación.</p>
-    </div>
-
-    <div id="danos" class="content">
-        <p style="text-align:center; color:#888; font-size:12px;">Use esta pestaña solo para fotos de daños específicos adicionales.</p>
+    <div id="mecanica" class="content">
+        <p style="text-align:center; color:#888;">Complete la auditoría visual en la pestaña principal.</p>
     </div>
 </div>
 
 <script>
     let sigCliente;
     let localData = {};
+    const listaPaneles = [
+        "Capot", "Parrilla", "Guardabarro Delantero L/C", "Guardabarro Delantero Izquierdo",
+        "Puerta Conductor", "Puerta Trasera L/C", "Guardabarro Trasero L/C", "Baul",
+        "Paragolpe Trasero", "Guardabarro Trasero L/A", "Puerta Trasera L/A", "Puerta Acompañante",
+        "Guardabarro Delantero L/A", "Rueda C/D", "Rueda C/T", "Rueda A/D", "Rueda A/T",
+        "Techo", "Parabrisas", "Motor", "Interior", "Asientos Delanteros", "Asientos Traseros", "Rueda Auxilio"
+    ];
 
     window.onload = () => {
         const canvas = document.getElementById('sig-cliente');
         sigCliente = new SignaturePad(canvas);
+        renderPaneles();
+        window.addEventListener('resize', () => resizeCanvas(canvas));
         resizeCanvas(canvas);
     };
 
@@ -144,17 +114,34 @@
         document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(tab).classList.add('active');
-        if(tab === 'mecanica') document.getElementById('t1').classList.add('active');
-        if(tab === 'danos') document.getElementById('t2').classList.add('active');
         if(tab === 'entrega') document.getElementById('t3').classList.add('active');
+        if(tab === 'mecanica') document.getElementById('t1').classList.add('active');
     }
 
-    // LÓGICA DE COMPARACIÓN Y MEMORIA
-    function processPanel(input, side) {
+    function renderPaneles() {
+        const grid = document.getElementById('grid-paneles');
+        listaPaneles.forEach((nombre, index) => {
+            const idSafe = `p${index}`;
+            const div = document.createElement('div');
+            div.className = 'panel-card';
+            div.innerHTML = `
+                <span class="panel-label">${nombre.toUpperCase()}</span>
+                <input type="file" accept="image/*" capture="camera" onchange="processPanel(this, '${idSafe}')" style="font-size:10px; padding:5px;">
+                <div class="thumb-container">
+                    <img id="prev_${idSafe}_old" class="thumb" title="Entrega">
+                    <img id="prev_${idSafe}_new" class="thumb" title="Devolución">
+                </div>
+            `;
+            grid.appendChild(div);
+        });
+    }
+
+    function processPanel(input, idSafe) {
         const reader = new FileReader();
         reader.onload = (e) => {
-            const isNew = document.getElementById(`prev_${side}_old`).style.display === 'block';
-            const targetId = isNew ? `prev_${side}_new` : `prev_${side}_old`;
+            const oldImg = document.getElementById(`prev_${idSafe}_old`);
+            const isDevolucion = oldImg.style.display === 'block' && oldImg.src !== "";
+            const targetId = isDevolucion ? `prev_${idSafe}_new` : `prev_${idSafe}_old`;
             const img = document.getElementById(targetId);
             img.src = e.target.result;
             img.style.display = 'block';
@@ -168,65 +155,73 @@
         const msg = document.getElementById('status-msg');
         const saved = localStorage.getItem('maximo_' + pat);
         
-        // Limpiar miniaturas actuales
         document.querySelectorAll('.thumb').forEach(img => { img.src = ''; img.style.display = 'none'; });
+        localData = {};
 
         if (saved) {
             const data = JSON.parse(saved);
-            msg.innerText = "✓ SE ENCONTRÓ REGISTRO DE ENTREGA";
-            ['front', 'back', 'left', 'right'].forEach(side => {
-                if(data[`prev_${side}_old`]) {
-                    const img = document.getElementById(`prev_${side}_old`);
-                    img.src = data[`prev_${side}_old`];
+            msg.innerText = "✓ ENTREGA REGISTRADA - MODO DEVOLUCIÓN";
+            localData = data;
+            listaPaneles.forEach((_, index) => {
+                const idSafe = `p${index}`;
+                if(data[`prev_${idSafe}_old`]) {
+                    const img = document.getElementById(`prev_${idSafe}_old`);
+                    img.src = data[`prev_${idSafe}_old`];
                     img.style.display = 'block';
                 }
             });
         } else {
-            msg.innerText = "REGISTRO NUEVO (SALIDA)";
+            msg.innerText = "NUEVA UNIDAD - MODO ENTREGA";
         }
     }
 
     function saveToLocal() {
         const pat = document.getElementById('pat_comp').value.toUpperCase();
-        if(!pat) return alert("Ingrese patente");
+        if(!pat) return alert("Ingrese la patente primero");
         localStorage.setItem('maximo_' + pat, JSON.stringify(localData));
-        alert("Datos de ENTREGA guardados en el dispositivo.");
+        alert("Fotos de Entrega guardadas correctamente para la patente " + pat);
     }
 
-    function clearSig() { sigCliente.clear(); }
-
-    function genPDFComp() {
+    async function genPDFComp() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-        const pat = document.getElementById('pat_comp').value.toUpperCase() || "S-D";
+        const pat = document.getElementById('pat_comp').value.toUpperCase() || "SIN-PATENTE";
 
-        // ENCABEZADO PRO
         doc.setFillColor(26, 26, 26); doc.rect(0, 0, 210, 40, 'F');
         doc.setTextColor(255); doc.setFontSize(20); doc.text("MAXIMO RENT A CAR", 20, 20);
-        doc.setFontSize(10); doc.text("INFORME COMPARATIVO DE ESTADO", 20, 30);
+        doc.setFontSize(10); doc.text("REPORTE DE ESTADO COMPARATIVO DE UNIDAD", 20, 30);
         
         doc.setTextColor(0);
         doc.text(`Patente: ${pat}`, 20, 50);
-        doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 150, 50);
+        doc.text(`Empleado: ${document.getElementById('emp_comp').value}`, 20, 56);
+        doc.text(`Fecha Reporte: ${new Date().toLocaleDateString()}`, 140, 50);
 
-        let y = 65;
-        ['front', 'back', 'left', 'right'].forEach((side, i) => {
-            const oldImg = document.getElementById(`prev_${side}_old`);
-            const newImg = document.getElementById(`prev_${side}_new`);
+        let y = 70;
+        listaPaneles.forEach((nombre, index) => {
+            const idSafe = `p${index}`;
+            const oldImg = document.getElementById(`prev_${idSafe}_old`);
+            const newImg = document.getElementById(`prev_${idSafe}_new`);
             
-            if(oldImg.src || newImg.src) {
-                doc.setFontSize(9); doc.text(`PANEL: ${side.toUpperCase()}`, 20, y);
-                if(oldImg.src.startsWith('data')) doc.addImage(oldImg.src, 'JPEG', 20, y+5, 80, 50);
-                if(newImg.src.startsWith('data')) doc.addImage(newImg.src, 'JPEG', 110, y+5, 80, 50);
-                doc.setFontSize(7); doc.text("ENTREGA", 20, y+58); doc.text("DEVOLUCIÓN", 110, y+58);
+            if((oldImg.style.display === 'block') || (newImg.style.display === 'block')) {
+                if(y > 230) { doc.addPage(); y = 20; }
+                doc.setFont("helvetica", "bold"); doc.text(`PANEL: ${nombre.toUpperCase()}`, 20, y);
+                
+                if(oldImg.src.startsWith('data')) {
+                    doc.addImage(oldImg.src, 'JPEG', 20, y+5, 80, 50);
+                    doc.setFont("helvetica", "normal"); doc.setFontSize(7); doc.text("ESTADO ENTREGA", 20, y+58);
+                }
+                if(newImg.src.startsWith('data')) {
+                    doc.addImage(newImg.src, 'JPEG', 110, y+5, 80, 50);
+                    doc.setFont("helvetica", "normal"); doc.setFontSize(7); doc.text("ESTADO DEVOLUCION", 110, y+58);
+                }
                 y += 70;
-                if(y > 240) { doc.addPage(); y = 20; }
             }
         });
 
         if(!sigCliente.isEmpty()) {
-            doc.text("FIRMA DE CONFORMIDAD DEL CLIENTE:", 20, y+10);
-            doc.addImage(sigCliente.toDataURL(), 'PNG', 20, y+15, 60, 25);
+            if(y > 250) doc.addPage();
+            doc.setFontSize(10); doc.text("FIRMA DE CONFORMIDAD DEL CLIENTE:", 20, 260);
+            doc.addImage(sigCliente.toDataURL(), 'PNG', 20, 265, 50, 20);
         }
 
         doc.save(`Estado_${pat}.pdf`);
