@@ -4,96 +4,162 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Maximo Check</title>
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    
     <link rel="apple-touch-icon" href="logo.png">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
     <style>
         :root { --primary: #1a1a1a; --accent: #0056b3; --bg: #f4f7f6; }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 15px; }
-        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        header { text-align: center; border-bottom: 2px solid var(--accent); margin-bottom: 20px; padding-bottom: 10px; }
-        .section { background: #eee; padding: 8px; font-weight: bold; margin: 15px 0 10px; border-radius: 4px; font-size: 0.9em; }
-        label { display: block; margin: 10px 0 5px; font-weight: 600; font-size: 0.9em; }
-        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; box-sizing: border-box; }
-        button { width: 100%; background: var(--accent); color: white; border: none; padding: 16px; border-radius: 10px; font-weight: bold; font-size: 1.1em; margin-top: 20px; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 15px; padding-bottom: 50px; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        header { text-align: center; border-bottom: 3px solid var(--accent); margin-bottom: 20px; padding-bottom: 10px; }
+        .section { background: var(--primary); color: white; padding: 8px 15px; font-weight: bold; margin: 20px 0 10px; border-radius: 6px; font-size: 0.85em; text-transform: uppercase; }
+        label { display: block; margin: 12px 0 5px; font-weight: 600; font-size: 0.9em; color: #333; }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; box-sizing: border-box; background: #fff; }
+        button { width: 100%; background: var(--accent); color: white; border: none; padding: 18px; border-radius: 12px; font-weight: bold; font-size: 1.1em; margin-top: 25px; cursor: pointer; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <h2 style="margin:0">Maximo Rent A Car</h2>
-        <small>CONTROL DE UNIDADES</small>
+        <h2 style="margin:0; color: var(--primary);">Maximo Rent A Car</h2>
+        <small style="color: #666; letter-spacing: 1px;">SISTEMA DE INSPECCIÓN</small>
     </header>
 
-    <div class="section">DATOS DE LA UNIDAD</div>
+    <div class="section">1. Datos de la Unidad</div>
     <label>Vehículo / Patente</label>
-    <input type="text" id="auto" placeholder="Ej: Cronos AE123CC">
-    <label>Kilometraje</label>
-    <input type="number" id="km" placeholder="KM actuales">
+    <input type="text" id="auto" placeholder="Ej: Fiat Cronos - AE123CC">
+    <label>Kilometraje Actual</label>
+    <input type="number" id="km" placeholder="Ingrese KM">
 
-    <div class="section">ESTADO TÉCNICO</div>
-    <label>Nivel de Aceite</label>
-    <select id="aceite"><option>OK</option><option>Bajo</option></select>
-    <label>Agua / Refrigerante</label>
-    <select id="agua"><option>OK</option><option>Bajo</option></select>
-    <label>Luces y Giros</label>
-    <select id="luces"><option>Funcionan</option><option>Falla</option></select>
-    <label>Presión Neumáticos</label>
-    <select id="ruedas"><option>OK</option><option>Baja</option></select>
-    
-    <label>Observaciones</label>
-    <textarea id="obs" rows="3"></textarea>
+    <div class="section">2. Estado de Fluidos</div>
+    <div class="grid">
+        <div>
+            <label>Aceite Motor</label>
+            <select id="aceite"><option>OK</option><option>BAJO</option><option>REQUIERE CAMBIO</option></select>
+        </div>
+        <div>
+            <label>Refrigerante</label>
+            <select id="agua"><option>OK</option><option>BAJO</option></select>
+        </div>
+    </div>
+    <div class="grid">
+        <div>
+            <label>Líq. Frenos</label>
+            <select id="frenos"><option>OK</option><option>BAJO</option></select>
+        </div>
+        <div>
+            <label>Líq. Hidráulico</label>
+            <select id="hidraulico"><option>OK</option><option>BAJO</option><option>N/A</option></select>
+        </div>
+    </div>
 
-    <button onclick="generarPDF()">GENERAR REPORTE PDF</button>
+    <div class="section">3. Seguridad y Eléctrica</div>
+    <div class="grid">
+        <div>
+            <label>Luces y Giros</label>
+            <select id="luces"><option>FUNCIONAN</option><option>FALLA</option></select>
+        </div>
+        <div>
+            <label>Presión Neumát.</label>
+            <select id="ruedas"><option>OK</option><option>REVISAR</option></select>
+        </div>
+    </div>
+    <div class="grid">
+        <div>
+            <label>Vto. Extintor</label>
+            <input type="text" id="extintor" placeholder="Mes/Año">
+        </div>
+        <div>
+            <label>Agua Zorrino</label>
+            <select id="zorrino"><option>OK</option><option>VACÍO</option></select>
+        </div>
+    </div>
+
+    <div class="section">4. Comentarios</div>
+    <textarea id="obs" rows="3" placeholder="Daños detectados, faltantes, etc."></textarea>
+
+    <button onclick="generarPDF()">GENERAR REPORTE PROFESIONAL</button>
 </div>
 
 <script>
-    async function generarPDF() {
+    function generarPDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
         
-        // Cabecera
-        doc.setFillColor(26, 26, 26);
-        doc.rect(0, 0, 210, 30, 'F');
+        // Estética del PDF
+        doc.setFillColor(30, 30, 30);
+        doc.rect(0, 0, 210, 35, 'F');
         doc.setTextColor(255, 255, 255);
-        doc.setFontSize(18);
-        doc.text("MAXIMO RENT A CAR", 20, 20);
+        doc.setFontSize(22);
+        doc.setFont("helvetica", "bold");
+        doc.text("MAXIMO RENT A CAR", 20, 22);
+        doc.setFontSize(10);
+        doc.text("REPORTE DE ESTADO DE UNIDAD", 20, 28);
         
-        // Contenido
-        doc.setTextColor(0, 0, 0);
-        doc.setFontSize(12);
-        let y = 45;
+        doc.setTextColor(0);
+        let y = 50;
         
-        const imprimir = (t, v) => {
+        const fila = (titulo, valor) => {
             doc.setFont("helvetica", "bold");
-            doc.text(t, 20, y);
+            doc.setFontSize(10);
+            doc.setTextColor(100);
+            doc.text(titulo, 20, y);
             doc.setFont("helvetica", "normal");
-            doc.text(String(v), 80, y);
-            y += 12;
+            doc.setTextColor(0);
+            doc.text(String(valor || "---"), 80, y);
+            doc.setDrawColor(220);
+            doc.line(20, y + 2, 190, y + 2);
+            y += 11;
         };
 
-        imprimir("FECHA:", new Date().toLocaleDateString());
-        imprimir("UNIDAD:", document.getElementById('auto').value);
-        imprimir("KM:", document.getElementById('km').value);
-        imprimir("ACEITE:", document.getElementById('aceite').value);
-        imprimir("REFRIGERANTE:", document.getElementById('agua').value);
-        imprimir("LUCES:", document.getElementById('luces').value);
-        imprimir("NEUMATICOS:", document.getElementById('ruedas').value);
-        
+        // Sección 1
         doc.setFont("helvetica", "bold");
-        doc.text("OBSERVACIONES:", 20, y);
+        doc.setTextColor(0, 86, 179);
+        doc.text("1. DATOS GENERALES", 20, y);
+        y += 8;
+        fila("FECHA:", new Date().toLocaleDateString());
+        fila("VEHÍCULO / PATENTE:", document.getElementById('auto').value.toUpperCase());
+        fila("KILOMETRAJE:", document.getElementById('km').value + " KM");
+        y += 5;
+
+        // Sección 2
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(0, 86, 179);
+        doc.text("2. FLUIDOS Y MECÁNICA", 20, y);
+        y += 8;
+        fila("ACEITE MOTOR:", document.getElementById('aceite').value);
+        fila("REFRIGERANTE:", document.getElementById('agua').value);
+        fila("LÍQUIDO DE FRENOS:", document.getElementById('frenos').value);
+        fila("LÍQ. HIDRÁULICO:", document.getElementById('hidraulico').value);
+        y += 5;
+
+        // Sección 3
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(0, 86, 179);
+        doc.text("3. SEGURIDAD", 20, y);
+        y += 8;
+        fila("SISTEMA DE LUCES:", document.getElementById('luces').value);
+        fila("NEUMÁTICOS:", document.getElementById('ruedas').value);
+        fila("EXTINTOR VTO:", document.getElementById('extintor').value);
+        fila("AGUA ZORRINO:", document.getElementById('zorrino').value);
+        y += 10;
+
+        // Observaciones
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(0);
+        doc.text("OBSERVACIONES Y DAÑOS:", 20, y);
+        y += 7;
         doc.setFont("helvetica", "normal");
-        doc.text(document.getElementById('obs').value || "Sin observaciones", 20, y + 8);
+        const obs = document.getElementById('obs').value || "Sin observaciones adicionales.";
+        const lineas = doc.splitTextToSize(obs, 170);
+        doc.text(lineas, 20, y);
 
         // Guardar
-        const name = "Check_" + (document.getElementById('auto').value || "unidad") + ".pdf";
-        doc.save(name);
+        const idUnidad = document.getElementById('auto').value || "Check";
+        doc.save(`Checklist_Maximo_${idUnidad}.pdf`);
     }
 </script>
 
