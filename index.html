@@ -3,35 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Maximo Rent A Car - Sistema Pro</title>
+    <title>Maximo Check Pro</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
     <style>
         :root { --primary: #1a1a1a; --accent: #0056b3; --bg: #f4f7f6; }
-        body { font-family: -apple-system, sans-serif; background: #e9ecef; margin: 0; padding: 10px; }
-        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.15); }
-        header { text-align: center; border-bottom: 4px solid var(--accent); padding-bottom: 15px; margin-bottom: 20px; }
+        body { font-family: -apple-system, sans-serif; background: #e9ecef; margin: 0; padding: 10px; -webkit-tap-highlight-color: transparent; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+        header { text-align: center; border-bottom: 3px solid var(--accent); padding-bottom: 10px; margin-bottom: 15px; }
         
-        .tabs { display: flex; gap: 10px; margin-bottom: 25px; }
-        .tab-btn { flex: 1; padding: 15px; border: 2px solid #ddd; border-radius: 10px; cursor: pointer; font-weight: bold; background: #f8f9fa; color: #555; }
+        /* Pestañas */
+        .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+        .tab-btn { flex: 1; padding: 15px 5px; border: 2px solid #ddd; border-radius: 10px; cursor: pointer; font-weight: bold; background: #f8f9fa; color: #555; font-size: 14px; }
         .tab-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
-
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        .section { background: var(--primary); color: white; padding: 10px; font-weight: bold; margin: 20px 0 10px; border-radius: 5px; font-size: 0.8em; text-transform: uppercase; }
-        label { display: block; margin: 15px 0 5px; font-weight: bold; color: #333; }
-        input, select, textarea { width: 100%; padding: 15px; border: 2px solid #ced4da; border-radius: 10px; font-size: 16px; box-sizing: border-box; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .section { background: var(--primary); color: white; padding: 10px; font-weight: bold; margin: 20px 0 10px; border-radius: 6px; font-size: 12px; text-transform: uppercase; }
+        label { display: block; margin: 12px 0 5px; font-weight: bold; color: #333; font-size: 14px; }
+        input, select, textarea { width: 100%; padding: 12px; border: 2px solid #ced4da; border-radius: 8px; font-size: 16px; box-sizing: border-box; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
-        .sig-box { border: 2px dashed #adb5bd; background: #f1f3f5; border-radius: 10px; margin-top: 10px; overflow: hidden; }
-        #signature-pad { width: 100%; height: 200px; touch-action: none; }
+        /* Área de Firma */
+        .sig-wrapper { border: 2px dashed #adb5bd; background: #f8f9fa; border-radius: 10px; margin-top: 10px; position: relative; width: 100%; height: 200px; }
+        #signature-pad { width: 100%; height: 100%; touch-action: none; background: transparent; }
         
-        .btn-pdf { width: 100%; background: #28a745; color: white; border: none; padding: 20px; border-radius: 12px; font-weight: bold; font-size: 1.1em; margin-top: 30px; cursor: pointer; }
+        .btn-pdf { width: 100%; background: #28a745; color: white; border: none; padding: 18px; border-radius: 12px; font-weight: bold; font-size: 16px; margin-top: 25px; }
         .btn-danos { background: #fd7e14; }
-
-        .photo-entry { border: 2px solid #dee2e6; padding: 15px; border-radius: 12px; margin-bottom: 20px; background: #fff; }
-        .preview-img { width: 100%; border-radius: 8px; margin: 10px 0; display: none; }
+        .photo-entry { border: 2px solid #dee2e6; padding: 12px; border-radius: 10px; margin-bottom: 15px; background: #fff; }
+        .preview-img { width: 100%; border-radius: 6px; margin-top: 10px; display: none; }
     </style>
 </head>
 <body>
@@ -39,71 +39,169 @@
 <div class="container">
     <header>
         <h2 style="margin:0">MAXIMO <span style="color:var(--accent)">RENT A CAR</span></h2>
-        <p style="margin:5px 0 0; font-size: 0.8em; color: #666;">CONTROL PROFESIONAL DE UNIDADES</p>
     </header>
 
     <div class="tabs">
-        <button class="tab-btn active" onclick="openTab(event, 'mecanica')">INSPECCIÓN</button>
-        <button class="tab-btn" onclick="openTab(event, 'danos')">DAÑOS</button>
+        <button id="btn-m" class="tab-btn active" onclick="showTab('mecanica')">INSPECCIÓN</button>
+        <button id="btn-d" class="tab-btn" onclick="showTab('danos')">DAÑOS / FOTOS</button>
     </div>
 
     <div id="mecanica" class="tab-content active">
         <label>Empleado Encargado</label>
-        <input type="text" id="emp_m" placeholder="Nombre completo" oninput="sync(this.value)">
+        <input type="text" id="emp_m" placeholder="Tu nombre" oninput="document.getElementById('emp_d').value = this.value">
         
         <div class="grid">
-            <div><label>Patente</label><input type="text" id="pat_m" placeholder="AE123CC"></div>
+            <div><label>Patente</label><input type="text" id="pat_m" placeholder="ABC-123"></div>
             <div><label>KM</label><input type="number" id="km_m"></div>
         </div>
 
-        <div class="section">Chequeo de Fluidos</div>
+        <div class="section">Revisión Mecánica</div>
         <div class="grid">
             <div><label>Aceite</label><select id="aceite"><option>OK</option><option>BAJO</option></select></div>
-            <div><label>Agua</label><select id="agua"><option>OK</option><option>BAJO</option></select></div>
+            <div><label>Agua/Refrig.</label><select id="agua"><option>OK</option><option>BAJO</option></select></div>
         </div>
         <div class="grid">
-            <div><label>Frenos</label><select id="frenos"><option>OK</option><option>BAJO</option></select></div>
-            <div><label>Hidráulico</label><select id="hidraulico"><option>OK</option><option>BAJO</option></select></div>
+            <div><label>Líq. Frenos</label><select id="frenos"><option>OK</option><option>BAJO</option></select></div>
+            <div><label>Líq. Hidráulico</label><select id="hidraulico"><option>OK</option><option>BAJO</option><option>N/A</option></select></div>
         </div>
 
-        <div class="section">Seguridad y Luces</div>
+        <div class="section">Seguridad</div>
         <div class="grid">
-            <div><label>Luces</label><select id="luces"><option>OK</option><option>FALLA</option></select></div>
-            <div><label>Neumáticos</label><select id="ruedas"><option>OK</option><option>REVISAR</option></select></div>
+            <div><label>Luces/Giros</label><select id="luces"><option>OK</option><option>FALLA</option></select></div>
+            <div><label>Neumáticos</label><select id="ruedas"><option>OK</option><option>BAJO</option></select></div>
         </div>
         <div class="grid">
-            <div><label>Extintor</label><input type="text" id="ext_m" placeholder="Vencimiento"></div>
-            <div><label>Zorrino</label><select id="zorrino"><option>OK</option><option>VACÍO</option></select></div>
+            <div><label>Extintor Vto.</label><input type="text" id="ext_m" placeholder="MM/AA"></div>
+            <div><label>Agua Zorrino</label><select id="zorrino"><option>OK</option><option>VACÍO</option></select></div>
         </div>
 
         <label>Observaciones</label>
-        <textarea id="obs_m" rows="3"></textarea>
+        <textarea id="obs_m" rows="2"></textarea>
 
-        <div class="section">Firma del Encargado</div>
-        <div class="sig-box"><canvas id="signature-pad"></canvas></div>
-        <button onclick="signaturePad.clear()" style="margin-top:10px; width: 100%; padding: 10px;">Limpiar Firma</button>
+        <div class="section">Firma Digital</div>
+        <div class="sig-wrapper"><canvas id="signature-pad"></canvas></div>
+        <button onclick="pad.clear()" style="margin-top:8px; width:100%; padding:8px; border-radius:5px">Borrar Firma</button>
 
-        <button class="btn-pdf" onclick="pdfMecanico()">GENERAR REPORTE TÉCNICO</button>
+        <button class="btn-pdf" onclick="saveMecanico()">DESCARGAR REPORTE TÉCNICO</button>
     </div>
 
     <div id="danos" class="tab-content">
         <label>Empleado</label>
         <input type="text" id="emp_d" readonly>
-        
         <label>Patente del Vehículo</label>
-        <input type="text" id="pat_d" placeholder="Patente para reporte">
+        <input type="text" id="pat_d" placeholder="Patente">
 
-        <div id="lista-fotos"></div>
+        <div id="contenedor-fotos"></div>
         
-        <button onclick="addFoto()" style="width:100%; padding:15px; margin-top:15px; background:#6c757d; color:white; border:none; border-radius:10px; font-weight:bold">+ AGREGAR OTRA FOTO</button>
-        
-        <button class="btn-pdf btn-danos" onclick="pdfDanos()">GENERAR REPORTE DE DAÑOS</button>
+        <button onclick="nuevaFoto()" style="width:100%; padding:15px; margin-top:15px; background:#6c757d; color:white; border:none; border-radius:10px; font-weight:bold">+ AGREGAR OTRA FOTO</button>
+        <button class="btn-pdf btn-danos" onclick="saveDanos()">DESCARGAR REPORTE DE DAÑOS</button>
     </div>
 </div>
 
 <script>
-    let signaturePad;
-    let fCount = 0;
+    let pad;
+    let fotoIndex = 0;
 
+    // Inicialización al cargar
     window.onload = () => {
-        const canvas = document.getElementById
+        initPad();
+        nuevaFoto(); // Agrega la primera foto por defecto
+    };
+
+    function initPad() {
+        const canvas = document.getElementById('signature-pad');
+        pad = new SignaturePad(canvas);
+        const resize = () => {
+            const ratio = Math.max(window.devicePixelRatio || 1, 1);
+            canvas.width = canvas.offsetWidth * ratio;
+            canvas.height = canvas.offsetHeight * ratio;
+            canvas.getContext("2d").scale(ratio, ratio);
+            pad.clear();
+        };
+        window.onresize = resize;
+        resize();
+    }
+
+    function showTab(name) {
+        document.getElementById('mecanica').style.display = (name === 'mecanica') ? 'block' : 'none';
+        document.getElementById('danos').style.display = (name === 'danos') ? 'block' : 'none';
+        document.getElementById('btn-m').classList.toggle('active', name === 'mecanica');
+        document.getElementById('btn-d').classList.toggle('active', name === 'danos');
+        if(name === 'mecanica') initPad();
+    }
+
+    function nuevaFoto() {
+        fotoIndex++;
+        const div = document.createElement('div');
+        div.className = 'photo-entry';
+        div.innerHTML = `
+            <label>Evidencia #${fotoIndex}</label>
+            <input type="file" accept="image/*" capture="camera" onchange="preview(this, 'img${fotoIndex}')">
+            <img id="img${fotoIndex}" class="preview-img">
+            <textarea id="txt${fotoIndex}" placeholder="Descripción del daño..." style="margin-top:10px"></textarea>`;
+        document.getElementById('contenedor-fotos').appendChild(div);
+    }
+
+    function preview(input, id) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = (e) => { 
+                const img = document.getElementById(id);
+                img.src = e.target.result;
+                img.style.display = 'block';
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function saveMecanico() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        doc.setFontSize(20); doc.text("MAXIMO RENT A CAR - CHECK", 20, 20);
+        
+        let y = 40;
+        const line = (l, v) => { doc.text(`${l}: ${v}`, 20, y); y += 10; };
+        
+        line("EMPLEADO", document.getElementById('emp_m').value);
+        line("PATENTE", document.getElementById('pat_m').value);
+        line("KM", document.getElementById('km_m').value);
+        line("ACEITE", document.getElementById('aceite').value);
+        line("AGUA", document.getElementById('agua').value);
+        line("FRENOS", document.getElementById('frenos').value);
+        line("HIDRÁULICO", document.getElementById('hidraulico').value);
+        line("LUCES", document.getElementById('luces').value);
+        line("NEUMÁTICOS", document.getElementById('ruedas').value);
+        line("EXTINTOR", document.getElementById('ext_m').value);
+        line("ZORRINO", document.getElementById('zorrino').value);
+        
+        doc.text("OBSERVACIONES:", 20, y + 5);
+        doc.text(doc.splitTextToSize(document.getElementById('obs_m').value || "-", 170), 20, y + 15);
+
+        if (!pad.isEmpty()) {
+            doc.text("FIRMA:", 20, 240);
+            doc.addImage(pad.toDataURL(), 'PNG', 20, 245, 50, 25);
+        }
+        doc.save(`Check_${document.getElementById('pat_m').value}.pdf`);
+    }
+
+    async function saveDanos() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        doc.text("REPORTE DE DAÑOS - MAXIMO", 20, 20);
+        doc.text(`Patente: ${document.getElementById('pat_d').value}`, 20, 30);
+        
+        let y = 45;
+        for (let i = 1; i <= fotoIndex; i++) {
+            const img = document.getElementById(`img${i}`);
+            if (img && img.src.startsWith('data')) {
+                if (y > 220) { doc.addPage(); y = 20; }
+                doc.addImage(img.src, 'JPEG', 20, y, 80, 60);
+                doc.text(document.getElementById(`txt${i}`).value || "S/D", 110, y + 10);
+                y += 70;
+            }
+        }
+        doc.save(`Danos_${document.getElementById('pat_d').value}.pdf`);
+    }
+</script>
+</body>
+</html>
