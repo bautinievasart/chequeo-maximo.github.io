@@ -15,7 +15,6 @@
         body { font-family: -apple-system, sans-serif; background: #d1d8e0; margin: 0; padding: 10px; }
         .container { max-width: 500px; margin: auto; background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         
-        /* ESTILO PARA EL LOGO */
         header { background: var(--main); color: white; padding: 15px; text-align: center; border-bottom: 5px solid var(--blue); }
         .logo-img { max-width: 120px; height: auto; margin-bottom: 10px; display: block; margin-left: auto; margin-right: auto; }
         
@@ -152,12 +151,14 @@
     }
 
     function readImg(input, id) {
-        const reader = new FileReader();
-        reader.onload = (e) => { 
-            const img = document.getElementById(id);
-            img.src = e.target.result; img.style.display = 'block'; 
-        };
-        reader.readAsDataURL(input.files[0]);
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = (e) => { 
+                const img = document.getElementById(id);
+                img.src = e.target.result; img.style.display = 'block'; 
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
     }
 
     function generarCheck() {
@@ -165,7 +166,6 @@
         const doc = new jsPDF();
         const p = (document.getElementById('pat1').value || "S/D").toUpperCase();
         
-        // DISEÑO PDF PRO
         doc.setFillColor(26, 26, 26); doc.rect(0, 0, 210, 45, 'F');
         doc.setTextColor(255); doc.setFontSize(24); doc.text("MAXIMO RENT A CAR", 20, 25);
         doc.setFontSize(10); doc.text("REPORTE TÉCNICO DE AUDITORÍA DE UNIDAD", 20, 35);
@@ -201,7 +201,7 @@
             doc.addImage(signaturePad.toDataURL(), 'PNG', 20, 255, 50, 20);
             doc.line(20, 275, 70, 275);
         }
-        doc.save(Check_${p}.pdf);
+        doc.save(`Check_${p}.pdf`);
     }
 
     async function generarDanos() {
@@ -213,24 +213,24 @@
         doc.setTextColor(255); doc.setFontSize(24); doc.text("REPORTE DE DAÑOS", 20, 25);
         doc.setFontSize(10); doc.text("INFORME VISUAL DE CARROCERÍA Y FALTANTES", 20, 35);
         
-        doc.setTextColor(0); doc.text(Vehículo Dominio: ${p}, 20, 55);
-        doc.text(Fecha: ${new Date().toLocaleDateString()}, 150, 55);
+        doc.setTextColor(0); doc.text(`Vehículo Dominio: ${p}`, 20, 55);
+        doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 150, 55);
         
         let y = 70;
         for(let i=1; i<=fotoCount; i++) {
-            const img = document.getElementById(p${i});
+            const img = document.getElementById(`p${i}`);
             if(img && img.src.startsWith('data')) {
                 if(y > 210) { doc.addPage(); y = 30; }
                 doc.setDrawColor(230, 126, 34); doc.setLineWidth(0.5);
                 doc.rect(19, y - 5, 172, 85);
                 doc.addImage(img.src, 'JPEG', 25, y, 95, 75);
-                doc.setFont("helvetica", "bold"); doc.text(EVIDENCIA #${i}, 130, y + 10);
+                doc.setFont("helvetica", "bold"); doc.text(`EVIDENCIA #${i}`, 130, y + 10);
                 doc.setFont("helvetica", "normal");
-                doc.text(doc.splitTextToSize(document.getElementById(t${i}).value || "Sin descripción.", 55), 130, y + 20);
+                doc.text(doc.splitTextToSize(document.getElementById(`t${i}`).value || "Sin descripción.", 55), 130, y + 20);
                 y += 95;
             }
         }
-        doc.save(Danos_${p}.pdf);
+        doc.save(`Danos_${p}.pdf`);
     }
 </script>
 </body>
