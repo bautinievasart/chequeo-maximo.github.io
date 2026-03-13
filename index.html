@@ -92,6 +92,8 @@
         <div class="sig-container"><canvas id="signature-pad"></canvas></div>
         <button onclick="signaturePad.clear()" style="width:100%; margin-top:10px; padding:10px; border-radius:10px;">BORRAR FIRMA</button>
         <button class="btn-main btn-check" onclick="generarCheck()">DESCARGAR REPORTE TÉCNICO</button>
+        <button class="btn-main" style="background:#25D366; margin-top:10px;" onclick="enviarWhatsApp()">
+    REPORTE POR WHATSAPP 📱</button>
     </div>
 
     <div id="danos" class="content">
@@ -100,6 +102,8 @@
         <div id="lista-fotos" style="margin-top:20px;"></div>
         <button onclick="nuevaFoto('lista-fotos')" style="width:100%; padding:15px; background:#666; color:white; border:none; border-radius:12px; font-weight:bold;">+ AGREGAR FOTO DE DAÑO</button>
         <button class="btn-main btn-danos" onclick="generarDanos()">DESCARGAR REPORTE DE DAÑOS</button>
+        <button class="btn-main" style="background:#25D366; margin-top:10px;" onclick="enviarWhatsApp()">
+    REPORTE POR WHATSAPP 📱</button>
     </div>
 
     <div id="entregas" class="content">
@@ -133,9 +137,7 @@
     REPORTE POR WHATSAPP 📱</button>
 
 
-     <button class="btn-main btn-danos" onclick="generarDanos()">DESCARGAR REPORTE DE DAÑOS</button><button class="btn-main" style="background:#25D366; margin-top:10px;" onclick="enviarWhatsApp()">
-    REPORTE POR WHATSAPP 📱</button>
-
+     
         
 
 
@@ -421,6 +423,7 @@
 </script>
 </body>
 </html>
+
 
 
 
