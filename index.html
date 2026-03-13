@@ -435,6 +435,46 @@ padding:18px;
 header h1{
 font-size:18px;
 }
+    margin-top:30px;
+margin-bottom:12px;
+
+font-size:13px;
+font-weight:700;
+
+color:var(--blue);
+
+}
+
+/* crea tarjeta visual alrededor de cada bloque */
+
+.section-title + *{
+
+background:white;
+
+padding:18px;
+
+border-radius:16px;
+
+box-shadow:
+0 8px 18px rgba(0,0,0,.06);
+
+border:1px solid #eef2f7;
+
+margin-bottom:18px;
+
+}
+
+/* cuando el bloque es un grid */
+
+.section-title + .grid{
+padding:18px;
+}
+
+/* textarea más cómodo */
+
+textarea{
+min-height:70px;
+}
         }
     </style>
 </head>
