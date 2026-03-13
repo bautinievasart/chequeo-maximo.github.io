@@ -588,25 +588,34 @@ canvas {
         doc.setFont("helvetica", "bold"); doc.setFontSize(11);
         doc.text(`SE ADJUNTAN ${fotosEntregas.length} FOTOS DEL ESTADO DE LA UNIDAD EN LAS SIGUIENTES PÁGINAS.`, 20, y);
 
-        // Firma en la primer hoja
         if(!p3.isEmpty()) {
             doc.setFontSize(12); doc.setFont("helvetica", "bold");
             doc.text("FIRMA DE CONFORMIDAD DEL CLIENTE:", 25, 240);
             doc.addImage(p3.toDataURL(), 'PNG', 25, 245, 50, 25);
         }
 
-        // --- PÁGINAS SIGUIENTES: UNA FOTO A4 POR PÁGINA ---
-        fotosEntregas.forEach((foto, i) => {
-            doc.addPage();
-            
-            // Encabezado verde en cada hoja
-            doc.setFillColor("#27ae60"); doc.rect(0, 0, 210, 20, 'F');
-            doc.setTextColor(255); doc.setFontSize(14); doc.setFont("helvetica", "bold");
-            doc.text(`PANEL: ${foto.nombre} (${tipo}) - Patente: ${pat}`, 20, 13);
+        // --- PÁGINAS SIGUIENTES: 2 FOTOS POR PÁGINA ---
+        for (let i = 0; i < fotosEntregas.length; i++) {
+            // Cada 2 fotos creamos una página nueva
+            if (i % 2 === 0) {
+                doc.addPage();
+                doc.setFillColor("#27ae60"); doc.rect(0, 0, 210, 20, 'F');
+                doc.setTextColor(255); doc.setFontSize(12); doc.setFont("helvetica", "bold");
+                doc.text(`REGISTRO FOTOGRÁFICO - PATENTE: ${pat}`, 20, 13);
+            }
 
-            // Imagen ocupando casi toda la A4 (JPEG para compresión)
-            doc.addImage(foto.src, 'JPEG', 10, 25, 190, 250); // Ocupa casi todo el alto (250mm)
-        });
+            let posEnPagina = i % 2; 
+            let yNombre = (posEnPagina === 0) ? 32 : 158; // Posición texto
+            let yImg = (posEnPagina === 0) ? 35 : 161;    // Posición imagen
+
+            // Nombre del Panel
+            doc.setTextColor(40); doc.setFontSize(11);
+            doc.text(`PANEL: ${fotosEntregas[i].nombre}`, 15, yNombre);
+
+            // Imagen con Calidad 0.9 (JPEG)
+            // Dimensiones: 180mm ancho x 115mm alto para que entren dos cómodas
+            doc.addImage(fotosEntregas[i].src, 'JPEG', 15, yImg, 180, 115, undefined, 'MEDIUM', 0, 0.9);
+        }
         
         doc.save(`${tipo}_${pat}.pdf`);
     }
