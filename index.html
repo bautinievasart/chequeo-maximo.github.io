@@ -418,29 +418,50 @@
     function enviarWhatsApp() {
     const tabActiva = document.querySelector('.content.active').id;
     let mensaje = "";
-    let patente = "";
 
     if (tabActiva === 'mecanica') {
-        patente = document.getElementById('pat1').value || "S/D";
-        mensaje = `✅ *REPORTE TÉCNICO - MAXIMO RENT A CAR*\n\n👤 *Empleado:* ${document.getElementById('emp').value}\n🚗 *Patente:* ${patente.toUpperCase()}\n📍 *KM:* ${document.getElementById('km').value}`;
+        const p = (document.getElementById('pat1').value || "S/D").toUpperCase();
+        // Recolectamos todos los campos técnicos
+        mensaje = `✅ *REPORTE TÉCNICO - MAXIMO RENT A CAR*\n\n` +
+                  `👤 *Empleado:* ${document.getElementById('emp').value}\n` +
+                  `🚗 *Patente:* ${p}\n` +
+                  `📅 *Fecha:* ${document.getElementById('fecha1').value}\n` +
+                  `📍 *KM:* ${document.getElementById('km').value}\n` +
+                  `🛢️ *Aceite:* ${document.getElementById('oil').value}\n` +
+                  `💧 *Agua:* ${document.getElementById('wat').value}\n` +
+                  `🛑 *Frenos:* ${document.getElementById('fre').value}\n` +
+                  `💡 *Luces:* ${document.getElementById('luc').value}\n` +
+                  `🛞 *Neumáticos:* ${document.getElementById('neu').value}\n` +
+                  `📝 *Obs:* ${document.getElementById('obs').value || "Sin observaciones"}`;
     } 
     else if (tabActiva === 'danos') {
-        patente = document.getElementById('pat2').value || "S/D";
-        mensaje = `⚠️ *REPORTE DE DAÑOS - MAXIMO RENT A CAR*\n\n🚗 *Vehículo:* ${patente.toUpperCase()}\n📸 Se han registrado nuevos daños.`;
+        const p = (document.getElementById('pat2').value || "S/D").toUpperCase();
+        const res = document.getElementById('reserva_danos')?.value || "S/D";
+        mensaje = `⚠️ *REPORTE DE DAÑOS - MAXIMO RENT A CAR*\n\n` +
+                  `🆔 *Reserva:* ${res}\n` +
+                  `🚗 *Vehículo:* ${p}\n` +
+                  `📅 *Fecha:* ${document.getElementById('fecha2').value}\n` +
+                  `📸 Se han registrado nuevos daños.`;
     } 
     else if (tabActiva === 'entregas') {
-        patente = document.getElementById('pat3').value || "S/D";
+        const p = (document.getElementById('pat3').value || "S/D").toUpperCase();
+        const res = document.getElementById('reserva_mov')?.value || "S/D";
         const tipo = document.getElementById('mov_tipo').value;
-        mensaje = `📦 *MOVIMIENTO (${tipo}) - MAXIMO RENT A CAR*\n\n🚗 *Patente:* ${patente.toUpperCase()}\n⛽ *Combustible:* ${document.getElementById('fuel_mov').value}\n📍 *KM:* ${document.getElementById('km_mov').value}`;
+        mensaje = `📦 *MOVIMIENTO (${tipo}) - MAXIMO RENT A CAR*\n\n` +
+                  `🆔 *Reserva:* ${res}\n` +
+                  `🚗 *Patente:* ${p}\n` +
+                  `📅 *Fecha:* ${document.getElementById('fecha3').value}\n` +
+                  `⛽ *Combustible:* ${document.getElementById('fuel_mov').value}\n` +
+                  `📍 *KM:* ${document.getElementById('km_mov').value}`;
     }
 
-    // Al no poner número, WhatsApp abre la lista de contactos para elegir
     const url = `https://wa.me/?text=${encodeURIComponent(mensaje)}`;
     window.open(url, '_blank');
 }
 </script>
 </body>
 </html>
+
 
 
 
