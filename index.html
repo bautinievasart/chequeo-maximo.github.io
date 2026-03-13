@@ -130,12 +130,12 @@
 
         <button class="btn-main btn-entrega" onclick="generarMovimiento()">DESCARGAR REPORTE MOVIMIENTO</button>
         <button class="btn-main" style="background:#25D366; margin-top:10px;" onclick="enviarWhatsApp()">
-    REPORTE POR WHATSAPP 📱
-</button>
+    REPORTE POR WHATSAPP 📱</button>
+
 
      <button class="btn-main btn-danos" onclick="generarDanos()">DESCARGAR REPORTE DE DAÑOS</button><button class="btn-main" style="background:#25D366; margin-top:10px;" onclick="enviarWhatsApp()">
-    REPORTE POR WHATSAPP 📱
-</button>
+    REPORTE POR WHATSAPP 📱</button>
+
         
 
 
@@ -402,20 +402,25 @@
 
     if (tabActiva === 'mecanica') {
         patente = document.getElementById('pat1').value || "S/D";
-        mensaje = `✅ *REPORTE TÉCNICO*\n*Patente:* ${patente.toUpperCase()}\n*Empleado:* ${document.getElementById('emp').value}`;
-    } else if (tabActiva === 'danos') {
+        mensaje = `✅ *REPORTE TÉCNICO - MAXIMO RENT A CAR*\n\n👤 *Empleado:* ${document.getElementById('emp').value}\n🚗 *Patente:* ${patente.toUpperCase()}\n📍 *KM:* ${document.getElementById('km').value}`;
+    } 
+    else if (tabActiva === 'danos') {
         patente = document.getElementById('pat2').value || "S/D";
-        mensaje = `⚠️ *REPORTE DE DAÑOS*\n*Vehículo:* ${patente.toUpperCase()}`;
-    } else if (tabActiva === 'entregas') {
+        mensaje = `⚠️ *REPORTE DE DAÑOS - MAXIMO RENT A CAR*\n\n🚗 *Vehículo:* ${patente.toUpperCase()}\n📸 Se han registrado nuevos daños.`;
+    } 
+    else if (tabActiva === 'entregas') {
         patente = document.getElementById('pat3').value || "S/D";
-        mensaje = `📦 *MOVIMIENTO*\n*Tipo:* ${document.getElementById('mov_tipo').value}\n*Patente:* ${patente.toUpperCase()}`;
+        const tipo = document.getElementById('mov_tipo').value;
+        mensaje = `📦 *MOVIMIENTO (${tipo}) - MAXIMO RENT A CAR*\n\n🚗 *Patente:* ${patente.toUpperCase()}\n⛽ *Combustible:* ${document.getElementById('fuel_mov').value}\n📍 *KM:* ${document.getElementById('km_mov').value}`;
     }
 
-    const numeroJefe = "5493512345678"; // <--- CAMBIA ESTO POR TU NÚMERO
-    window.open(`https://wa.me/${numeroJefe}?text=${encodeURIComponent(mensaje)}`, '_blank');
+    // Al no poner número, WhatsApp abre la lista de contactos para elegir
+    const url = `https://wa.me/?text=${encodeURIComponent(mensaje)}`;
+    window.open(url, '_blank');
 }
 </script>
 </body>
 </html>
+
 
 
