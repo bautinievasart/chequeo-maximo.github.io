@@ -4,47 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Maximo Rent A Car v3</title>
-    
-    <link rel="icon" type="image/png" href="logo.png">
-    <link rel="apple-touch-icon" href="logo.png">
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
     <style>
         :root { --main: #1a1a1a; --blue: #0056b3; --orange: #e67e22; --green: #27ae60; --gray: #f4f7f6; }
         body { font-family: -apple-system, sans-serif; background: #d1d8e0; margin: 0; padding: 10px; }
         .container { max-width: 500px; margin: auto; background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-        
         header { background: var(--main); color: white; padding: 15px; text-align: center; border-bottom: 5px solid var(--blue); }
         .logo-img { max-width: 120px; height: auto; margin-bottom: 10px; display: block; margin-left: auto; margin-right: auto; }
-        
         .tabs { display: flex; background: #eee; padding: 5px; }
         .tab-btn { flex: 1; padding: 12px 5px; border: none; font-weight: bold; cursor: pointer; background: none; transition: 0.3s; font-size: 11px; border-radius: 10px; }
         .tab-btn.active { background: white; color: var(--blue); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-
         .content { padding: 20px; display: none; }
         .content.active { display: block !important; }
-
         .section-title { background: #f8f9fa; color: var(--blue); padding: 8px; font-weight: bold; border-left: 4px solid var(--blue); margin: 20px 0 10px; font-size: 13px; text-transform: uppercase; }
-        
         label { display: block; margin: 15px 0 5px; font-weight: 700; font-size: 14px; color: #444; }
         input, select, textarea { width: 100%; padding: 14px; border: 2px solid #ddd; border-radius: 12px; font-size: 16px; box-sizing: border-box; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-
         .sig-container { border: 2px dashed #ccc; background: #fafafa; border-radius: 15px; margin-top: 10px; height: 180px; }
         canvas { width: 100%; height: 100%; touch-action: none; }
-        
         .btn-main { width: 100%; padding: 20px; border: none; border-radius: 15px; font-weight: bold; font-size: 16px; color: white; cursor: pointer; margin-top: 20px; }
         .btn-check { background: var(--blue); }
         .btn-danos { background: var(--orange); }
         .btn-entrega { background: var(--green); }
-
-        .card-foto { border: 1px solid #eee; padding: 15px; border-radius: 15px; margin-bottom: 20px; background: #fdfdfd; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .card-foto { border: 1px solid #eee; padding: 15px; border-radius: 15px; margin-bottom: 20px; background: #fdfdfd; }
         .img-prev { width: 100%; border-radius: 10px; margin-top: 10px; display: none; }
-
         #foto-indicador { background: #fff3cd; padding: 10px; border-radius: 10px; text-align: center; border: 1px solid #ffeeba; margin-bottom: 10px; font-weight: bold; color: #856404; }
-        .btn-secuencial { background: #444; color: white; padding: 15px; border-radius: 12px; border: none; width: 100%; font-weight: bold; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .progreso-fotos { font-size: 12px; color: #666; margin-top: 5px; text-align: center; }
+        .btn-secuencial { background: #444; color: white; padding: 15px; border-radius: 12px; border: none; width: 100%; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -52,7 +38,7 @@
 <div class="container">
     <header>
         <img src="logo.png" alt="Maximo Rent A Car" class="logo-img">
-        <h2 style="margin:0; letter-spacing: 1px; font-size: 18px;">MAXIMO <span style="color:var(--blue)">RENT A CAR</span></h2>
+        <h2 style="margin:0; font-size: 18px;">MAXIMO <span style="color:var(--blue)">RENT A CAR</span></h2>
     </header>
 
     <div class="tabs">
@@ -62,76 +48,53 @@
     </div>
 
     <div id="mecanica" class="content active">
-        <label>Fecha del Reporte</label>
-        <input type="date" id="fecha1">
-        <label>Nombre del Empleado</label>
-        <input type="text" id="emp" placeholder="Nombre del empleado">
+        <label>Fecha</label><input type="date" id="fecha1">
+        <label>Empleado</label><input type="text" id="emp" placeholder="Nombre">
         <div class="grid">
-            <div><label>Patente</label><input type="text" id="pat1" placeholder="ABC-123"></div>
+            <div><label>Patente</label><input type="text" id="pat1"></div>
             <div><label>KM</label><input type="number" id="km"></div>
         </div>
-        <div class="section-title">Mecánica y Fluidos</div>
-        <div class="grid">
-            <div><label>Aceite</label><select id="oil"><option>OK</option><option>BAJO</option></select></div>
-            <div><label>Agua</label><select id="wat"><option>OK</option><option>BAJO</option></select></div>
-        </div>
+        <div class="section-title">Revisión Técnica</div>
         <div class="grid">
             <div><label>Frenos</label><select id="fre"><option>OK</option><option>BAJO</option></select></div>
-            <div><label>Hidráulico</label><select id="hid"><option>OK</option><option>BAJO</option><option>N/A</option></select></div>
+            <div><label>Hidráulico</label><select id="hid"><option>OK</option><option>BAJO</option></select></div>
         </div>
-        <div class="section-title">Seguridad</div>
         <div class="grid">
             <div><label>Luces</label><select id="luc"><option>OK</option><option>FALLA</option></select></div>
             <div><label>Gomas</label><select id="neu"><option>OK</option><option>REVISAR</option></select></div>
         </div>
-        <div class="grid">
-            <div><label>Extintor</label><input type="text" id="ext" placeholder="Vto"></div>
-            <div><label>Zorrino</label><select id="zor"><option>OK</option><option>VACÍO</option></select></div>
-        </div>
-        <label>Observaciones</label>
-        <textarea id="obs" rows="2"></textarea>
-        <div class="section-title">Firma del Responsable</div>
+        <label>Observaciones</label><textarea id="obs" rows="2"></textarea>
         <div class="sig-container"><canvas id="signature-pad"></canvas></div>
-        <button onclick="signaturePad.clear()" style="width:100%; margin-top:10px;">BORRAR FIRMA</button>
+        <button onclick="signaturePad.clear()" style="width:100%; margin-top:5px;">Borrar Firma</button>
         <button class="btn-main btn-check" onclick="generarCheck()">DESCARGAR REPORTE TÉCNICO</button>
     </div>
 
     <div id="danos" class="content">
-        <label>Fecha del Reporte</label>
-        <input type="date" id="fecha2">
+        <label>Fecha</label><input type="date" id="fecha2">
         <div class="grid">
-            <div><label>Patente Vehículo</label><input type="text" id="pat2"></div>
-            <div><label>Número de Reserva</label><input type="text" id="reserva_danos"></div>
+            <div><label>Patente</label><input type="text" id="pat2"></div>
+            <div><label>Reserva</label><input type="text" id="reserva_danos"></div>
         </div>
-        <div id="lista-fotos" style="margin-top:20px;"></div>
-        <button onclick="nuevaFoto('lista-fotos')" style="width:100%; padding:15px; background:#666; color:white; border:none; border-radius:12px;">+ AGREGAR FOTO DE DAÑO</button>
-        <button class="btn-main btn-danos" onclick="generarDanos()">DESCARGAR REPORTE DE DAÑOS</button>
+        <div id="lista-fotos"></div>
+        <button onclick="nuevaFoto('lista-fotos')" style="width:100%; padding:15px; margin-top:10px;">+ AGREGAR FOTO</button>
+        <button class="btn-main btn-danos" onclick="generarDanos()">DESCARGAR REPORTE DAÑOS</button>
     </div>
 
     <div id="entregas" class="content">
-        <label>Fecha del Reporte</label>
-        <input type="date" id="fecha3">
-        <label>Tipo de Movimiento</label>
-        <select id="mov_tipo"><option>ENTREGA</option><option>DEVOLUCIÓN</option></select>
+        <label>Fecha</label><input type="date" id="fecha3">
+        <label>Tipo</label><select id="mov_tipo"><option>ENTREGA</option><option>DEVOLUCIÓN</option></select>
         <div class="grid">
-            <div><label>Número de Reserva</label><input type="text" id="reserva_mov"></div>
+            <div><label>Reserva</label><input type="text" id="reserva_mov"></div>
             <div><label>Patente</label><input type="text" id="pat3"></div>
         </div>
-        <div class="grid">
-            <div><label>Kilometraje</label><input type="number" id="km_mov"></div>
-            <div><label>Combustible</label><select id="fuel_mov"><option>1/8</option><option>2/8</option><option>4/8</option><option>8/8</option></select></div>
-        </div>
-        <div class="section-title">Registro Fotográfico Unidad</div>
+        <div class="section-title">Fotos Secuenciales</div>
         <div id="foto-indicador">SIGUIENTE: <span id="nombre-parte">RUEDA C/D</span></div>
         <input type="file" id="input-secuencial" accept="image/*" capture="camera" style="display:none" onchange="capturarFotoSecuencial(this)">
         <button class="btn-secuencial" onclick="document.getElementById('input-secuencial').click()">📸 TOMAR FOTO</button>
-        <div id="progreso-texto" class="progreso-fotos">0 de 21 fotos tomadas</div>
-        <div id="lista-fotos-entrega" style="margin-top:20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;"></div>
-        <label>Estado General / Limpieza</label>
-        <textarea id="obs_mov" rows="3"></textarea>
-        <div class="section-title">Firma Conformidad</div>
+        <div id="lista-fotos-entrega" style="margin-top:10px; display: grid; grid-template-columns: 1fr 1fr; gap: 5px;"></div>
+        <div class="section-title">Firma de Conformidad</div>
         <div class="sig-container"><canvas id="signature-pad-mov"></canvas></div>
-        <button onclick="signaturePadMov.clear()" style="width:100%; margin-top:10px;">BORRAR FIRMA</button>
+        <button onclick="signaturePadMov.clear()" style="width:100%; margin-top:5px;">Borrar Firma</button>
         <button class="btn-main btn-entrega" onclick="generarMovimiento()">DESCARGAR REPORTE MOVIMIENTO</button>
     </div>
 </div>
@@ -139,7 +102,7 @@
 <script>
     let signaturePad, signaturePadMov;
     let fotoCount = 0;
-    const listaPartes = ["RUEDA C/D", "RUEDA C/T", "RUEDA A/D", "RUEDA A/T", "CAPOT", "PARAGOLPE D", "GUARDABARRO C/D", "PUERTA C", "PUERTA C/T", "GUARDABARRO C/T", "BAUL", "GUARDABARRO A/T", "PUERTA A/T", "PUERTA A", "GUARDABARRO A/D", "TECHO", "PARABRISAS", "INTERIOR", "ASIENTOS TRASEROS", "MOTOR", "RUEDA AUXILIO"];
+    const listaPartes = ["RUEDA C/D", "RUEDA C/T", "RUEDA A/D", "RUEDA A/T", "CAPOT", "PARAGOLPE D", "GUARDABARRO C/D", "PUERTA C", "PUERTA C/T", "GUARDABARRO C/T", "BAUL", "GUARDABARRO A/T", "PUERTA A/T", "PUERTA A", "GUARDABARRO A/D", "TECHO", "PARABRISAS", "INTERIOR", "ASIENTOS", "MOTOR", "AUXILIO"];
     let parteActualIndex = 0;
     let fotosEntregas = [];
 
@@ -159,56 +122,32 @@
         document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(tab).classList.add('active');
-        if(tab === 'mecanica') document.getElementById('t1').classList.add('active');
-        if(tab === 'danos') document.getElementById('t2').classList.add('active');
-        if(tab === 'entregas') document.getElementById('t3').classList.add('active');
+        const btnId = tab === 'mecanica' ? 't1' : tab === 'danos' ? 't2' : 't3';
+        document.getElementById(btnId).classList.add('active');
     }
 
     function drawHeader(doc, title, colorHex) {
-        doc.setFillColor(colorHex);
-        doc.rect(0, 0, 210, 40, 'F');
-        doc.setTextColor(255, 255, 255);
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(20);
-        doc.text("MAXIMO RENT A CAR", 20, 20);
-        doc.setFontSize(10);
-        doc.text(title, 20, 30);
+        doc.setFillColor(colorHex); doc.rect(0, 0, 210, 40, 'F');
+        doc.setTextColor(255); doc.setFontSize(20); doc.text("MAXIMO RENT A CAR", 20, 20);
+        doc.setFontSize(10); doc.text(title, 20, 30);
     }
 
     function generarCheck() {
-        const { jsPDF } = window.jspdf; 
-        const doc = new jsPDF();
+        const { jsPDF } = window.jspdf; const doc = new jsPDF();
         const p = (document.getElementById('pat1').value || "S/D").toUpperCase();
-        drawHeader(doc, "INFORME TÉCNICO DE MANTENIMIENTO", "#1a1a1a");
-        let y = 55;
-        const data = [
-            ["EMPLEADO", document.getElementById('emp').value],
-            ["FECHA", document.getElementById('fecha1').value],
-            ["PATENTE", p],
-            ["KM", document.getElementById('km').value],
-            ["ACEITE", document.getElementById('oil').value],
-            ["AGUA", document.getElementById('wat').value],
-            ["FRENOS", document.getElementById('fre').value],
-            ["LUCES", document.getElementById('luc').value],
-            ["GOMAS", document.getElementById('neu').value],
-            ["EXTINTOR", document.getElementById('ext').value],
-            ["ZORRINO", document.getElementById('zor').value]
-        ];
-        data.forEach(([l, v]) => {
-            doc.setFont("helvetica", "bold"); doc.text(l + ":", 25, y);
-            doc.setFont("helvetica", "normal"); doc.text(String(v), 70, y);
-            doc.line(20, y + 2, 190, y + 2); y += 9;
-        });
-        if(!signaturePad.isEmpty()) doc.addImage(signaturePad.toDataURL(), 'PNG', 25, 240, 50, 20);
+        drawHeader(doc, "INFORME TECNICO", "#1a1a1a");
+        let y = 50;
+        const data = [["FECHA", document.getElementById('fecha1').value], ["EMP", document.getElementById('emp').value], ["PATENTE", p], ["KM", document.getElementById('km').value], ["FRENOS", document.getElementById('fre').value], ["LUCES", document.getElementById('luc').value]];
+        data.forEach(([l, v]) => { doc.text(`${l}: ${v}`, 20, y); y += 10; });
+        if(!signaturePad.isEmpty()) doc.addImage(signaturePad.toDataURL(), 'PNG', 20, 240, 50, 20);
         doc.save(`Check_${p}.pdf`);
     }
 
-    function nuevaFoto(contenedorId) {
+    function nuevaFoto(id) {
         fotoCount++;
-        const div = document.createElement('div');
-        div.className = 'card-foto';
-        div.innerHTML = `<label>DAÑO #${fotoCount}</label><input type="file" accept="image/*" capture="camera" onchange="readImg(this, 'p${fotoCount}')"><img id="p${fotoCount}" class="img-prev"><textarea placeholder="Descripción..."></textarea>`;
-        document.getElementById(contenedorId).appendChild(div);
+        const div = document.createElement('div'); div.className = 'card-foto';
+        div.innerHTML = `<label>DAÑO #${fotoCount}</label><input type="file" accept="image/*" capture="camera" onchange="readImg(this, 'img-d-${fotoCount}')"><img id="img-d-${fotoCount}" class="img-prev"><textarea placeholder="Detalle..."></textarea>`;
+        document.getElementById(id).appendChild(div);
     }
 
     function readImg(input, id) {
@@ -225,65 +164,44 @@
             reader.onload = (e) => {
                 fotosEntregas.push({ nombre: listaPartes[parteActualIndex], src: e.target.result });
                 const div = document.createElement('div');
-                div.style = "background:#eee; padding:5px; text-align:center; font-size:10px;";
                 div.innerHTML = `<img src="${e.target.result}" style="width:100%"><br>${listaPartes[parteActualIndex]}`;
                 document.getElementById('lista-fotos-entrega').appendChild(div);
                 parteActualIndex++;
-                actualizarInterfazSecuencial();
+                if(parteActualIndex < listaPartes.length) document.getElementById('nombre-parte').innerText = listaPartes[parteActualIndex];
             };
             reader.readAsDataURL(input.files[0]);
         }
     }
 
-    function actualizarInterfazSecuencial() {
-        const indicador = document.getElementById('nombre-parte');
-        const progreso = document.getElementById('progreso-texto');
-        if (parteActualIndex < listaPartes.length) {
-            indicador.innerText = listaPartes[parteActualIndex];
-            progreso.innerText = `${parteActualIndex} de 21 fotos tomadas`;
-        } else {
-            document.getElementById('foto-indicador').innerHTML = "✅ FOTOS COMPLETAS";
-        }
-    }
-
-    async function generarDanos() {
+    function generarDanos() {
         const { jsPDF } = window.jspdf; const doc = new jsPDF();
         const p = (document.getElementById('pat2').value || "S/D").toUpperCase();
-        drawHeader(doc, "REPORTE DE DAÑOS", "#e67e22");
+        drawHeader(doc, "REPORTE DAÑOS", "#e67e22");
         let y = 50;
-        document.querySelectorAll('.card-foto').forEach((card, i) => {
+        document.querySelectorAll('.card-foto').forEach((card) => {
             const img = card.querySelector('img');
-            const desc = card.querySelector('textarea').value;
-            if(img.src.startsWith('data')) {
-                if(y > 220) { doc.addPage(); y = 30; }
-                doc.addImage(img.src, 'JPEG', 25, y, 60, 45);
-                doc.text(`Daño #${i+1}: ${desc}`, 90, y + 10, {maxWidth: 100});
-                y += 55;
-            }
+            if(img.src.startsWith('data')) { doc.addImage(img.src, 'JPEG', 20, y, 50, 40); y += 50; }
         });
         doc.save(`Danos_${p}.pdf`);
     }
 
-    async function generarMovimiento() {
+    function generarMovimiento() {
         const { jsPDF } = window.jspdf; const doc = new jsPDF();
-        const tipo = document.getElementById('mov_tipo').value;
         const p = (document.getElementById('pat3').value || "S/D").toUpperCase();
-        drawHeader(doc, `REPORTE DE ${tipo}`, "#27ae60");
+        drawHeader(doc, "MOVIMIENTO", "#27ae60");
         let y = 50;
-        doc.text(`Patente: ${p} | Reserva: ${document.getElementById('reserva_mov').value}`, 25, y);
-        y += 15;
         fotosEntregas.forEach(f => {
-            if(y > 240) { doc.addPage(); y = 30; }
-            doc.addImage(f.src, 'JPEG', 25, y, 50, 35);
-            doc.text(f.nombre, 80, y + 15);
-            y += 45;
+            if(y > 250) { doc.addPage(); y = 20; }
+            doc.addImage(f.src, 'JPEG', 20, y, 40, 30);
+            doc.text(f.nombre, 70, y + 15); y += 40;
         });
-        if(!signaturePadMov.isEmpty()) doc.addImage(signaturePadMov.toDataURL(), 'PNG', 25, 240, 50, 20);
-        doc.save(`${tipo}_${p}.pdf`);
+        if(!signaturePadMov.isEmpty()) doc.addImage(signaturePadMov.toDataURL(), 'PNG', 20, 240, 50, 20);
+        doc.save(`Movimiento_${p}.pdf`);
     }
 </script>
 </body>
 </html>
+
 
 
 
