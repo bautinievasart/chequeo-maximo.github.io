@@ -14,251 +14,464 @@
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
     
     <style>
-        :root {
-    --main: #1a1a1a;
-    --blue: #0056b3;
-    --orange: #e67e22;
-    --green: #27ae60;
-    --gray: #f4f7f6;
-    --field-bg: #f5f5f5; /* Fondo gris suave para los inputs */
-    --text-dark: #1a1a1a;
+        :root{
+
+--bg:#f6f7fb;
+--card:#ffffff;
+
+--primary:#4f46e5;
+--primary2:#7c3aed;
+
+--orange:#f59e0b;
+--green:#22c55e;
+
+--text:#1f2937;
+--text-soft:#6b7280;
+
+--glass:rgba(255,255,255,.65);
+
+--radius:18px;
+
 }
 
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #cbd5e0;
-    margin: 0;
-    padding: 10px;
-    -webkit-tap-highlight-color: transparent;
+/* ---------- BASE ---------- */
+
+*{
+box-sizing:border-box;
 }
 
-/* Contenedor Principal Responsive */
-.container {
-    max-width: 600px;
-    margin: auto;
-    background: white;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+body{
+
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto;
+background:linear-gradient(135deg,#eef2ff,#f8fafc);
+
+margin:0;
+padding:18px;
+
+color:var(--text);
+
+-webkit-font-smoothing:antialiased;
+
 }
 
-header {
-    background: var(--main);
-    color: white;
-    padding: 20px;
-    text-align: center;
-    border-bottom: 5px solid var(--blue);
+/* ---------- APP CONTAINER ---------- */
+
+.container{
+
+max-width:680px;
+margin:auto;
+
+background:var(--glass);
+
+backdrop-filter:blur(14px);
+
+border-radius:24px;
+
+box-shadow:
+0 20px 40px rgba(0,0,0,.08),
+0 4px 10px rgba(0,0,0,.04);
+
+overflow:hidden;
+
 }
 
-/* Pestañas Responsive */
-.tabs {
-    display: flex;
-    background: #edf2f7;
-    padding: 8px;
-    gap: 5px;
+/* ---------- HEADER ---------- */
+
+header{
+
+padding:26px;
+
+text-align:center;
+
+background:linear-gradient(135deg,#4f46e5,#7c3aed);
+
+color:white;
+
 }
 
-.tab-btn {
-    flex: 1;
-    padding: 12px 5px;
-    border: none;
-    font-weight: bold;
-    cursor: pointer;
-    background: #e2e8f0;
-    border-radius: 8px;
-    font-size: 12px;
-    transition: 0.3s;
-    text-transform: uppercase;
+header h1{
+
+margin:0;
+font-size:22px;
+letter-spacing:1px;
+font-weight:800;
+
 }
 
-.tab-btn.active {
-    background: var(--blue);
-    color: white;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+/* ---------- TABS ---------- */
+
+.tabs{
+
+display:flex;
+
+gap:8px;
+
+padding:10px;
+
+background:rgba(255,255,255,.55);
+
+backdrop-filter:blur(8px);
+
 }
 
-.content {
-    padding: 20px;
-    display: none;
+.tab-btn{
+
+flex:1;
+
+border:none;
+
+padding:12px;
+
+border-radius:12px;
+
+font-weight:600;
+
+background:transparent;
+
+color:var(--text-soft);
+
+cursor:pointer;
+
+transition:.25s;
+
 }
 
-.content.active {
-    display: block;
+.tab-btn.active{
+
+background:white;
+
+color:var(--primary);
+
+box-shadow:
+
+0 4px 12px rgba(0,0,0,.08);
+
 }
 
-.section-title {
-    background: #f1f5f9;
-    color: var(--blue);
-    padding: 10px;
-    font-weight: bold;
-    border-left: 5px solid var(--blue);
-    margin: 25px 0 15px;
-    font-size: 14px;
-    text-transform: uppercase;
-    border-radius: 0 8px 8px 0;
+/* ---------- CONTENT ---------- */
+
+.content{
+
+display:none;
+
+padding:22px;
+
+animation:fade .35s ease;
+
 }
 
-/* Labels y campos de formulario */
-label {
-    display: block;
-    margin: 10px 0 5px;
-    font-weight: 600;
-    font-size: 15px;
-    color: var(--text-dark);
+.content.active{
+
+display:block;
+
 }
 
-input, select, textarea {
-    width: 100%;
-    padding: 12px;
-    border: 2px solid #e2e8f0;
-    border-radius: 12px;
-    font-size: 16px;
-    box-sizing: border-box;
-    outline: none;
-    background-color: var(--field-bg); /* Gris muy suave */
-    color: var(--text-dark);
+@keyframes fade{
+
+from{opacity:0;transform:translateY(10px);}
+to{opacity:1;}
+
 }
 
-input:focus, select:focus, textarea:focus {
-    border-color: var(--blue);
-    box-shadow: 0 0 0 3px rgba(0,86,179,0.1);
+/* ---------- SECTION ---------- */
+
+.section-title{
+
+font-size:13px;
+
+font-weight:700;
+
+color:var(--primary);
+
+margin:28px 0 12px;
+
+letter-spacing:.05em;
+
+text-transform:uppercase;
+
 }
 
-/* Grid del formulario: dos columnas */
-.grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
+/* ---------- GRID ---------- */
+
+.grid{
+
+display:grid;
+
+grid-template-columns:1fr 1fr;
+
+gap:14px;
+
 }
 
-/* Campo Fecha ocupa toda la fila */
-.grid > div:first-child {
-    grid-column: 1 / -1;
-    margin-bottom: 16px;
+/* FECHA OCUPA FILA COMPLETA */
+
+.grid > div:first-child{
+
+grid-column:1 / -1;
+
 }
 
-.grid > div:first-child label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-    font-size: 15px;
-    color: var(--text-dark);
+/* ---------- LABEL ---------- */
+
+label{
+
+font-size:13px;
+
+font-weight:600;
+
+margin-bottom:4px;
+
+display:block;
+
+color:var(--text-soft);
+
 }
 
-/* Contenedor de Firmas */
-.sig-container {
-    border: 2px dashed #cbd5e0;
-    background: #f8fafc;
-    border-radius: 12px;
-    margin-top: 15px;
-    height: 180px;
-    position: relative;
-    touch-action: none;
-    overflow: hidden;
+/* ---------- INPUTS ---------- */
+
+input,
+select,
+textarea{
+
+width:100%;
+
+padding:12px 14px;
+
+border-radius:14px;
+
+border:1px solid rgba(0,0,0,.05);
+
+background:#f9fafb;
+
+font-size:14px;
+
+transition:.25s;
+
 }
 
-canvas {
-    width: 100%;
-    height: 100%;
+input:focus,
+select:focus,
+textarea:focus{
+
+outline:none;
+
+background:white;
+
+border-color:var(--primary);
+
+box-shadow:
+0 0 0 4px rgba(79,70,229,.08);
+
 }
 
-/* Botones Principales */
-.btn-main {
-    width: 100%;
-    padding: 18px;
-    border: none;
-    border-radius: 12px;
-    font-weight: bold;
-    font-size: 16px;
-    color: white;
-    cursor: pointer;
-    margin-top: 25px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    transition: 0.2s;
-    -webkit-appearance: none;
+/* ---------- TEXTAREA ---------- */
+
+textarea{
+
+resize:none;
+
 }
 
-.btn-main:active {
-    transform: scale(0.98);
-    box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+/* ---------- CARD FOTO ---------- */
+
+.card-foto{
+
+background:white;
+
+border-radius:16px;
+
+padding:16px;
+
+box-shadow:
+
+0 8px 20px rgba(0,0,0,.06);
+
+margin-bottom:18px;
+
 }
 
-.btn-check { background: var(--blue); }
-.btn-danos { background: var(--orange); }
-.btn-entrega { background: var(--green); }
+/* ---------- SIGNATURE ---------- */
 
-/* Tarjetas de Fotos de Daños */
-.card-foto {
-    border: 1px solid #e2e8f0;
-    padding: 15px;
-    border-radius: 12px;
-    margin-bottom: 20px;
-    background: #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+.sig-container{
+
+height:180px;
+
+border-radius:16px;
+
+background:
+
+repeating-linear-gradient(
+45deg,
+#f1f5f9,
+#f1f5f9 10px,
+#f8fafc 10px,
+#f8fafc 20px
+);
+
+border:2px dashed #cbd5e1;
+
+margin-top:10px;
+
+overflow:hidden;
+
 }
 
-.img-prev {
-    width: 100%;
-    border-radius: 8px;
-    margin-top: 10px;
-    display: none;
-    border: 1px solid #ddd;
-    object-fit: cover;
-    height: 150px;
+canvas{
+
+width:100%;
+height:100%;
+
 }
 
-/* Indicador Secuencial */
-#foto-indicador {
-    background: #fffbeb;
-    padding: 15px;
-    border-radius: 10px;
-    text-align: center;
-    border: 1px solid #fde68a;
-    margin-bottom: 15px;
+/* ---------- BUTTONS ---------- */
+
+.btn-main{
+
+width:100%;
+
+padding:18px;
+
+border-radius:16px;
+
+border:none;
+
+font-size:15px;
+
+font-weight:700;
+
+color:white;
+
+margin-top:24px;
+
+cursor:pointer;
+
+transition:.25s;
+
 }
 
-.btn-secuencial {
-    background: #334155;
-    color: white;
-    padding: 20px;  /* más grande */
-    border-radius: 12px;
-    border: none;
-    width: 100%;
-    font-weight: bold;
-    font-size: 16px;
-    cursor: pointer;
-    text-transform: uppercase;
-    -webkit-appearance: none;
+.btn-main:hover{
+
+transform:translateY(-2px);
+
+box-shadow:
+
+0 12px 25px rgba(0,0,0,.15);
+
 }
 
-/* Galería de Entregas */
-#galeria-entregas {
-    margin-top: 15px;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
+.btn-check{
+
+background:linear-gradient(135deg,#4f46e5,#7c3aed);
+
 }
 
-/* MEDIA QUERY PARA CELULARES */
-@media (max-width: 480px) {
-    .container {
-        border-radius: 0;
-        box-shadow: none;
-    }
-    body {
-        padding: 0;
-        background: white;
-    }
-    .grid {
-        grid-template-columns: 1fr; /* apila los campos verticalmente */
-        gap: 10px;
-    }
-    .tabs { padding: 4px; gap: 3px; }
-    .tab-btn { font-size: 10px; padding: 10px 2px; }
-    .content { padding: 15px; }
-    header h1 { font-size: 18px; }
-    label { font-size: 13px; margin: 10px 0 3px; }
-    input, select, textarea { padding: 10px; font-size: 14px; }
+.btn-danos{
+
+background:linear-gradient(135deg,#fb923c,#f97316);
+
+}
+
+.btn-entrega{
+
+background:linear-gradient(135deg,#22c55e,#16a34a);
+
+}
+
+/* ---------- FOTO INDICADOR ---------- */
+
+#foto-indicador{
+
+background:#fff7ed;
+
+border:1px solid #fed7aa;
+
+border-radius:16px;
+
+padding:16px;
+
+text-align:center;
+
+margin-bottom:12px;
+
+}
+
+/* ---------- BOTON CAMARA ---------- */
+
+.btn-secuencial{
+
+width:100%;
+
+padding:22px;
+
+border:none;
+
+border-radius:18px;
+
+background:black;
+
+color:white;
+
+font-size:18px;
+
+font-weight:700;
+
+cursor:pointer;
+
+box-shadow:
+
+0 10px 20px rgba(0,0,0,.2);
+
+}
+
+/* ---------- GALERIA ---------- */
+
+#galeria-entregas{
+
+margin-top:14px;
+
+display:grid;
+
+grid-template-columns:repeat(3,1fr);
+
+gap:8px;
+
+}
+
+/* ---------- MOBILE ---------- */
+
+@media (max-width:480px){
+
+body{
+
+padding:0;
+background:white;
+
+}
+
+.container{
+
+border-radius:0;
+box-shadow:none;
+
+}
+
+.content{
+
+padding:16px;
+
+}
+
+.grid{
+
+grid-template-columns:1fr 1fr;
+
+}
+
+header h1{
+
+font-size:18px;
+
+}
         }
     </style>
 </head>
