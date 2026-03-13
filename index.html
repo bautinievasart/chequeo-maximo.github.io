@@ -274,13 +274,12 @@ function generarCheck() {
     const p = (document.getElementById('pat1')?.value || "S/D").toUpperCase();
     const fecha = document.getElementById('fecha1')?.value || "";
 
-    drawHeader(doc, "INFORME TÉCNICO DE MANTENIMIENTO", "#1a1a1a");
+    drawHeader(doc, "INFORME TECNICO DE MANTENIMIENTO", "#1a1a1a");
 
     let y = 55;
     doc.setTextColor(40, 40, 40);
     doc.setFontSize(10);
 
-    // Lista de datos completa
     const data = [
         ["EMPLEADO", document.getElementById('emp')?.value || ""],
         ["FECHA", fecha],
@@ -321,19 +320,8 @@ function generarCheck() {
         doc.addImage(signaturePad.toDataURL(), 'PNG', 25, yFirma + 2, 50, 20);
     }
     
-    doc.save(`Check_Tecnico_${p}.pdf`);
-    }
-
-    // Firma con protección por si signaturePad no está listo
-    if(typeof signaturePad !== 'undefined' && !signaturePad.isEmpty()) {
-        let yFirma = Math.max(245, y + 15);
-        doc.setFont("helvetica", "bold");
-        doc.text("FIRMA RESPONSABLE:", 25, yFirma);
-        doc.addImage(signaturePad.toDataURL(), 'PNG', 25, yFirma + 2, 50, 20);
-    }
-    
-    doc.save(`Check_Tecnico_${p}.pdf`);
-    }
+    doc.save("Check_Tecnico_" + p + ".pdf");
+}
 
     async function generarDanos() {
     const { jsPDF } = window.jspdf; 
@@ -538,6 +526,7 @@ function generarCheck() {
 </script>
 </body>
 </html>
+
 
 
 
