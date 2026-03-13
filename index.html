@@ -15,27 +15,21 @@
     
     <style>
         :root{
+--main:#111827;
+--blue:#4f46e5;
+--orange:#f97316;
+--green:#16a34a;
 
---bg1:#eef2ff;
---bg2:#f8fafc;
-
+--bg:#f3f4f6;
 --card:#ffffff;
---glass:rgba(255,255,255,.7);
 
---primary:#6366f1;
---primary2:#8b5cf6;
+--text:#111827;
+--soft:#6b7280;
 
---orange:#fb923c;
---green:#22c55e;
-
---text:#0f172a;
---soft:#64748b;
-
---radius:18px;
-
+--radius:14px;
 }
 
-/* ---------- BASE ---------- */
+/* BASE */
 
 *{
 box-sizing:border-box;
@@ -43,84 +37,69 @@ box-sizing:border-box;
 
 body{
 
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter;
+
+background:linear-gradient(180deg,#f8fafc,#eef2f7);
+
 margin:0;
-padding:20px;
-
-font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto;
-
-background:
-radial-gradient(circle at 10% 10%,#ffffff 0%,transparent 40%),
-linear-gradient(135deg,var(--bg1),var(--bg2));
+padding:18px;
 
 color:var(--text);
 
--webkit-font-smoothing:antialiased;
-
 }
 
-/* ---------- APP ---------- */
+/* CONTENEDOR */
 
 .container{
 
 max-width:680px;
 margin:auto;
 
-background:var(--glass);
+background:white;
 
-backdrop-filter:blur(16px);
-
-border-radius:28px;
+border-radius:22px;
 
 box-shadow:
-
-0 30px 60px rgba(0,0,0,.08),
-0 10px 20px rgba(0,0,0,.06);
+0 20px 40px rgba(0,0,0,.08),
+0 6px 12px rgba(0,0,0,.05);
 
 overflow:hidden;
 
 }
 
-/* ---------- HEADER ---------- */
+/* HEADER */
 
 header{
 
-padding:28px;
-
-text-align:center;
-
-background:
-
-linear-gradient(135deg,#6366f1,#8b5cf6);
+background:linear-gradient(135deg,#4f46e5,#6366f1);
 
 color:white;
+
+padding:26px;
+
+text-align:center;
 
 }
 
 header h1{
 
 margin:0;
-
 font-size:22px;
-
-letter-spacing:.08em;
-
 font-weight:800;
+letter-spacing:.05em;
 
 }
 
-/* ---------- TABS ---------- */
+/* TABS */
 
 .tabs{
 
 display:flex;
-
 gap:8px;
 
 padding:10px;
 
-background:rgba(255,255,255,.6);
-
-backdrop-filter:blur(10px);
+background:#f1f5f9;
 
 }
 
@@ -132,7 +111,7 @@ padding:12px;
 
 border:none;
 
-border-radius:14px;
+border-radius:12px;
 
 background:transparent;
 
@@ -142,7 +121,7 @@ color:var(--soft);
 
 cursor:pointer;
 
-transition:.25s;
+transition:.2s;
 
 }
 
@@ -150,17 +129,13 @@ transition:.25s;
 
 background:white;
 
-color:var(--primary);
+color:var(--blue);
 
-box-shadow:
-
-0 4px 14px rgba(0,0,0,.08);
-
-transform:translateY(-1px);
+box-shadow:0 3px 10px rgba(0,0,0,.08);
 
 }
 
-/* ---------- CONTENT ---------- */
+/* CONTENT */
 
 .content{
 
@@ -168,40 +143,31 @@ display:none;
 
 padding:22px;
 
-animation:fade .35s ease;
-
 }
 
 .content.active{
 display:block;
 }
 
-@keyframes fade{
-
-from{opacity:0;transform:translateY(12px);}
-to{opacity:1}
-
-}
-
-/* ---------- SECTION TITLE ---------- */
+/* TITULOS */
 
 .section-title{
 
-font-size:12px;
+font-size:13px;
 
 font-weight:700;
 
-color:var(--primary);
+color:var(--blue);
 
-letter-spacing:.08em;
+margin:26px 0 10px;
 
 text-transform:uppercase;
 
-margin:28px 0 12px;
+letter-spacing:.05em;
 
 }
 
-/* ---------- GRID ---------- */
+/* GRID */
 
 .grid{
 
@@ -213,7 +179,7 @@ gap:14px;
 
 }
 
-/* FECHA FILA COMPLETA */
+/* FECHA OCUPA FILA */
 
 .grid > div:first-child{
 
@@ -221,23 +187,23 @@ grid-column:1 / -1;
 
 }
 
-/* ---------- LABEL ---------- */
+/* LABEL */
 
 label{
 
-font-size:12px;
+display:block;
+
+font-size:14px;
 
 font-weight:600;
 
-color:var(--soft);
-
 margin-bottom:4px;
 
-display:block;
+color:var(--soft);
 
 }
 
-/* ---------- INPUTS ---------- */
+/* INPUTS */
 
 input,
 select,
@@ -245,21 +211,17 @@ textarea{
 
 width:100%;
 
-padding:14px 16px;
+padding:12px;
 
-border-radius:14px;
+border-radius:12px;
 
-border:1px solid rgba(0,0,0,.05);
+border:1px solid #e5e7eb;
 
 background:#f9fafb;
 
 font-size:14px;
 
-transition:.25s;
-
-box-shadow:
-
-inset 0 1px 2px rgba(0,0,0,.03);
+transition:.2s;
 
 }
 
@@ -269,17 +231,15 @@ textarea:focus{
 
 outline:none;
 
+border-color:var(--blue);
+
 background:white;
 
-border-color:var(--primary);
-
-box-shadow:
-
-0 0 0 4px rgba(99,102,241,.1);
+box-shadow:0 0 0 3px rgba(79,70,229,.08);
 
 }
 
-/* ---------- TEXTAREA ---------- */
+/* TEXTAREA */
 
 textarea{
 
@@ -287,57 +247,50 @@ resize:none;
 
 }
 
-/* ---------- CARDS ---------- */
+/* TARJETAS DAÑOS */
 
 .card-foto{
 
 background:white;
 
-border-radius:18px;
+border-radius:14px;
 
 padding:16px;
 
-box-shadow:
-
-0 12px 28px rgba(0,0,0,.07);
+box-shadow:0 6px 14px rgba(0,0,0,.06);
 
 margin-bottom:18px;
 
-transition:.2s;
-
 }
 
-.card-foto:hover{
-
-transform:translateY(-2px);
-
-}
-
-/* ---------- SIGNATURE ---------- */
+/* SIGNATURE */
 
 .sig-container{
 
-height:180px;
-
-border-radius:16px;
-
 border:2px dashed #cbd5e1;
 
-background:
+background:#f8fafc;
 
-repeating-linear-gradient(
-45deg,
-#f8fafc,
-#f8fafc 10px,
-#f1f5f9 10px,
-#f1f5f9 20px
-);
+border-radius:14px;
+
+margin-top:10px;
+
+height:180px;
+
+position:relative;
 
 overflow:hidden;
 
 }
 
-/* ---------- BUTTONS ---------- */
+.sig-container canvas{
+
+width:100%;
+height:100%;
+
+}
+
+/* BOTONES */
 
 .btn-main{
 
@@ -347,63 +300,41 @@ padding:18px;
 
 border:none;
 
-border-radius:18px;
-
-font-size:15px;
+border-radius:14px;
 
 font-weight:700;
 
+font-size:15px;
+
 color:white;
 
-margin-top:24px;
-
 cursor:pointer;
+
+margin-top:22px;
 
 transition:.2s;
 
 }
 
-.btn-main:hover{
-
-transform:translateY(-2px);
-
-box-shadow:
-
-0 15px 30px rgba(0,0,0,.15);
-
-}
-
 .btn-main:active{
 
-transform:scale(.97);
+transform:scale(.98);
 
 }
 
 .btn-check{
-
-background:
-
-linear-gradient(135deg,#6366f1,#8b5cf6);
-
+background:linear-gradient(135deg,#4f46e5,#6366f1);
 }
 
 .btn-danos{
-
-background:
-
-linear-gradient(135deg,#fb923c,#f97316);
-
+background:linear-gradient(135deg,#fb923c,#f97316);
 }
 
 .btn-entrega{
-
-background:
-
-linear-gradient(135deg,#22c55e,#16a34a);
-
+background:linear-gradient(135deg,#22c55e,#16a34a);
 }
 
-/* ---------- FOTO INDICADOR ---------- */
+/* FOTO INDICADOR */
 
 #foto-indicador{
 
@@ -411,9 +342,9 @@ background:#fff7ed;
 
 border:1px solid #fed7aa;
 
-border-radius:18px;
+padding:16px;
 
-padding:18px;
+border-radius:14px;
 
 text-align:center;
 
@@ -421,35 +352,31 @@ margin-bottom:12px;
 
 }
 
-/* ---------- BOTON FOTO ---------- */
+/* BOTON FOTO */
 
 .btn-secuencial{
 
-width:100%;
-
-padding:24px;
-
-border:none;
-
-border-radius:20px;
-
-background:black;
+background:#111827;
 
 color:white;
 
-font-size:18px;
+padding:22px;
+
+border-radius:16px;
+
+border:none;
+
+width:100%;
 
 font-weight:700;
 
+font-size:16px;
+
 cursor:pointer;
-
-box-shadow:
-
-0 15px 30px rgba(0,0,0,.25);
 
 }
 
-/* ---------- GALERIA ---------- */
+/* GALERIA */
 
 #galeria-entregas{
 
@@ -463,7 +390,7 @@ gap:8px;
 
 }
 
-/* ---------- MOBILE ---------- */
+/* MOBILE */
 
 @media(max-width:480px){
 
