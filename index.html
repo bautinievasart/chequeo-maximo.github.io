@@ -69,18 +69,7 @@ overflow:hidden;
 
 }
 
-<header style="
-    background: url('img/header.png') no-repeat center center;
-    background-size: cover;
-    padding: 20px;
-    text-align: center;
-    color: white;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
-">
-    <h1 style="margin:0; font-size:20px; letter-spacing:1px;">
-        MAXIMO <span style="color:#FFD700">RENT A CAR</span>
-    </h1>
-</header>
+<header class="main-header"></header>
 
 }
 
@@ -504,15 +493,21 @@ padding:18px;
 textarea{
 min-height:70px;
 }
+        .main-header {
+    height: 150px; /* ajusta la altura que quieras */
+    width: 100%;
+    background: url('header.png') no-repeat center center;
+    background-size: cover; /* hace que la imagen llene todo el header */
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <header>
-        <h1 style="margin:0; font-size:20px; letter-spacing:1px;">MAXIMO <span style="color:var(--blue)">RENT A CAR</span></h1>
-    </header>
+     <header class="main-header"></header>
+    <div class="container">
+        <!-- resto de tu app aquí -->
+    </div>
 
     <div class="tabs">
         <button id="t1" class="tab-btn active" onclick="switchTab('mecanica')">INSPECCIÓN</button>
