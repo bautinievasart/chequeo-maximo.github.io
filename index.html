@@ -10,337 +10,250 @@
     
     <style>
         :root {
-  --primary: #7c3aed;        /* morado vivo */
-  --primary-light: #c4b5fd;  /* morado pastel */
-  --primary-soft: #ede9fe;   /* fondo muy suave */
-  --text-dark: #1e293b;
-  --text-light: #64748b;
-  --bg: #f9fafb;
-  --border: #e0e7ff;
-  --shadow-card: rgba(124, 58, 237, 0.12);
-  --shadow-button: rgba(124, 58, 237, 0.3);
-}
-
-* {
-  box-sizing: border-box;
-  font-synthesis: none;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    --main: #1a1a1a;
+    --blue: #0056b3;
+    --orange: #e67e22;
+    --green: #27ae60;
+    --gray: #f4f7f6;
+    --field-bg: #f5f5f5; /* Fondo gris suave para los inputs */
+    --text-dark: #1a1a1a;
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  background: var(--bg);
-  margin: 0;
-  padding: 20px;
-  color: var(--text-dark);
-  -webkit-tap-highlight-color: transparent;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #cbd5e0;
+    margin: 0;
+    padding: 10px;
+    -webkit-tap-highlight-color: transparent;
 }
 
+/* Contenedor Principal Responsive */
 .container {
-  max-width: 680px;
-  margin: auto;
-  background: white;
-  border-radius: 24px;
-  padding: 32px 40px;
-  box-shadow: 0 20px 40px var(--shadow-card);
+    max-width: 600px;
+    margin: auto;
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
 }
-
-/* HEADER */
 
 header {
-  text-align: center;
-  margin-bottom: 36px;
+    background: var(--main);
+    color: white;
+    padding: 20px;
+    text-align: center;
+    border-bottom: 5px solid var(--blue);
 }
 
-header h1 {
-  font-weight: 800;
-  font-size: 24px;
-  letter-spacing: 0.15em;
-}
-
-header h1 span {
-  color: var(--primary);
-}
-
-/* TABS */
-
+/* Pestañas Responsive */
 .tabs {
-  display: flex;
-  justify-content: space-around;
-  background: var(--primary-soft);
-  border-radius: 40px;
-  padding: 8px;
-  margin-bottom: 36px;
-  box-shadow: inset 0 2px 5px #ddd;
+    display: flex;
+    background: #edf2f7;
+    padding: 8px;
+    gap: 5px;
 }
 
 .tab-btn {
-  flex: 1;
-  background: transparent;
-  border: none;
-  font-weight: 600;
-  font-size: 13px;
-  padding: 10px 0;
-  border-radius: 40px;
-  color: var(--text-light);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  user-select: none;
+    flex: 1;
+    padding: 12px 5px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    background: #e2e8f0;
+    border-radius: 8px;
+    font-size: 12px;
+    transition: 0.3s;
+    text-transform: uppercase;
 }
 
 .tab-btn.active {
-  background: var(--primary);
-  color: white;
-  box-shadow:
-    0 4px 12px var(--shadow-button);
+    background: var(--blue);
+    color: white;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
-/* CONTENT */
-
 .content {
-  display: none;
+    padding: 20px;
+    display: none;
 }
 
 .content.active {
-  display: block;
+    display: block;
 }
-
-/* SECTIONS */
 
 .section-title {
-  font-weight: 600;
-  font-size: 14px;
-  margin: 32px 0 18px;
-  color: var(--primary);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  border-left: 5px solid var(--primary);
-  padding-left: 12px;
+    background: #f1f5f9;
+    color: var(--blue);
+    padding: 10px;
+    font-weight: bold;
+    border-left: 5px solid var(--blue);
+    margin: 25px 0 15px;
+    font-size: 14px;
+    text-transform: uppercase;
+    border-radius: 0 8px 8px 0;
 }
 
-/* LABELS */
-
+/* Labels y campos de formulario */
 label {
-  display: block;
-  font-weight: 600;
-  font-size: 14px;
-  margin-bottom: 6px;
-  color: var(--text-dark);
+    display: block;
+    margin: 10px 0 5px;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--text-dark);
 }
 
-/* GRID */
+input, select, textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 16px;
+    box-sizing: border-box;
+    outline: none;
+    background-color: var(--field-bg); /* Gris muy suave */
+    color: var(--text-dark);
+}
 
+input:focus, select:focus, textarea:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(0,86,179,0.1);
+}
+
+/* Grid del formulario: dos columnas */
 .grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 28px 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
 }
 
-/* INPUTS, SELECT, TEXTAREA */
-
-input,
-select,
-textarea {
-  width: 100%;
-  padding: 14px 18px;
-  font-size: 16px;
-  font-weight: 400;
-  color: var(--text-dark);
-  background: #fff;
-  border-radius: 16px;
-  border: 1.5px solid var(--border);
-  box-shadow:
-    inset 0 1px 3px rgba(0, 0, 0, 0.06);
-  transition:
-    border-color 0.3s ease,
-    box-shadow 0.3s ease;
-  resize: vertical;
-  outline-offset: 2px;
+/* Campo Fecha ocupa toda la fila */
+.grid > div:first-child {
+    grid-column: 1 / -1;
+    margin-bottom: 16px;
 }
 
-input::placeholder,
-textarea::placeholder {
-  color: var(--text-light);
-  font-style: italic;
-  font-weight: 400;
+.grid > div:first-child label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--text-dark);
 }
 
-input:focus,
-select:focus,
-textarea:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 12px var(--primary-soft);
-  outline: none;
-}
-
-/* TEXTAREA */
-
-textarea {
-  min-height: 72px;
-  line-height: 1.4;
-}
-
-/* SIG CONTAINER */
-
+/* Contenedor de Firmas */
 .sig-container {
-  margin-top: 16px;
-  border-radius: 16px;
-  border: 2px dashed var(--primary-light);
-  background: var(--primary-soft);
-  height: 180px;
-  overflow: hidden;
-  position: relative;
+    border: 2px dashed #cbd5e0;
+    background: #f8fafc;
+    border-radius: 12px;
+    margin-top: 15px;
+    height: 180px;
+    position: relative;
+    touch-action: none;
+    overflow: hidden;
 }
 
 canvas {
-  width: 100%;
-  height: 100%;
-  touch-action: none;
-  display: block;
+    width: 100%;
+    height: 100%;
 }
 
-/* BOTONES */
-
+/* Botones Principales */
 .btn-main {
-  width: 100%;
-  padding: 20px 0;
-  font-weight: 700;
-  font-size: 18px;
-  border-radius: 32px;
-  border: none;
-  color: white;
-  cursor: pointer;
-  box-shadow: 0 8px 20px var(--shadow-button);
-  transition: transform 0.15s ease, box-shadow 0.25s ease;
-  margin-top: 30px;
-  user-select: none;
-  -webkit-tap-highlight-color: transparent;
+    width: 100%;
+    padding: 18px;
+    border: none;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 16px;
+    color: white;
+    cursor: pointer;
+    margin-top: 25px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: 0.2s;
+    -webkit-appearance: none;
 }
 
 .btn-main:active {
-  transform: scale(0.97);
-  box-shadow: 0 4px 10px var(--shadow-button);
+    transform: scale(0.98);
+    box-shadow: 0 2px 3px rgba(0,0,0,0.1);
 }
 
-.btn-check {
-  background: linear-gradient(135deg, #4f46e5, #8b5cf6);
+.btn-check { background: var(--blue); }
+.btn-danos { background: var(--orange); }
+.btn-entrega { background: var(--green); }
+
+/* Tarjetas de Fotos de Daños */
+.card-foto {
+    border: 1px solid #e2e8f0;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
-.btn-danos {
-  background: linear-gradient(135deg, #f97316, #fbbf24);
-  color: #1f2937;
-  box-shadow: 0 8px 18px rgba(251, 146, 60, 0.5);
+.img-prev {
+    width: 100%;
+    border-radius: 8px;
+    margin-top: 10px;
+    display: none;
+    border: 1px solid #ddd;
+    object-fit: cover;
+    height: 150px;
 }
 
-.btn-entrega {
-  background: linear-gradient(135deg, #22c55e, #16a34a);
+/* Indicador Secuencial */
+#foto-indicador {
+    background: #fffbeb;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    border: 1px solid #fde68a;
+    margin-bottom: 15px;
 }
-
-/* BOTON TOMAR FOTO */
 
 .btn-secuencial {
-  background: var(--primary);
-  color: white;
-  border: none;
-  padding: 22px 0;
-  border-radius: 36px;
-  font-weight: 700;
-  font-size: 19px;
-  letter-spacing: 0.05em;
-  cursor: pointer;
-  box-shadow: 0 6px 16px var(--shadow-button);
-  transition: box-shadow 0.3s ease;
-  user-select: none;
+    background: #334155;
+    color: white;
+    padding: 20px;  /* más grande */
+    border-radius: 12px;
+    border: none;
+    width: 100%;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    text-transform: uppercase;
+    -webkit-appearance: none;
 }
 
-.btn-secuencial:hover {
-  box-shadow: 0 10px 24px var(--shadow-button);
-}
-
-.btn-secuencial:active {
-  transform: scale(0.97);
-  box-shadow: 0 4px 10px var(--shadow-button);
-}
-
-/* GALERIA */
-
+/* Galería de Entregas */
 #galeria-entregas {
-  margin-top: 16px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
-  gap: 12px;
+    margin-top: 15px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
 }
 
-/* TARJETAS DE FOTO DAÑOS */
-
-.card-foto {
-  background: white;
-  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.07);
-  border-radius: 20px;
-  padding: 18px 20px;
-  margin-bottom: 26px;
-  border: none;
-  transition: box-shadow 0.3s ease;
-}
-
-.card-foto:hover {
-  box-shadow: 0 12px 32px rgba(124, 58, 237, 0.15);
-}
-
-.card-foto label {
-  color: var(--primary);
-  font-weight: 700;
-  font-size: 15px;
-  margin-bottom: 12px;
-  display: block;
-}
-
-/* INDICADOR DE FOTO */
-
-#foto-indicador {
-  background: #fdf6fb;
-  border: 1.5px solid #f5c6e8;
-  padding: 18px;
-  border-radius: 24px;
-  margin-bottom: 18px;
-  font-weight: 600;
-  color: #9333ea;
-  text-align: center;
-  font-size: 15px;
-}
-
-/* RESPONSIVE */
-
+/* MEDIA QUERY PARA CELULARES */
 @media (max-width: 480px) {
-  .container {
-    padding: 24px 28px;
-    border-radius: 24px;
-  }
-  .grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-  }
-  input,
-  select,
-  textarea {
-    font-size: 15px;
-    padding: 14px 16px;
-  }
-  .btn-main {
-    font-size: 17px;
-    padding: 18px 0;
-    border-radius: 28px;
-  }
-  .btn-secuencial {
-    font-size: 18px;
-    padding: 20px 0;
-    border-radius: 32px;
-  }
-  header h1 {
-    font-size: 22px;
-  }
+    .container {
+        border-radius: 0;
+        box-shadow: none;
+    }
+    body {
+        padding: 0;
+        background: white;
+    }
+    .grid {
+        grid-template-columns: 1fr; /* apila los campos verticalmente */
+        gap: 10px;
+    }
+    .tabs { padding: 4px; gap: 3px; }
+    .tab-btn { font-size: 10px; padding: 10px 2px; }
+    .content { padding: 15px; }
+    header h1 { font-size: 18px; }
+    label { font-size: 13px; margin: 10px 0 3px; }
+    input, select, textarea { padding: 10px; font-size: 14px; }
         }
     </style>
 </head>
@@ -434,7 +347,7 @@ canvas {
             <strong id="nombre-parte" style="font-size:18px; color:var(--main);">CAPOT</strong>
         </div>
         <input type="file" id="cam-input" accept="image/*" capture="camera" style="display:none">
-        <button id="btn-sec" class="btn-secuencial">📸 TOMAR FOTO</button>
+        <button id="btn-sec" class="btn-secuencial">TOMAR FOTO</button>
         <div id="galeria-entregas"></div>
 
         <div class="section-title">Firma de Conformidad del Cliente</div>
@@ -700,6 +613,7 @@ canvas {
 </script>
 </body>
 </html>
+
 
 
 
