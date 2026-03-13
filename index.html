@@ -263,126 +263,182 @@
     }
 
     function generarCheck() {
-        const { jsPDF } = window.jspdf; 
-        const doc = new jsPDF();
-        const p = (document.getElementById('pat1').value || "S/D").toUpperCase();
-        
-        drawHeader(doc, "INFORME TÉCNICO DE MANTENIMIENTO", "#1a1a1a");
+    const { jsPDF } = window.jspdf; 
+    const doc = new jsPDF();
+    const p = (document.getElementById('pat1').value || "S/D").toUpperCase();
+    const fechaCustom = document.getElementById('fecha1').value; // Usa la fecha del input
 
-        let y = 55;
-        doc.setTextColor(40, 40, 40);
-        doc.setFontSize(10);
+    drawHeader(doc, "INFORME TÉCNICO DE MANTENIMIENTO", "#1a1a1a");
 
-        const data = [
-            ["EMPLEADO", document.getElementById('emp').value],
-            ["FECHA", new Date().toLocaleString()],
-            ["PATENTE", p],
-            ["KILOMETRAJE", document.getElementById('km').value],
-            ["ACEITE", document.getElementById('oil').value],
-            ["AGUA/REFRIG.", document.getElementById('wat').value],
-            ["FRENOS", document.getElementById('fre').value],
-            ["LUCES", document.getElementById('luc').value],
-            ["NEUMÁTICOS", document.getElementById('neu').value]
-        ];
+    let y = 55;
+    doc.setTextColor(40, 40, 40);
+    doc.setFontSize(10);
 
-        data.forEach(([label, val]) => {
-            doc.setFont("helvetica", "bold");
-            doc.text(label + ":", 25, y);
-            doc.setFont("helvetica", "normal");
-            doc.text(String(val), 70, y);
-            doc.setDrawColor(230);
-            doc.line(20, y + 2, 190, y + 2);
-            y += 10;
-        });
+    // Lista de datos sin Reserva
+    const data = [
+        ["EMPLEADO", document.getElementById('emp').value],
+        ["FECHA", fechaCustom],
+        ["PATENTE", p],
+        ["KILOMETRAJE", document.getElementById('km').value],
+        ["ACEITE", document.getElementById('oil').value],
+        ["AGUA/REFRIG.", document.getElementById('wat').value],
+        ["FRENOS", document.getElementById('fre').value],
+        ["LUCES", document.getElementById('luc').value],
+        ["NEUMÁTICOS", document.getElementById('neu').value]
+    ];
 
-        if (document.getElementById('obs').value) {
-            y += 5;
-            doc.setFont("helvetica", "bold");
-            doc.text("OBSERVACIONES:", 25, y);
-            y += 7;
-            doc.setFont("helvetica", "normal");
-            doc.text(document.getElementById('obs').value, 25, y, { maxWidth: 160 });
-        }
+    data.forEach(([label, val]) => {
+        doc.setFont("helvetica", "bold");
+        doc.text(label + ":", 25, y);
+        doc.setFont("helvetica", "normal");
+        doc.text(String(val), 70, y);
+        doc.setDrawColor(230);
+        doc.line(20, y + 2, 190, y + 2);
+        y += 10; 
+    });
 
-        if(!signaturePad.isEmpty()) {
-            doc.setDrawColor(0);
-            doc.text("FIRMA RESPONSABLE:", 25, 245);
-            doc.addImage(signaturePad.toDataURL(), 'PNG', 25, 250, 50, 20);
-        }
-        
-        doc.save(`Check_Tecnico_${p}.pdf`);
+    if (document.getElementById('obs').value) {
+        y += 5;
+        doc.setFont("helvetica", "bold");
+        doc.text("OBSERVACIONES:", 25, y);
+        y += 7;
+        doc.setFont("helvetica", "normal");
+        doc.text(document.getElementById('obs').value, 25, y, { maxWidth: 160 });
+    }
+
+    if(!signaturePad.isEmpty()) {
+        doc.setDrawColor(0);
+        doc.text("FIRMA RESPONSABLE:", 25, 245);
+        doc.addImage(signaturePad.toDataURL(), 'PNG', 25, 250, 50, 20);
+    }
+    
+    doc.save(`Check_Tecnico_${p}.pdf`);
     }
 
     async function generarDanos() {
-        const { jsPDF } = window.jspdf; 
-        const doc = new jsPDF();
-        const p = (document.getElementById('pat2').value || "S/D").toUpperCase();
-        
-        drawHeader(doc, "REPORTE DETALLADO DE DAÑOS", "#e67e22");
+    const { jsPDF } = window.jspdf; 
+    const doc = new jsPDF();
+    const p = (document.getElementById('pat2').value || "S/D").toUpperCase();
+    const reserva = (document.getElementById('reserva_danos')?.value || "S/D").toUpperCase();
+    const fecha = document.getElementById('fecha2').value; // Usamos el nuevo input de fecha
+    
+    drawHeader(doc, "REPORTE DETALLADO DE DAÑOS", "#e67e22");
 
-        let y = 50;
-        const fotos = document.querySelectorAll('.card-foto');
+    // --- ENCABEZADO DE DATOS (Igual al de movimientos) ---
+    let y = 50;
+    doc.setFontSize(10);
+    doc.setTextColor(50);
+    
+    doc.setFont("helvetica", "bold");
+    doc.text("PATENTE:", 20, y); 
+    doc.setFont("helvetica", "normal"); 
+    doc.text(p, 45, y);
 
-        fotos.forEach((card, i) => {
-            const img = card.querySelector('img');
-            const desc = card.querySelector('textarea').value || "Sin descripción";
+    doc.setFont("helvetica", "bold");
+    doc.text("RESERVA:", 100, y); 
+    doc.setFont("helvetica", "normal"); 
+    doc.text(reserva, 125, y); 
+    
+    y += 8;
 
-            if(img.src.startsWith('data')) {
-                if(y > 220) { doc.addPage(); y = 50; }
+    doc.setFont("helvetica", "bold");
+    doc.text("FECHA:", 20, y); 
+    doc.setFont("helvetica", "normal"); 
+    doc.text(fecha, 45, y);
 
-                doc.setDrawColor(200);
-                doc.rect(20, y, 170, 55); 
+    y += 15; // Espacio antes de las fotos
 
-                doc.addImage(img.src, 'JPEG', 23, y + 3, 75, 49);
+    // --- LISTADO DE FOTOS ---
+    const fotos = document.querySelectorAll('.card-foto');
 
-                doc.setDrawColor(230);
-                doc.setFillColor(250, 250, 250);
-                doc.rect(103, y + 3, 82, 49, 'FD');
-                
-                doc.setTextColor(230, 126, 34);
-                doc.setFont("helvetica", "bold");
-                doc.text(`DAÑO #0${i+1}`, 108, y + 12);
-                
-                doc.setTextColor(0);
-                doc.setFont("helvetica", "normal");
-                doc.setFontSize(9);
-                doc.text(desc, 108, y + 22, { maxWidth: 72 });
+    fotos.forEach((card, i) => {
+        const img = card.querySelector('img');
+        const desc = card.querySelector('textarea').value || "Sin descripción";
 
-                y += 62;
+        if(img.src.startsWith('data')) {
+            // Si la foto no entra en la página, creamos una nueva
+            if(y > 220) { 
+                doc.addPage(); 
+                y = 30; // En página nueva empezamos más arriba
             }
-        });
 
-        doc.save(`Danos_${p}.pdf`);
+            doc.setDrawColor(200);
+            doc.rect(20, y, 170, 55); 
+
+            doc.addImage(img.src, 'JPEG', 23, y + 3, 75, 49);
+
+            doc.setDrawColor(230);
+            doc.setFillColor(250, 250, 250);
+            doc.rect(103, y + 3, 82, 49, 'FD');
+            
+            doc.setTextColor(230, 126, 34);
+            doc.setFont("helvetica", "bold");
+            doc.text(`DAÑO #0${i+1}`, 108, y + 12);
+            
+            doc.setTextColor(0);
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(9);
+            doc.text(desc, 108, y + 22, { maxWidth: 72 });
+
+            y += 62;
+        }
+    });
+
+    doc.save(`Danos_${p}_${reserva}.pdf`);
     }
 
     function generarMovimiento() {
-        const { jsPDF } = window.jspdf; 
-        const doc = new jsPDF();
-        const tipo = document.getElementById('mov_tipo').value;
-        const p = (document.getElementById('pat3').value || "S/D").toUpperCase();
-        
-        const color = tipo === "ENTREGA" ? "#27ae60" : "#2980b9";
-        drawHeader(doc, `REPORTE DE ${tipo} DE UNIDAD`, color);
+    const { jsPDF } = window.jspdf; 
+    const doc = new jsPDF();
+    const tipo = document.getElementById('mov_tipo').value;
+    const p = (document.getElementById('pat3').value || "S/D").toUpperCase();
+    const reserva = (document.getElementById('reserva_mov').value || "S/D").toUpperCase(); // Capturamos la reserva
+    const fechaCustom = document.getElementById('fecha3').value; // Usamos el nuevo campo de fecha
 
-        let y = 50;
-        doc.setFontSize(10);
-        doc.setTextColor(50);
-        
-        doc.setFont("helvetica", "bold");
-        doc.text("PATENTE:", 20, y); doc.setFont("helvetica", "normal"); doc.text(p, 45, y);
-        doc.setFont("helvetica", "bold");
-        doc.text("KM:", 100, y); doc.setFont("helvetica", "normal"); doc.text(document.getElementById('km_mov').value, 115, y);
-        y += 8;
-        doc.setFont("helvetica", "bold");
-        doc.text("FECHA:", 20, y); doc.setFont("helvetica", "normal"); doc.text(new Date().toLocaleString(), 45, y);
-        doc.setFont("helvetica", "bold");
-        doc.text("COMBUSTIBLE:", 100, y); doc.setFont("helvetica", "normal"); doc.text(document.getElementById('fuel_mov').value, 135, y);
-        
-        y += 15;
-        doc.setFontSize(12);
-        doc.setFont("helvetica", "bold");
-        doc.text("REGISTRO FOTOGRÁFICO DE ESTADO", 20, y);
-        y += 5;
+    const color = tipo === "ENTREGA" ? "#27ae60" : "#2980b9";
+    drawHeader(doc, `REPORTE DE ${tipo} DE UNIDAD`, color);
+
+    let y = 50;
+    doc.setFontSize(10);
+    doc.setTextColor(50);
+    
+    // --- FILA 1: PATENTE Y RESERVA ---
+    doc.setFont("helvetica", "bold");
+    doc.text("PATENTE:", 20, y); 
+    doc.setFont("helvetica", "normal"); 
+    doc.text(p, 45, y);
+
+    doc.setFont("helvetica", "bold");
+    doc.text("RESERVA:", 100, y); 
+    doc.setFont("helvetica", "normal"); 
+    doc.text(reserva, 125, y); 
+    
+    y += 8;
+
+    // --- FILA 2: FECHA Y KM ---
+    doc.setFont("helvetica", "bold");
+    doc.text("FECHA:", 20, y); 
+    doc.setFont("helvetica", "normal"); 
+    doc.text(fechaCustom, 45, y); // Ahora toma la fecha que elijas en el input
+
+    doc.setFont("helvetica", "bold");
+    doc.text("KM:", 100, y); 
+    doc.setFont("helvetica", "normal"); 
+    doc.text(document.getElementById('km_mov').value, 115, y);
+    
+    y += 8;
+
+    // --- FILA 3: COMBUSTIBLE ---
+    doc.setFont("helvetica", "bold");
+    doc.text("COMBUSTIBLE:", 20, y); 
+    doc.setFont("helvetica", "normal"); 
+    doc.text(document.getElementById('fuel_mov').value, 55, y);
+    
+    y += 15;
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    doc.text("REGISTRO FOTOGRÁFICO DE ESTADO", 20, y);
+    y += 5;
 
         fotosEntregas.forEach((foto, i) => {
             if(y > 230) { doc.addPage(); y = 50; }
@@ -461,6 +517,7 @@
 </script>
 </body>
 </html>
+
 
 
 
