@@ -267,11 +267,12 @@
 Aquí tienes la función generarCheck actualizada con todos los campos que faltaban (Luces, Gomas, Extintor y Zorrino):
 
 JavaScript
+    
 function generarCheck() {
     const { jsPDF } = window.jspdf; 
     const doc = new jsPDF();
-    const p = (document.getElementById('pat1').value || "S/D").toUpperCase();
-    const fechaCustom = document.getElementById('fecha1').value;
+    const p = (document.getElementById('pat1')?.value || "S/D").toUpperCase();
+    const fechaCustom = document.getElementById('fecha1')?.value || "";
 
     drawHeader(doc, "INFORME TÉCNICO DE MANTENIMIENTO", "#1a1a1a");
 
@@ -279,32 +280,32 @@ function generarCheck() {
     doc.setTextColor(40, 40, 40);
     doc.setFontSize(10);
 
-    // Lista de datos completa para el reporte técnico
+    // Usamos el operador ?.value para evitar que el código se rompa si falta el ID en el HTML
     const data = [
-        ["EMPLEADO", document.getElementById('emp').value],
+        ["EMPLEADO", document.getElementById('emp')?.value || ""],
         ["FECHA", fechaCustom],
         ["PATENTE", p],
-        ["KILOMETRAJE", document.getElementById('km').value],
-        ["ACEITE", document.getElementById('oil').value],
-        ["AGUA/REFRIG.", document.getElementById('wat').value],
-        ["FRENOS", document.getElementById('fre').value],
-        ["LUCES", document.getElementById('luc').value],      // <--- Agregado
-        ["GOMAS", document.getElementById('neu').value],      // <--- Agregado (usa el ID 'neu')
-        ["EXTINTOR", document.getElementById('ext').value],   // <--- Agregado (asegúrate que el ID sea 'ext')
-        ["ZORRINO", document.getElementById('zor').value]     // <--- Agregado (asegúrate que el ID sea 'zor')
+        ["KILOMETRAJE", document.getElementById('km')?.value || ""],
+        ["ACEITE", document.getElementById('oil')?.value || ""],
+        ["AGUA/REFRIG.", document.getElementById('wat')?.value || ""],
+        ["FRENOS", document.getElementById('fre')?.value || ""],
+        ["LUCES", document.getElementById('luc')?.value || ""],
+        ["GOMAS", document.getElementById('neu')?.value || ""],
+        ["EXTINTOR", document.getElementById('ext')?.value || "N/A"],
+        ["ZORRINO", document.getElementById('zor')?.value || "N/A"]
     ];
 
     data.forEach(([label, val]) => {
         doc.setFont("helvetica", "bold");
         doc.text(label + ":", 25, y);
         doc.setFont("helvetica", "normal");
-        doc.text(String(val || "N/A"), 70, y); // Ponemos N/A si está vacío
+        doc.text(String(val), 70, y);
         doc.setDrawColor(230);
         doc.line(20, y + 2, 190, y + 2);
-        y += 8.5; // Ajustamos un poco el espacio para que quepan todos los renglones
+        y += 8.5;
     });
 
-    if (document.getElementById('obs').value) {
+    if (document.getElementById('obs')?.value) {
         y += 5;
         doc.setFont("helvetica", "bold");
         doc.text("OBSERVACIONES:", 25, y);
@@ -313,14 +314,12 @@ function generarCheck() {
         doc.text(document.getElementById('obs').value, 25, y, { maxWidth: 160 });
     }
 
-    if(!signaturePad.isEmpty()) {
-        doc.setDrawColor(0);
-        // Bajamos un poco la firma si hay muchas observaciones
-        let yFirma = Math.max(245, y + 20); 
-        if (yFirma > 270) { doc.addPage(); yFirma = 30; } 
-        
+    // Firma con protección por si signaturePad no está listo
+    if(typeof signaturePad !== 'undefined' && !signaturePad.isEmpty()) {
+        let yFirma = Math.max(245, y + 15);
+        doc.setFont("helvetica", "bold");
         doc.text("FIRMA RESPONSABLE:", 25, yFirma);
-        doc.addImage(signaturePad.toDataURL(), 'PNG', 25, yFirma + 5, 50, 20);
+        doc.addImage(signaturePad.toDataURL(), 'PNG', 25, yFirma + 2, 50, 20);
     }
     
     doc.save(`Check_Tecnico_${p}.pdf`);
@@ -528,6 +527,7 @@ function generarCheck() {
 </script>
 </body>
 </html>
+
 
 
 
