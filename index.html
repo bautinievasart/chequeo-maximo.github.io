@@ -32,7 +32,7 @@
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
         .sig-container { border: 2px dashed #ccc; background: #fafafa; border-radius: 15px; margin-top: 10px; height: 180px; }
-        #signature-pad, #signature-pad-mov { width: 100%; height: 100%; touch-action: none; }
+        canvas { width: 100%; height: 100%; touch-action: none; }
         
         .btn-main { width: 100%; padding: 20px; border: none; border-radius: 15px; font-weight: bold; font-size: 16px; color: white; cursor: pointer; margin-top: 20px; }
         .btn-check { background: var(--blue); }
@@ -63,15 +63,14 @@
 
     <div id="mecanica" class="content active">
         <label>Fecha del Reporte</label>
-    <input type="date" id="fecha1" class="fecha-auto">
-    
+        <input type="date" id="fecha1">
         <label>Nombre del Empleado</label>
-        <input type="text" id="emp" placeholder="Escriba su nombre">
+        <input type="text" id="emp" placeholder="Nombre del empleado">
         <div class="grid">
             <div><label>Patente</label><input type="text" id="pat1" placeholder="ABC-123"></div>
             <div><label>KM</label><input type="number" id="km"></div>
         </div>
-        <div class="section-title">Fluidos y Mecánica</div>
+        <div class="section-title">Mecánica y Fluidos</div>
         <div class="grid">
             <div><label>Aceite</label><select id="oil"><option>OK</option><option>BAJO</option></select></div>
             <div><label>Agua</label><select id="wat"><option>OK</option><option>BAJO</option></select></div>
@@ -93,96 +92,65 @@
         <textarea id="obs" rows="2"></textarea>
         <div class="section-title">Firma del Responsable</div>
         <div class="sig-container"><canvas id="signature-pad"></canvas></div>
-        <button onclick="signaturePad.clear()" style="width:100%; margin-top:10px; padding:10px; border-radius:10px;">BORRAR FIRMA</button>
+        <button onclick="signaturePad.clear()" style="width:100%; margin-top:10px;">BORRAR FIRMA</button>
         <button class="btn-main btn-check" onclick="generarCheck()">DESCARGAR REPORTE TÉCNICO</button>
-        
     </div>
 
     <div id="danos" class="content">
         <label>Fecha del Reporte</label>
-    <input type="date" id="fecha2" class="fecha-auto">
-        <label>Patente Vehículo</label>
-        <label>Número de Reserva</label>
-<input type="text" id="reserva_danos" placeholder="Ej: 12345">
-        <input type="text" id="pat2" placeholder="Patente para daños">
+        <input type="date" id="fecha2">
+        <div class="grid">
+            <div><label>Patente Vehículo</label><input type="text" id="pat2"></div>
+            <div><label>Número de Reserva</label><input type="text" id="reserva_danos"></div>
+        </div>
         <div id="lista-fotos" style="margin-top:20px;"></div>
-        <button onclick="nuevaFoto('lista-fotos')" style="width:100%; padding:15px; background:#666; color:white; border:none; border-radius:12px; font-weight:bold;">+ AGREGAR FOTO DE DAÑO</button>
+        <button onclick="nuevaFoto('lista-fotos')" style="width:100%; padding:15px; background:#666; color:white; border:none; border-radius:12px;">+ AGREGAR FOTO DE DAÑO</button>
         <button class="btn-main btn-danos" onclick="generarDanos()">DESCARGAR REPORTE DE DAÑOS</button>
-        
     </div>
 
     <div id="entregas" class="content">
         <label>Fecha del Reporte</label>
-    <input type="date" id="fecha3" class="fecha-auto">
+        <input type="date" id="fecha3">
         <label>Tipo de Movimiento</label>
         <select id="mov_tipo"><option>ENTREGA</option><option>DEVOLUCIÓN</option></select>
         <div class="grid">
-            <label>Número de Reserva</label>
-<input type="text" id="reserva_mov" placeholder="Ej: 12345">
-            <div><label>Patente</label><input type="text" id="pat3" placeholder="ABC-123"></div>
-            <div><label>Kilometraje</label><input type="number" id="km_mov"></div>
+            <div><label>Número de Reserva</label><input type="text" id="reserva_mov"></div>
+            <div><label>Patente</label><input type="text" id="pat3"></div>
         </div>
-        <label>Nivel de Combustible</label>
-        <select id="fuel_mov">
-            <option value="1/8">1/8 (Reserva)</option>
-    <option value="2/8">2/8 (1/4)</option>
-    <option value="3/8">3/8</option>
-    <option value="4/8">4/8 (1/2)</option>
-    <option value="5/8">5/8</option>
-    <option value="6/8">6/8 (3/4)</option>
-    <option value="7/8">7/8</option>
-    <option value="8/8">8/8 (Lleno)</option>
-        </select>
-        
+        <div class="grid">
+            <div><label>Kilometraje</label><input type="number" id="km_mov"></div>
+            <div><label>Combustible</label><select id="fuel_mov"><option>1/8</option><option>2/8</option><option>4/8</option><option>8/8</option></select></div>
+        </div>
         <div class="section-title">Registro Fotográfico Unidad</div>
         <div id="foto-indicador">SIGUIENTE: <span id="nombre-parte">RUEDA C/D</span></div>
         <input type="file" id="input-secuencial" accept="image/*" capture="camera" style="display:none" onchange="capturarFotoSecuencial(this)">
         <button class="btn-secuencial" onclick="document.getElementById('input-secuencial').click()">📸 TOMAR FOTO</button>
         <div id="progreso-texto" class="progreso-fotos">0 de 21 fotos tomadas</div>
         <div id="lista-fotos-entrega" style="margin-top:20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;"></div>
-
         <label>Estado General / Limpieza</label>
-        <textarea id="obs_mov" rows="3" placeholder="Ej: Auto limpio..."></textarea>
-
+        <textarea id="obs_mov" rows="3"></textarea>
         <div class="section-title">Firma Conformidad</div>
         <div class="sig-container"><canvas id="signature-pad-mov"></canvas></div>
-        <button onclick="signaturePadMov.clear()" style="width:100%; margin-top:10px; padding:10px; border-radius:10px;">BORRAR FIRMA</button>
-
+        <button onclick="signaturePadMov.clear()" style="width:100%; margin-top:10px;">BORRAR FIRMA</button>
         <button class="btn-main btn-entrega" onclick="generarMovimiento()">DESCARGAR REPORTE MOVIMIENTO</button>
-       
-
-     
-        
-
-
     </div>
 </div>
 
 <script>
     let signaturePad, signaturePadMov;
     let fotoCount = 0;
-    const listaPartes = [
-        "RUEDA C/D", "RUEDA C/T", "RUEDA A/D", "RUEDA A/T", "CAPOT", "PARAGOLPE D", 
-        "GUARDABARRO C/D", "PUERTA C", "PUERTA C/T", "GUARDABARRO C/T", "BAUL", 
-        "GUARDABARRO A/T", "PUERTA A/T", "PUERTA A", "GUARDABARRO A/D", "TECHO", 
-        "PARABRISAS", "INTERIOR", "ASIENTOS TRASEROS", "MOTOR", "RUEDA AUXILIO"
-    ];
+    const listaPartes = ["RUEDA C/D", "RUEDA C/T", "RUEDA A/D", "RUEDA A/T", "CAPOT", "PARAGOLPE D", "GUARDABARRO C/D", "PUERTA C", "PUERTA C/T", "GUARDABARRO C/T", "BAUL", "GUARDABARRO A/T", "PUERTA A/T", "PUERTA A", "GUARDABARRO A/D", "TECHO", "PARABRISAS", "INTERIOR", "ASIENTOS TRASEROS", "MOTOR", "RUEDA AUXILIO"];
     let parteActualIndex = 0;
     let fotosEntregas = [];
 
     window.onload = () => {
-        const canvas1 = document.getElementById('signature-pad');
-        const canvas2 = document.getElementById('signature-pad-mov');
-        signaturePad = new SignaturePad(canvas1);
-        signaturePadMov = new SignaturePad(canvas2);
-
+        const c1 = document.getElementById('signature-pad');
+        const c2 = document.getElementById('signature-pad-mov');
+        signaturePad = new SignaturePad(c1);
+        signaturePadMov = new SignaturePad(c2);
         const resize = () => {
-            const ratio = Math.max(window.devicePixelRatio || 1, 1);
-            [canvas1, canvas2].forEach(c => {
-                c.width = c.offsetWidth * ratio;
-                c.height = c.offsetHeight * ratio;
-                c.getContext("2d").scale(ratio, ratio);
-            });
+            const r = Math.max(window.devicePixelRatio || 1, 1);
+            [c1, c2].forEach(c => { c.width = c.offsetWidth * r; c.height = c.offsetHeight * r; c.getContext("2d").scale(r, r); });
         };
         window.onresize = resize; resize();
     };
@@ -196,12 +164,59 @@
         if(tab === 'entregas') document.getElementById('t3').classList.add('active');
     }
 
+    function drawHeader(doc, title, colorHex) {
+        doc.setFillColor(colorHex);
+        doc.rect(0, 0, 210, 40, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(20);
+        doc.text("MAXIMO RENT A CAR", 20, 20);
+        doc.setFontSize(10);
+        doc.text(title, 20, 30);
+    }
+
+    function generarCheck() {
+        const { jsPDF } = window.jspdf; 
+        const doc = new jsPDF();
+        const p = (document.getElementById('pat1').value || "S/D").toUpperCase();
+        drawHeader(doc, "INFORME TÉCNICO DE MANTENIMIENTO", "#1a1a1a");
+        let y = 55;
+        const data = [
+            ["EMPLEADO", document.getElementById('emp').value],
+            ["FECHA", document.getElementById('fecha1').value],
+            ["PATENTE", p],
+            ["KM", document.getElementById('km').value],
+            ["ACEITE", document.getElementById('oil').value],
+            ["AGUA", document.getElementById('wat').value],
+            ["FRENOS", document.getElementById('fre').value],
+            ["LUCES", document.getElementById('luc').value],
+            ["GOMAS", document.getElementById('neu').value],
+            ["EXTINTOR", document.getElementById('ext').value],
+            ["ZORRINO", document.getElementById('zor').value]
+        ];
+        data.forEach(([l, v]) => {
+            doc.setFont("helvetica", "bold"); doc.text(l + ":", 25, y);
+            doc.setFont("helvetica", "normal"); doc.text(String(v), 70, y);
+            doc.line(20, y + 2, 190, y + 2); y += 9;
+        });
+        if(!signaturePad.isEmpty()) doc.addImage(signaturePad.toDataURL(), 'PNG', 25, 240, 50, 20);
+        doc.save(`Check_${p}.pdf`);
+    }
+
     function nuevaFoto(contenedorId) {
         fotoCount++;
         const div = document.createElement('div');
         div.className = 'card-foto';
-        div.innerHTML = `<label style="color:var(--orange)">DAÑO #${fotoCount}</label><input type="file" accept="image/*" capture="camera" onchange="readImg(this, 'p${fotoCount}')"><img id="p${fotoCount}" class="img-prev img-danos-file"><textarea placeholder="Descripción..." style="margin-top:10px"></textarea>`;
+        div.innerHTML = `<label>DAÑO #${fotoCount}</label><input type="file" accept="image/*" capture="camera" onchange="readImg(this, 'p${fotoCount}')"><img id="p${fotoCount}" class="img-prev"><textarea placeholder="Descripción..."></textarea>`;
         document.getElementById(contenedorId).appendChild(div);
+    }
+
+    function readImg(input, id) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = (e) => { const img = document.getElementById(id); img.src = e.target.result; img.style.display = 'block'; };
+            reader.readAsDataURL(input.files[0]);
+        }
     }
 
     function capturarFotoSecuencial(input) {
@@ -210,14 +225,13 @@
             reader.onload = (e) => {
                 fotosEntregas.push({ nombre: listaPartes[parteActualIndex], src: e.target.result });
                 const div = document.createElement('div');
-                div.style = "background:#eee; border-radius:10px; padding:5px; text-align:center; font-size:10px;";
-                div.innerHTML = `<img src="${e.target.result}" style="width:100%; border-radius:5px;"><br><b>${listaPartes[parteActualIndex]}</b>`;
+                div.style = "background:#eee; padding:5px; text-align:center; font-size:10px;";
+                div.innerHTML = `<img src="${e.target.result}" style="width:100%"><br>${listaPartes[parteActualIndex]}`;
                 document.getElementById('lista-fotos-entrega').appendChild(div);
                 parteActualIndex++;
                 actualizarInterfazSecuencial();
             };
             reader.readAsDataURL(input.files[0]);
-            input.value = "";
         }
     }
 
@@ -229,254 +243,48 @@
             progreso.innerText = `${parteActualIndex} de 21 fotos tomadas`;
         } else {
             document.getElementById('foto-indicador').innerHTML = "✅ FOTOS COMPLETAS";
-            document.querySelector('.btn-secuencial').style.display = 'none';
         }
     }
-
-    function readImg(input, id) {
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = (e) => { const img = document.getElementById(id); img.src = e.target.result; img.style.display = 'block'; };
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-
-    // --- NUEVAS FUNCIONES DE PDF PROFESIONALES (REEMPLAZA LAS ANTERIORES) ---
-
-    function drawHeader(doc, title, colorHex) {
-        doc.setFillColor(colorHex);
-        doc.rect(0, 0, 210, 40, 'F');
-        doc.setTextColor(255, 255, 255);
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(22);
-        doc.text("MAXIMO RENT A CAR", 20, 20);
-        doc.setFontSize(12);
-        doc.setFont("helvetica", "normal");
-        doc.text(title, 20, 30);
-        
-        doc.setFillColor(255, 255, 255, 0.5);
-        doc.rect(20, 33, 170, 0.5, 'F');
-    }
-
-    ¡Tienes razón! Se nos quedaron esos ítems afuera del PDF. Para que el Informe Técnico de Maximo Rent A Car sea completo, vamos a agregarlos a la lista de datos.
-
-Aquí tienes la función generarCheck actualizada con todos los campos que faltaban (Luces, Gomas, Extintor y Zorrino):
-
-JavaScript
-    
-function generarCheck() {
-    const { jsPDF } = window.jspdf; 
-    const doc = new jsPDF();
-    const p = (document.getElementById('pat1').value || "S/D").toUpperCase();
-    const fechaCustom = document.getElementById('fecha1').value; // Usa la fecha del input
-
-    drawHeader(doc, "INFORME TÉCNICO DE MANTENIMIENTO", "#1a1a1a");
-
-    let y = 55;
-    doc.setTextColor(40, 40, 40);
-    doc.setFontSize(10);
-
-    // Lista de datos sin Reserva
-    const data = [
-        ["EMPLEADO", document.getElementById('emp').value],
-        ["FECHA", fechaCustom],
-        ["PATENTE", p],
-        ["KILOMETRAJE", document.getElementById('km').value],
-        ["ACEITE", document.getElementById('oil').value],
-        ["AGUA/REFRIG.", document.getElementById('wat').value],
-        ["FRENOS", document.getElementById('fre').value],
-        ["LUCES", document.getElementById('luc').value],
-        ["NEUMÁTICOS", document.getElementById('neu').value]
-    ];
-
-    data.forEach(([label, val]) => {
-        doc.setFont("helvetica", "bold");
-        doc.text(label + ":", 25, y);
-        doc.setFont("helvetica", "normal");
-        doc.text(String(val), 70, y);
-        doc.setDrawColor(230);
-        doc.line(20, y + 2, 190, y + 2);
-        y += 10; 
-    });
-
-    if (document.getElementById('obs').value) {
-        y += 5;
-        doc.setFont("helvetica", "bold");
-        doc.text("OBSERVACIONES:", 25, y);
-        y += 7;
-        doc.setFont("helvetica", "normal");
-        doc.text(document.getElementById('obs').value, 25, y, { maxWidth: 160 });
-    }
-
-    if(!signaturePad.isEmpty()) {
-        doc.setDrawColor(0);
-        doc.text("FIRMA RESPONSABLE:", 25, 245);
-        doc.addImage(signaturePad.toDataURL(), 'PNG', 25, 250, 50, 20);
-    }
-    
-    doc.save(`Check_Tecnico_${p}.pdf`);
-}
 
     async function generarDanos() {
-    const { jsPDF } = window.jspdf; 
-    const doc = new jsPDF();
-    const p = (document.getElementById('pat2').value || "S/D").toUpperCase();
-    const reserva = (document.getElementById('reserva_danos')?.value || "S/D").toUpperCase();
-    const fecha = document.getElementById('fecha2').value; // Usamos el nuevo input de fecha
-    
-    drawHeader(doc, "REPORTE DETALLADO DE DAÑOS", "#e67e22");
-
-    // --- ENCABEZADO DE DATOS (Igual al de movimientos) ---
-    let y = 50;
-    doc.setFontSize(10);
-    doc.setTextColor(50);
-    
-    doc.setFont("helvetica", "bold");
-    doc.text("PATENTE:", 20, y); 
-    doc.setFont("helvetica", "normal"); 
-    doc.text(p, 45, y);
-
-    doc.setFont("helvetica", "bold");
-    doc.text("RESERVA:", 100, y); 
-    doc.setFont("helvetica", "normal"); 
-    doc.text(reserva, 125, y); 
-    
-    y += 8;
-
-    doc.setFont("helvetica", "bold");
-    doc.text("FECHA:", 20, y); 
-    doc.setFont("helvetica", "normal"); 
-    doc.text(fecha, 45, y);
-
-    y += 15; // Espacio antes de las fotos
-
-    // --- LISTADO DE FOTOS ---
-    const fotos = document.querySelectorAll('.card-foto');
-
-    fotos.forEach((card, i) => {
-        const img = card.querySelector('img');
-        const desc = card.querySelector('textarea').value || "Sin descripción";
-
-        if(img.src.startsWith('data')) {
-            // Si la foto no entra en la página, creamos una nueva
-            if(y > 220) { 
-                doc.addPage(); 
-                y = 30; // En página nueva empezamos más arriba
+        const { jsPDF } = window.jspdf; const doc = new jsPDF();
+        const p = (document.getElementById('pat2').value || "S/D").toUpperCase();
+        drawHeader(doc, "REPORTE DE DAÑOS", "#e67e22");
+        let y = 50;
+        document.querySelectorAll('.card-foto').forEach((card, i) => {
+            const img = card.querySelector('img');
+            const desc = card.querySelector('textarea').value;
+            if(img.src.startsWith('data')) {
+                if(y > 220) { doc.addPage(); y = 30; }
+                doc.addImage(img.src, 'JPEG', 25, y, 60, 45);
+                doc.text(`Daño #${i+1}: ${desc}`, 90, y + 10, {maxWidth: 100});
+                y += 55;
             }
-
-            doc.setDrawColor(200);
-            doc.rect(20, y, 170, 55); 
-
-            doc.addImage(img.src, 'JPEG', 23, y + 3, 75, 49);
-
-            doc.setDrawColor(230);
-            doc.setFillColor(250, 250, 250);
-            doc.rect(103, y + 3, 82, 49, 'FD');
-            
-            doc.setTextColor(230, 126, 34);
-            doc.setFont("helvetica", "bold");
-            doc.text(`DAÑO #0${i+1}`, 108, y + 12);
-            
-            doc.setTextColor(0);
-            doc.setFont("helvetica", "normal");
-            doc.setFontSize(9);
-            doc.text(desc, 108, y + 22, { maxWidth: 72 });
-
-            y += 62;
-        }
-    });
-
-    doc.save(`Danos_${p}_${reserva}.pdf`);
+        });
+        doc.save(`Danos_${p}.pdf`);
     }
 
-    function generarMovimiento() {
-    const { jsPDF } = window.jspdf; 
-    const doc = new jsPDF();
-    const tipo = document.getElementById('mov_tipo').value;
-    const p = (document.getElementById('pat3').value || "S/D").toUpperCase();
-    const reserva = (document.getElementById('reserva_mov').value || "S/D").toUpperCase(); // Capturamos la reserva
-    const fechaCustom = document.getElementById('fecha3').value; // Usamos el nuevo campo de fecha
-
-    const color = tipo === "ENTREGA" ? "#27ae60" : "#2980b9";
-    drawHeader(doc, `REPORTE DE ${tipo} DE UNIDAD`, color);
-
-    let y = 50;
-    doc.setFontSize(10);
-    doc.setTextColor(50);
-    
-    // --- FILA 1: PATENTE Y RESERVA ---
-    doc.setFont("helvetica", "bold");
-    doc.text("PATENTE:", 20, y); 
-    doc.setFont("helvetica", "normal"); 
-    doc.text(p, 45, y);
-
-    doc.setFont("helvetica", "bold");
-    doc.text("RESERVA:", 100, y); 
-    doc.setFont("helvetica", "normal"); 
-    doc.text(reserva, 125, y); 
-    
-    y += 8;
-
-    // --- FILA 2: FECHA Y KM ---
-    doc.setFont("helvetica", "bold");
-    doc.text("FECHA:", 20, y); 
-    doc.setFont("helvetica", "normal"); 
-    doc.text(fechaCustom, 45, y); // Ahora toma la fecha que elijas en el input
-
-    doc.setFont("helvetica", "bold");
-    doc.text("KM:", 100, y); 
-    doc.setFont("helvetica", "normal"); 
-    doc.text(document.getElementById('km_mov').value, 115, y);
-    
-    y += 8;
-
-    // --- FILA 3: COMBUSTIBLE ---
-    doc.setFont("helvetica", "bold");
-    doc.text("COMBUSTIBLE:", 20, y); 
-    doc.setFont("helvetica", "normal"); 
-    doc.text(document.getElementById('fuel_mov').value, 55, y);
-    
-    y += 15;
-    doc.setFontSize(12);
-    doc.setFont("helvetica", "bold");
-    doc.text("REGISTRO FOTOGRÁFICO DE ESTADO", 20, y);
-    y += 5;
-
-        fotosEntregas.forEach((foto, i) => {
-            if(y > 230) { doc.addPage(); y = 50; }
-
-            doc.setDrawColor(220);
-            doc.rect(20, y, 170, 40);
-            
-            doc.addImage(foto.src, 'JPEG', 22, y + 2, 60, 36);
-            
-            doc.setFillColor(248, 249, 250);
-            doc.rect(85, y + 2, 103, 36, 'F');
-            doc.setTextColor(0);
-            doc.setFontSize(10);
-            doc.setFont("helvetica", "bold");
-            doc.text(foto.nombre, 90, y + 15);
-            doc.setFont("helvetica", "normal");
-            doc.setFontSize(8);
-            doc.text("Verificado en inspección visual previa a la firma.", 90, y + 25);
-            
+    async function generarMovimiento() {
+        const { jsPDF } = window.jspdf; const doc = new jsPDF();
+        const tipo = document.getElementById('mov_tipo').value;
+        const p = (document.getElementById('pat3').value || "S/D").toUpperCase();
+        drawHeader(doc, `REPORTE DE ${tipo}`, "#27ae60");
+        let y = 50;
+        doc.text(`Patente: ${p} | Reserva: ${document.getElementById('reserva_mov').value}`, 25, y);
+        y += 15;
+        fotosEntregas.forEach(f => {
+            if(y > 240) { doc.addPage(); y = 30; }
+            doc.addImage(f.src, 'JPEG', 25, y, 50, 35);
+            doc.text(f.nombre, 80, y + 15);
             y += 45;
         });
-
-        if(!signaturePadMov.isEmpty()) {
-            if(y > 230) doc.addPage();
-            doc.setTextColor(0);
-            doc.setFontSize(11);
-            doc.text("FIRMA DE CONFORMIDAD:", 25, 245);
-            doc.addImage(signaturePadMov.toDataURL(), 'PNG', 25, 250, 50, 20);
-        }
-
+        if(!signaturePadMov.isEmpty()) doc.addImage(signaturePadMov.toDataURL(), 'PNG', 25, 240, 50, 20);
         doc.save(`${tipo}_${p}.pdf`);
     }
-    
 </script>
 </body>
 </html>
+
 
 
 
