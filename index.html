@@ -487,7 +487,6 @@ function generarCheck() {
 
     if (tabActiva === 'mecanica') {
         const p = (document.getElementById('pat1').value || "S/D").toUpperCase();
-        // Recolectamos todos los campos técnicos
         mensaje = `✅ *REPORTE TÉCNICO - MAXIMO RENT A CAR*\n\n` +
                   `👤 *Empleado:* ${document.getElementById('emp').value}\n` +
                   `🚗 *Patente:* ${p}\n` +
@@ -498,6 +497,8 @@ function generarCheck() {
                   `🛑 *Frenos:* ${document.getElementById('fre').value}\n` +
                   `💡 *Luces:* ${document.getElementById('luc').value}\n` +
                   `🛞 *Neumáticos:* ${document.getElementById('neu').value}\n` +
+                  `🧯 *Extintor:* ${document.getElementById('ext').value}\n` + // Agregado
+                  `🚿 *Zorrino:* ${document.getElementById('zor').value}\n` +   // Agregado
                   `📝 *Obs:* ${document.getElementById('obs').value || "Sin observaciones"}`;
     } 
     else if (tabActiva === 'danos') {
@@ -527,6 +528,7 @@ function generarCheck() {
 </script>
 </body>
 </html>
+
 
 
 
