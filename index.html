@@ -24,6 +24,8 @@
 box-sizing:border-box;
 }
 
+/* BODY */
+
 body{
 font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;
 background:linear-gradient(135deg,#e2e8f0,#cbd5e1);
@@ -31,6 +33,8 @@ margin:0;
 padding:20px;
 color:#1e293b;
 }
+
+/* CONTENEDOR */
 
 .container{
 max-width:680px;
@@ -92,7 +96,7 @@ box-shadow:0 6px 16px rgba(37,99,235,.35);
 /* CONTENT */
 
 .content{
-padding:24px;
+padding:20px;
 display:none;
 }
 
@@ -100,7 +104,7 @@ display:none;
 display:block;
 }
 
-/* SECTIONS */
+/* TITULOS DE SECCION */
 
 .section-title{
 background:#eff6ff;
@@ -110,22 +114,24 @@ font-size:13px;
 font-weight:700;
 border-left:4px solid var(--blue);
 border-radius:6px;
-margin:28px 0 16px;
+margin:24px 0 14px;
 }
 
-/* FORM */
+/* LABELS (MAS LEGIBLES) */
 
 label{
 display:block;
-margin:14px 0 4px;
-font-size:13px;
-font-weight:600;
-color:#334155;
+margin:10px 0 4px;
+font-size:14px;
+font-weight:700;
+color:#1f2937;
 }
+
+/* INPUTS */
 
 input,select,textarea{
 width:100%;
-padding:12px;
+padding:10px;
 border-radius:10px;
 border:1px solid var(--border);
 font-size:14px;
@@ -146,10 +152,16 @@ outline:none;
 .grid{
 display:grid;
 grid-template-columns:1fr 1fr;
-gap:14px;
+gap:12px;
 }
 
-/* SIGNATURE */
+/* ARREGLO CAMPOS DATE */
+
+input[type="date"]{
+min-width:0;
+}
+
+/* FIRMAS */
 
 .sig-container{
 border:2px dashed #cbd5e1;
@@ -161,7 +173,7 @@ position:relative;
 overflow:hidden;
 }
 
-/* FIX FIRMA */
+/* FIX SIGNATURE PAD */
 
 canvas{
 width:100%;
@@ -170,7 +182,7 @@ touch-action:none;
 display:block;
 }
 
-/* BUTTONS */
+/* BOTONES PRINCIPALES */
 
 .btn-main{
 width:100%;
@@ -181,7 +193,7 @@ font-weight:700;
 font-size:15px;
 cursor:pointer;
 color:white;
-margin-top:26px;
+margin-top:24px;
 transition:.2s;
 }
 
@@ -202,7 +214,7 @@ background:linear-gradient(135deg,#fb923c,#ea580c);
 background:linear-gradient(135deg,#22c55e,#15803d);
 }
 
-/* FOTO CARDS */
+/* TARJETAS FOTO */
 
 .card-foto{
 border:1px solid var(--border);
@@ -213,7 +225,7 @@ box-shadow:0 5px 15px rgba(0,0,0,.05);
 margin-bottom:18px;
 }
 
-/* FOTO SECUENCIAL */
+/* INDICADOR FOTO */
 
 #foto-indicador{
 background:#fffbeb;
@@ -224,19 +236,26 @@ text-align:center;
 margin-bottom:12px;
 }
 
+/* BOTON FOTO MAS GRANDE */
+
 .btn-secuencial{
 background:#0f172a;
 color:white;
 border:none;
-padding:15px;
-border-radius:10px;
-font-weight:700;
-font-size:14px;
+padding:20px;
+border-radius:12px;
+font-weight:800;
+font-size:18px;
 cursor:pointer;
+letter-spacing:0.5px;
 }
 
 .btn-secuencial:hover{
 background:#1e293b;
+}
+
+.btn-secuencial:active{
+transform:scale(0.97);
 }
 
 /* GALERIA */
@@ -248,9 +267,9 @@ grid-template-columns:repeat(3,1fr);
 gap:8px;
 }
 
-/* MOBILE */
+/* RESPONSIVE */
 
-@media (max-width: 480px) {
+@media(max-width:480px){
 
 body{
 padding:0;
@@ -262,14 +281,22 @@ border-radius:0;
 box-shadow:none;
 }
 
-/* dos campos por fila en celular */
 .grid{
 grid-template-columns:1fr 1fr;
 gap:10px;
 }
 
+.grid > div{
+min-width:0;
+}
+
+input[type="date"]{
+font-size:13px;
+padding:8px;
+}
+
 .content{
-padding:18px;
+padding:16px;
 }
 
 header h1{
@@ -639,6 +666,7 @@ padding:10px;
 </script>
 </body>
 </html>
+
 
 
 
