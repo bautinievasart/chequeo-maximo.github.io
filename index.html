@@ -157,21 +157,19 @@ display:block;
 
 .section-title{
 
-background:linear-gradient(90deg,#eef2ff,#ffffff);
+display:flex;
+align-items:center;
 
-border-left:4px solid var(--blue);
-
-padding:10px 12px;
-
-border-radius:8px;
-
-font-size:13px;
-
+font-size:14px;
 font-weight:700;
 
 color:var(--blue);
 
-margin:26px 0 14px;
+margin:28px 0 10px;
+
+padding-left:4px;
+
+letter-spacing:.02em;
 
 }
 
@@ -184,6 +182,37 @@ display:grid;
 grid-template-columns:1fr 1fr;
 
 gap:14px;
+
+}
+
+/* TARJETAS */
+
+.card{
+
+background:var(--card);
+
+padding:18px;
+
+border-radius:18px;
+
+box-shadow:
+0 12px 24px rgba(0,0,0,.06),
+0 2px 6px rgba(0,0,0,.04);
+
+border:1px solid #eef2f7;
+
+margin-bottom:18px;
+
+transition:.25s;
+
+}
+
+.card:hover{
+
+transform:translateY(-2px);
+
+box-shadow:
+0 18px 32px rgba(0,0,0,.08);
 
 }
 
@@ -482,7 +511,7 @@ min-height:70px;
 
 <div class="container">
     <header>
-        <h1 style="margin:0; font-size: 20px; letter-spacing: 1px;">MAXIMO <span style="color:var(--blue)">RENT A CAR</span></h1>
+        <h1 style="margin:0; font-size:20px; letter-spacing:1px;">MAXIMO <span style="color:var(--blue)">RENT A CAR</span></h1>
     </header>
 
     <div class="tabs">
@@ -491,94 +520,120 @@ min-height:70px;
         <button id="t3" class="tab-btn" onclick="switchTab('entregas')">ENTREGAS</button>
     </div>
 
-    <div class="section-title">Información</div>
-        <div class="grid">
-            <div><label>Fecha del Informe</label><input type="date" id="fecha1"></div>
-            <div><label>Patente Vehículo</label><input type="text" id="pat1" placeholder="ABC-123"></div>
-        </div>
-        <label>Nombre del Empleado</label><input type="text" id="emp" placeholder="Escriba su nombre">
-        <label>Kilometraje Actual</label><input type="number" id="km1">
-        
-        <div class="section-title">Fluidos y Mecánica</div>
-        <div class="grid">
-            <div><label>Nivel de Aceite</label><select id="aceite"><option>OK (Nivel Normal)</option><option>BAJO</option><option>RECAMBIO</option></select></div>
-            <div><label>Líquido Refrigerante</label><select id="agua"><option>OK (Nivel Normal)</option><option>BAJO</option></select></div>
-        </div>
-        <div class="grid">
-            <div><label>Estado de Frenos</label><select id="frenos"><option>OK</option><option>REVISAR (Ruidos)</option></select></div>
-            <div><label>Líquido Hidráulico</label><select id="hidra"><option>OK (Nivel Normal)</option><option>BAJO</option><option>N/A</option></select></div>
+    <!-- INSPECCIÓN -->
+    <div id="mecanica" class="content active">
+        <div class="card">
+            <div class="section-title">Información</div>
+            <div class="grid">
+                <div><label>Fecha del Informe</label><input type="date" id="fecha1"></div>
+                <div><label>Patente Vehículo</label><input type="text" id="pat1" placeholder="ABC-123"></div>
+            </div>
+            <label>Nombre del Empleado</label><input type="text" id="emp" placeholder="Escriba su nombre">
+            <label>Kilometraje Actual</label><input type="number" id="km1">
         </div>
 
-        <div class="section-title">Funcionamiento</div>
-        <div class="grid">
-            <div><label>Sistema de Luces</label><select id="luces"><option>OK (Todas Funcionan)</option><option>FALLA (Lámpara Quemada)</option></select></div>
-            <div><label>Neumáticos</label><select id="gomas"><option>OK</option><option>REVISAR</option></select></div>
-        </div>
-    <div class="section-title">Seguridad y accesorios</div>
-        <div class="grid">
-            <div><label>Matafuego (Extintor)</label><select id="extintor"><option>OK (Vigente)</option><option>VENCIDO o FALTA</option></select></div>
-            <div><label>Balizas</label><select id="balizas"><option>OK</option><option>FALTAN</option></select></div>
-        </div>
-        <label>Zorrinillo</label><select id="zorrillo"><option>OK (Funciona)</option><option>VACÍO)</option></select>
-
-        <label>Observaciones Adicionales</label>
-        <textarea id="obs" rows="2" placeholder="Ej: Rayón en puerta, ruidito..."></textarea>
-
-        <div class="section-title">Firma del Empleado</div>
-        <div class="sig-container"><canvas id="pad1"></canvas></div>
-        <button onclick="p1.clear()" style="width:100%; margin-top:8px; border:none; background:none; color:#666; text-decoration:underline; font-size:12px; cursor:pointer;">Borrar Firma</button>
-        
-        <button id="btn1" class="btn-main btn-check">DESCARGAR INFORME TÉCNICO</button>
-    </div>
-
-    <div id="danos" class="content">
-        <div class="grid">
-            <div><label>Fecha</label><input type="date" id="fecha2"></div>
-            <div><label>Patente Vehículo</label><input type="text" id="pat2" placeholder="ABC-123"></div>
-        </div>
-        <label>Número de Reserva</label><input type="text" id="res2" placeholder="Ej: 12345">
-        
-        <div id="contenedor-danos" style="margin-top:20px;"></div>
-        <button onclick="addDano()" style="width:100%; padding:15px; border:2px solid var(--orange); border-radius:10px; background:none; color:var(--orange); font-weight:bold; cursor:pointer;">+ AGREGAR FOTO DE DAÑO</button>
-        
-        <button id="btn2" class="btn-main btn-danos">DESCARGAR REPORTE DE DAÑOS</button>
-    </div>
-
-    <div id="entregas" class="content">
-        <div class="grid">
-            <div><label>Fecha</label><input type="date" id="fecha3"></div>
-            <div><label>Tipo de Movimiento</label><select id="tipo3"><option>ENTREGA</option><option>DEVOLUCION</option></select></div>
-        </div>
-        <div class="grid">
-            <div><label>Patente Vehículo</label><input type="text" id="pat3" placeholder="ABC-123"></div>
-            <div><label>Número de Reserva</label><input type="text" id="res3" placeholder="Ej: 12345"></div>
-        </div>
-        <div class="grid">
-            <div><label>Kilometraje</label><input type="number" id="km3"></div>
-            <div><label>Nivel Combustible</label>
-                <select id="comb3">
-                    <option value="1/8">1/8 (Reserva)</option><option value="2/8">2/8</option><option value="3/8">3/8</option><option value="4/8">4/8 (1/2)</option>
-                    <option value="5/8">5/8</option><option value="6/8">6/8 (3/4)</option><option value="7/8">7/8</option><option value="8/8">8/8 (FULL)</option>
-                </select>
+        <div class="card">
+            <div class="section-title">Fluidos y Mecánica</div>
+            <div class="grid">
+                <div><label>Nivel de Aceite</label><select id="aceite"><option>OK (Nivel Normal)</option><option>BAJO</option><option>RECAMBIO</option></select></div>
+                <div><label>Líquido Refrigerante</label><select id="agua"><option>OK (Nivel Normal)</option><option>BAJO</option></select></div>
+            </div>
+            <div class="grid">
+                <div><label>Estado de Frenos</label><select id="frenos"><option>OK</option><option>REVISAR (Ruidos)</option></select></div>
+                <div><label>Líquido Hidráulico</label><select id="hidra"><option>OK (Nivel Normal)</option><option>BAJO</option><option>N/A</option></select></div>
             </div>
         </div>
 
-        <div class="section-title">Secuencia Obligatoria de Fotos</div>
-        <div id="foto-indicador">
-            <span style="font-size:12px; color:#666;">TOMAR FOTO DE:</span><br>
-            <strong id="nombre-parte" style="font-size:18px; color:var(--main);">CAPOT</strong>
+        <div class="card">
+            <div class="section-title">Funcionamiento</div>
+            <div class="grid">
+                <div><label>Sistema de Luces</label><select id="luces"><option>OK (Todas Funcionan)</option><option>FALLA (Lámpara Quemada)</option></select></div>
+                <div><label>Neumáticos</label><select id="gomas"><option>OK</option><option>REVISAR</option></select></div>
+            </div>
         </div>
-        <input type="file" id="cam-input" accept="image/*" capture="camera" style="display:none">
-        <button id="btn-sec" class="btn-secuencial">TOMAR FOTO</button>
-        <div id="galeria-entregas"></div>
 
-        <div class="section-title">Firma de Conformidad del Cliente</div>
-        <div class="sig-container"><canvas id="pad3"></canvas></div>
-        <button onclick="p3.clear()" style="width:100%; margin-top:8px; border:none; background:none; color:#666; text-decoration:underline; font-size:12px; cursor:pointer;">Borrar Firma</button>
+        <div class="card">
+            <div class="section-title">Seguridad y Accesorios</div>
+            <div class="grid">
+                <div><label>Matafuego (Extintor)</label><select id="extintor"><option>OK (Vigente)</option><option>VENCIDO o FALTA</option></select></div>
+                <div><label>Balizas</label><select id="balizas"><option>OK</option><option>FALTAN</option></select></div>
+            </div>
+            <label>Zorrinillo</label><select id="zorrillo"><option>OK (Funciona)</option><option>VACÍO)</option></select>
+        </div>
 
-        <button id="btn3" class="btn-main btn-entrega">DESCARGAR INFORME MOVIMIENTO</button>
+        <div class="card">
+            <div class="section-title">Observaciones Adicionales</div>
+            <textarea id="obs" rows="2" placeholder="Ej: Rayón en puerta, ruidito..."></textarea>
+        </div>
+
+        <div class="card">
+            <div class="section-title">Firma del Empleado</div>
+            <div class="sig-container"><canvas id="pad1"></canvas></div>
+            <button onclick="p1.clear()" style="width:100%; margin-top:8px; border:none; background:none; color:#666; text-decoration:underline; font-size:12px; cursor:pointer;">Borrar Firma</button>
+            <button id="btn1" class="btn-main btn-check">DESCARGAR INFORME TÉCNICO</button>
+        </div>
     </div>
-</div>
+
+    <!-- DAÑOS -->
+    <div id="danos" class="content">
+        <div class="card">
+            <div class="section-title">Datos del Vehículo</div>
+            <div class="grid">
+                <div><label>Fecha</label><input type="date" id="fecha2"></div>
+                <div><label>Patente Vehículo</label><input type="text" id="pat2" placeholder="ABC-123"></div>
+            </div>
+            <label>Número de Reserva</label><input type="text" id="res2" placeholder="Ej: 12345">
+        </div>
+
+        <div class="card">
+            <div class="section-title">Fotos de Daños</div>
+            <div id="contenedor-danos" style="margin-top:10px;"></div>
+            <button onclick="addDano()" style="width:100%; padding:15px; border:2px solid var(--orange); border-radius:10px; background:none; color:var(--orange); font-weight:bold; cursor:pointer;">+ AGREGAR FOTO DE DAÑO</button>
+            <button id="btn2" class="btn-main btn-danos" style="margin-top:12px;">DESCARGAR REPORTE DE DAÑOS</button>
+        </div>
+    </div>
+
+    <!-- ENTREGAS -->
+    <div id="entregas" class="content">
+        <div class="card">
+            <div class="section-title">Datos del Movimiento</div>
+            <div class="grid">
+                <div><label>Fecha</label><input type="date" id="fecha3"></div>
+                <div><label>Tipo de Movimiento</label><select id="tipo3"><option>ENTREGA</option><option>DEVOLUCION</option></select></div>
+            </div>
+            <div class="grid">
+                <div><label>Patente Vehículo</label><input type="text" id="pat3" placeholder="ABC-123"></div>
+                <div><label>Número de Reserva</label><input type="text" id="res3" placeholder="Ej: 12345"></div>
+            </div>
+            <div class="grid">
+                <div><label>Kilometraje</label><input type="number" id="km3"></div>
+                <div><label>Nivel Combustible</label>
+                    <select id="comb3">
+                        <option value="1/8">1/8 (Reserva)</option><option value="2/8">2/8</option><option value="3/8">3/8</option><option value="4/8">4/8 (1/2)</option>
+                        <option value="5/8">5/8</option><option value="6/8">6/8 (3/4)</option><option value="7/8">7/8</option><option value="8/8">8/8 (FULL)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="section-title">Secuencia Obligatoria de Fotos</div>
+            <div id="foto-indicador">
+                <span style="font-size:12px; color:#666;">TOMAR FOTO DE:</span><br>
+                <strong id="nombre-parte" style="font-size:18px; color:var(--main);">CAPOT</strong>
+            </div>
+            <input type="file" id="cam-input" accept="image/*" capture="camera" style="display:none">
+            <button id="btn-sec" class="btn-secuencial">TOMAR FOTO</button>
+            <div id="galeria-entregas"></div>
+        </div>
+
+        <div class="card">
+            <div class="section-title">Firma de Conformidad del Cliente</div>
+            <div class="sig-container"><canvas id="pad3"></canvas></div>
+            <button onclick="p3.clear()" style="width:100%; margin-top:8px; border:none; background:none; color:#666; text-decoration:underline; font-size:12px; cursor:pointer;">Borrar Firma</button>
+            <button id="btn3" class="btn-main btn-entrega" style="margin-top:8px;">DESCARGAR INFORME MOVIMIENTO</button>
+        </div>
+    </div>
 
 <script>
     // Variables Globales
