@@ -95,8 +95,7 @@
         <div class="sig-container"><canvas id="signature-pad"></canvas></div>
         <button onclick="signaturePad.clear()" style="width:100%; margin-top:10px; padding:10px; border-radius:10px;">BORRAR FIRMA</button>
         <button class="btn-main btn-check" onclick="generarCheck()">DESCARGAR REPORTE TÉCNICO</button>
-        <button class="btn-main" style="background:#25D366; margin-top:10px;" onclick="enviarWhatsApp()">
-    REPORTE POR WHATSAPP 📱</button>
+        
     </div>
 
     <div id="danos" class="content">
@@ -109,8 +108,7 @@
         <div id="lista-fotos" style="margin-top:20px;"></div>
         <button onclick="nuevaFoto('lista-fotos')" style="width:100%; padding:15px; background:#666; color:white; border:none; border-radius:12px; font-weight:bold;">+ AGREGAR FOTO DE DAÑO</button>
         <button class="btn-main btn-danos" onclick="generarDanos()">DESCARGAR REPORTE DE DAÑOS</button>
-        <button class="btn-main" style="background:#25D366; margin-top:10px;" onclick="enviarWhatsApp()">
-    REPORTE POR WHATSAPP 📱</button>
+        
     </div>
 
     <div id="entregas" class="content">
@@ -151,9 +149,7 @@
         <button onclick="signaturePadMov.clear()" style="width:100%; margin-top:10px; padding:10px; border-radius:10px;">BORRAR FIRMA</button>
 
         <button class="btn-main btn-entrega" onclick="generarMovimiento()">DESCARGAR REPORTE MOVIMIENTO</button>
-        <button class="btn-main" style="background:#25D366; margin-top:10px;" onclick="enviarWhatsApp()">
-    REPORTE POR WHATSAPP 📱</button>
-
+       
 
      
         
@@ -271,27 +267,26 @@ JavaScript
 function generarCheck() {
     const { jsPDF } = window.jspdf; 
     const doc = new jsPDF();
-    const p = (document.getElementById('pat1')?.value || "S/D").toUpperCase();
-    const fecha = document.getElementById('fecha1')?.value || "";
+    const p = (document.getElementById('pat1').value || "S/D").toUpperCase();
+    const fechaCustom = document.getElementById('fecha1').value; // Usa la fecha del input
 
-    drawHeader(doc, "INFORME TECNICO DE MANTENIMIENTO", "#1a1a1a");
+    drawHeader(doc, "INFORME TÉCNICO DE MANTENIMIENTO", "#1a1a1a");
 
     let y = 55;
     doc.setTextColor(40, 40, 40);
     doc.setFontSize(10);
 
+    // Lista de datos sin Reserva
     const data = [
-        ["EMPLEADO", document.getElementById('emp')?.value || ""],
-        ["FECHA", fecha],
+        ["EMPLEADO", document.getElementById('emp').value],
+        ["FECHA", fechaCustom],
         ["PATENTE", p],
-        ["KILOMETRAJE", document.getElementById('km')?.value || ""],
-        ["ACEITE", document.getElementById('oil')?.value || ""],
-        ["AGUA/REFRIG.", document.getElementById('wat')?.value || ""],
-        ["FRENOS", document.getElementById('fre')?.value || ""],
-        ["LUCES", document.getElementById('luc')?.value || ""],
-        ["GOMAS", document.getElementById('neu')?.value || ""],
-        ["EXTINTOR", document.getElementById('ext')?.value || ""],
-        ["ZORRINO", document.getElementById('zor')?.value || ""]
+        ["KILOMETRAJE", document.getElementById('km').value],
+        ["ACEITE", document.getElementById('oil').value],
+        ["AGUA/REFRIG.", document.getElementById('wat').value],
+        ["FRENOS", document.getElementById('fre').value],
+        ["LUCES", document.getElementById('luc').value],
+        ["NEUMÁTICOS", document.getElementById('neu').value]
     ];
 
     data.forEach(([label, val]) => {
@@ -301,10 +296,10 @@ function generarCheck() {
         doc.text(String(val), 70, y);
         doc.setDrawColor(230);
         doc.line(20, y + 2, 190, y + 2);
-        y += 8.5;
+        y += 10; 
     });
 
-    if (document.getElementById('obs')?.value) {
+    if (document.getElementById('obs').value) {
         y += 5;
         doc.setFont("helvetica", "bold");
         doc.text("OBSERVACIONES:", 25, y);
@@ -313,14 +308,13 @@ function generarCheck() {
         doc.text(document.getElementById('obs').value, 25, y, { maxWidth: 160 });
     }
 
-    if(typeof signaturePad !== 'undefined' && !signaturePad.isEmpty()) {
-        let yFirma = Math.max(245, y + 15);
-        doc.setFont("helvetica", "bold");
-        doc.text("FIRMA RESPONSABLE:", 25, yFirma);
-        doc.addImage(signaturePad.toDataURL(), 'PNG', 25, yFirma + 2, 50, 20);
+    if(!signaturePad.isEmpty()) {
+        doc.setDrawColor(0);
+        doc.text("FIRMA RESPONSABLE:", 25, 245);
+        doc.addImage(signaturePad.toDataURL(), 'PNG', 25, 250, 50, 20);
     }
     
-    doc.save("Check_Tecnico_" + p + ".pdf");
+    doc.save(`Check_Tecnico_${p}.pdf`);
 }
 
     async function generarDanos() {
@@ -479,53 +473,11 @@ function generarCheck() {
 
         doc.save(`${tipo}_${p}.pdf`);
     }
-    function enviarWhatsApp() {
-    const tabActiva = document.querySelector('.content.active').id;
-    let mensaje = "";
-
-    if (tabActiva === 'mecanica') {
-        const p = (document.getElementById('pat1').value || "S/D").toUpperCase();
-        mensaje = "*REPORTE TECNICO - MAXIMO RENT A CAR*\n\n" +
-                  "Empleado: " + document.getElementById('emp').value + "\n" +
-                  "Patente: " + p + "\n" +
-                  "Fecha: " + document.getElementById('fecha1').value + "\n" +
-                  "KM: " + document.getElementById('km').value + "\n" +
-                  "Aceite: " + document.getElementById('oil').value + "\n" +
-                  "Agua: " + document.getElementById('wat').value + "\n" +
-                  "Frenos: " + document.getElementById('fre').value + "\n" +
-                  "Luces: " + document.getElementById('luc').value + "\n" +
-                  "Gomas: " + document.getElementById('neu').value + "\n" +
-                  "Extintor: " + document.getElementById('ext').value + "\n" +
-                  "Zorrino: " + document.getElementById('zor').value + "\n" +
-                  "Obs: " + (document.getElementById('obs').value || "Sin observaciones");
-    } 
-    else if (tabActiva === 'danos') {
-        const p = (document.getElementById('pat2').value || "S/D").toUpperCase();
-        const res = document.getElementById('reserva_danos')?.value || "S/D";
-        mensaje = "*REPORTE DE DANOS - MAXIMO RENT A CAR*\n\n" +
-                  "Reserva: " + res + "\n" +
-                  "Vehiculo: " + p + "\n" +
-                  "Fecha: " + document.getElementById('fecha2').value + "\n" +
-                  "Se han registrado nuevos danos.";
-    } 
-    else if (tabActiva === 'entregas') {
-        const p = (document.getElementById('pat3').value || "S/D").toUpperCase();
-        const res = document.getElementById('reserva_mov')?.value || "S/D";
-        const tipo = document.getElementById('mov_tipo').value;
-        mensaje = "*MOVIMIENTO (" + tipo + ") - MAXIMO RENT A CAR*\n\n" +
-                  "Reserva: " + res + "\n" +
-                  "Patente: " + p + "\n" +
-                  "Fecha: " + document.getElementById('fecha3').value + "\n" +
-                  "Combustible: " + document.getElementById('fuel_mov').value + "\n" +
-                  "KM: " + document.getElementById('km_mov').value;
-    }
-
-    const url = "https://wa.me/?text=" + encodeURIComponent(mensaje);
-    window.open(url, '_blank');
-}
+    
 </script>
 </body>
 </html>
+
 
 
 
