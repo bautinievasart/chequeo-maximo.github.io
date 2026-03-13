@@ -215,45 +215,177 @@
         }
     }
 
+    // --- NUEVAS FUNCIONES DE PDF PROFESIONALES (REEMPLAZA LAS ANTERIORES) ---
+
+    function drawHeader(doc, title, colorHex) {
+        doc.setFillColor(colorHex);
+        doc.rect(0, 0, 210, 40, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(22);
+        doc.text("MAXIMO RENT A CAR", 20, 20);
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "normal");
+        doc.text(title, 20, 30);
+        
+        doc.setFillColor(255, 255, 255, 0.5);
+        doc.rect(20, 33, 170, 0.5, 'F');
+    }
+
     function generarCheck() {
-        const { jsPDF } = window.jspdf; const doc = new jsPDF();
+        const { jsPDF } = window.jspdf; 
+        const doc = new jsPDF();
         const p = (document.getElementById('pat1').value || "S/D").toUpperCase();
-        doc.setFillColor(26, 26, 26); doc.rect(0, 0, 210, 45, 'F');
-        doc.setTextColor(255); doc.setFontSize(24); doc.text("MAXIMO RENT A CAR", 20, 25);
-        let y = 60;
-        const fila = (tit, val) => { doc.setFillColor(245); doc.rect(20, y-5, 170, 8, 'F'); doc.setFont("helvetica", "bold"); doc.setTextColor(0); doc.text(tit, 25, y); doc.setFont("helvetica", "normal"); doc.text(String(val), 80, y); y += 10; };
-        fila("EMPLEADO:", document.getElementById('emp').value); fila("FECHA:", new Date().toLocaleDateString()); fila("PATENTE:", p);
-        fila("KM:", document.getElementById('km').value); fila("ACEITE:", document.getElementById('oil').value);
-        if(!signaturePad.isEmpty()) { doc.text("FIRMA:", 20, 250); doc.addImage(signaturePad.toDataURL(), 'PNG', 20, 255, 50, 20); }
-        doc.save(`Check_${p}.pdf`);
+        
+        drawHeader(doc, "INFORME TÉCNICO DE MANTENIMIENTO", "#1a1a1a");
+
+        let y = 55;
+        doc.setTextColor(40, 40, 40);
+        doc.setFontSize(10);
+
+        const data = [
+            ["EMPLEADO", document.getElementById('emp').value],
+            ["FECHA", new Date().toLocaleString()],
+            ["PATENTE", p],
+            ["KILOMETRAJE", document.getElementById('km').value],
+            ["ACEITE", document.getElementById('oil').value],
+            ["AGUA/REFRIG.", document.getElementById('wat').value],
+            ["FRENOS", document.getElementById('fre').value],
+            ["LUCES", document.getElementById('luc').value],
+            ["NEUMÁTICOS", document.getElementById('neu').value]
+        ];
+
+        data.forEach(([label, val]) => {
+            doc.setFont("helvetica", "bold");
+            doc.text(label + ":", 25, y);
+            doc.setFont("helvetica", "normal");
+            doc.text(String(val), 70, y);
+            doc.setDrawColor(230);
+            doc.line(20, y + 2, 190, y + 2);
+            y += 10;
+        });
+
+        if (document.getElementById('obs').value) {
+            y += 5;
+            doc.setFont("helvetica", "bold");
+            doc.text("OBSERVACIONES:", 25, y);
+            y += 7;
+            doc.setFont("helvetica", "normal");
+            doc.text(document.getElementById('obs').value, 25, y, { maxWidth: 160 });
+        }
+
+        if(!signaturePad.isEmpty()) {
+            doc.setDrawColor(0);
+            doc.text("FIRMA RESPONSABLE:", 25, 245);
+            doc.addImage(signaturePad.toDataURL(), 'PNG', 25, 250, 50, 20);
+        }
+        
+        doc.save(`Check_Tecnico_${p}.pdf`);
     }
 
     async function generarDanos() {
-        const { jsPDF } = window.jspdf; const doc = new jsPDF();
+        const { jsPDF } = window.jspdf; 
+        const doc = new jsPDF();
         const p = (document.getElementById('pat2').value || "S/D").toUpperCase();
-        doc.setFillColor(230, 126, 34); doc.rect(0, 0, 210, 45, 'F'); doc.setTextColor(255); doc.text("REPORTE DE DAÑOS", 20, 25);
-        let y = 60;
-        document.querySelectorAll('.img-danos-file').forEach((img, i) => {
-            if(img.src.startsWith('data')) { if(y > 200) { doc.addPage(); y = 30; } doc.addImage(img.src, 'JPEG', 20, y, 90, 70); doc.text(`Daño #${i+1}`, 120, y+10); y += 80; }
+        
+        drawHeader(doc, "REPORTE DETALLADO DE DAÑOS", "#e67e22");
+
+        let y = 50;
+        const fotos = document.querySelectorAll('.card-foto');
+
+        fotos.forEach((card, i) => {
+            const img = card.querySelector('img');
+            const desc = card.querySelector('textarea').value || "Sin descripción";
+
+            if(img.src.startsWith('data')) {
+                if(y > 220) { doc.addPage(); y = 50; }
+
+                doc.setDrawColor(200);
+                doc.rect(20, y, 170, 55); 
+
+                doc.addImage(img.src, 'JPEG', 23, y + 3, 75, 49);
+
+                doc.setDrawColor(230);
+                doc.setFillColor(250, 250, 250);
+                doc.rect(103, y + 3, 82, 49, 'FD');
+                
+                doc.setTextColor(230, 126, 34);
+                doc.setFont("helvetica", "bold");
+                doc.text(`DAÑO #0${i+1}`, 108, y + 12);
+                
+                doc.setTextColor(0);
+                doc.setFont("helvetica", "normal");
+                doc.setFontSize(9);
+                doc.text(desc, 108, y + 22, { maxWidth: 72 });
+
+                y += 62;
+            }
         });
+
         doc.save(`Danos_${p}.pdf`);
     }
 
     function generarMovimiento() {
-        const { jsPDF } = window.jspdf; const doc = new jsPDF();
+        const { jsPDF } = window.jspdf; 
+        const doc = new jsPDF();
         const tipo = document.getElementById('mov_tipo').value;
         const p = (document.getElementById('pat3').value || "S/D").toUpperCase();
-        doc.setFillColor(39, 174, 96); doc.rect(0, 0, 210, 45, 'F');
-        doc.setTextColor(255); doc.setFontSize(24); doc.text(tipo, 20, 25);
-        doc.setTextColor(0); doc.setFontSize(11); let y = 60;
-        doc.text(`PATENTE: ${p}`, 20, y); y+=10; doc.text(`FECHA: ${new Date().toLocaleString()}`, 20, y); y+=10;
-        doc.text(`KM: ${document.getElementById('km_mov').value}`, 20, y); y+=10;
-        doc.text(`COMBUSTIBLE: ${document.getElementById('fuel_mov').value}`, 20, y); y+=15;
-        doc.setFontSize(14); doc.text("REGISTRO FOTOGRÁFICO", 20, y); y+=10;
-        fotosEntregas.forEach((foto) => { if(y > 220) { doc.addPage(); y = 20; } doc.addImage(foto.src, 'JPEG', 20, y, 70, 50); doc.setFontSize(10); doc.text(foto.nombre, 95, y + 25); y += 55; });
-        if(!signaturePadMov.isEmpty()) { if(y > 230) doc.addPage(); doc.setFontSize(12); doc.text("FIRMA DE CONFORMIDAD:", 20, 250); doc.addImage(signaturePadMov.toDataURL(), 'PNG', 20, 255, 50, 20); }
+        
+        const color = tipo === "ENTREGA" ? "#27ae60" : "#2980b9";
+        drawHeader(doc, `REPORTE DE ${tipo} DE UNIDAD`, color);
+
+        let y = 50;
+        doc.setFontSize(10);
+        doc.setTextColor(50);
+        
+        doc.setFont("helvetica", "bold");
+        doc.text("PATENTE:", 20, y); doc.setFont("helvetica", "normal"); doc.text(p, 45, y);
+        doc.setFont("helvetica", "bold");
+        doc.text("KM:", 100, y); doc.setFont("helvetica", "normal"); doc.text(document.getElementById('km_mov').value, 115, y);
+        y += 8;
+        doc.setFont("helvetica", "bold");
+        doc.text("FECHA:", 20, y); doc.setFont("helvetica", "normal"); doc.text(new Date().toLocaleString(), 45, y);
+        doc.setFont("helvetica", "bold");
+        doc.text("COMBUSTIBLE:", 100, y); doc.setFont("helvetica", "normal"); doc.text(document.getElementById('fuel_mov').value, 135, y);
+        
+        y += 15;
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "bold");
+        doc.text("REGISTRO FOTOGRÁFICO DE ESTADO", 20, y);
+        y += 5;
+
+        fotosEntregas.forEach((foto, i) => {
+            if(y > 230) { doc.addPage(); y = 50; }
+
+            doc.setDrawColor(220);
+            doc.rect(20, y, 170, 40);
+            
+            doc.addImage(foto.src, 'JPEG', 22, y + 2, 60, 36);
+            
+            doc.setFillColor(248, 249, 250);
+            doc.rect(85, y + 2, 103, 36, 'F');
+            doc.setTextColor(0);
+            doc.setFontSize(10);
+            doc.setFont("helvetica", "bold");
+            doc.text(foto.nombre, 90, y + 15);
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(8);
+            doc.text("Verificado en inspección visual previa a la firma.", 90, y + 25);
+            
+            y += 45;
+        });
+
+        if(!signaturePadMov.isEmpty()) {
+            if(y > 230) doc.addPage();
+            doc.setTextColor(0);
+            doc.setFontSize(11);
+            doc.text("FIRMA DE CONFORMIDAD:", 25, 245);
+            doc.addImage(signaturePadMov.toDataURL(), 'PNG', 25, 250, 50, 20);
+        }
+
         doc.save(`${tipo}_${p}.pdf`);
     }
 </script>
 </body>
 </html>
+
