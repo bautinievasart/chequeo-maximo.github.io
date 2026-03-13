@@ -64,7 +64,7 @@
     <div id="mecanica" class="content active">
         <label>Fecha del Reporte</label>
     <input type="date" id="fecha1" class="fecha-auto">
-    ```
+    
         <label>Nombre del Empleado</label>
         <input type="text" id="emp" placeholder="Escriba su nombre">
         <div class="grid">
@@ -103,6 +103,8 @@
         <label>Fecha del Reporte</label>
     <input type="date" id="fecha2" class="fecha-auto">
         <label>Patente Vehículo</label>
+        <label>Número de Reserva</label>
+<input type="text" id="reserva_danos" placeholder="Ej: 12345">
         <input type="text" id="pat2" placeholder="Patente para daños">
         <div id="lista-fotos" style="margin-top:20px;"></div>
         <button onclick="nuevaFoto('lista-fotos')" style="width:100%; padding:15px; background:#666; color:white; border:none; border-radius:12px; font-weight:bold;">+ AGREGAR FOTO DE DAÑO</button>
@@ -117,6 +119,8 @@
         <label>Tipo de Movimiento</label>
         <select id="mov_tipo"><option>ENTREGA</option><option>DEVOLUCIÓN</option></select>
         <div class="grid">
+            <label>Número de Reserva</label>
+<input type="text" id="reserva_mov" placeholder="Ej: 12345">
             <div><label>Patente</label><input type="text" id="pat3" placeholder="ABC-123"></div>
             <div><label>Kilometraje</label><input type="number" id="km_mov"></div>
         </div>
@@ -437,6 +441,7 @@
 </script>
 </body>
 </html>
+
 
 
 
