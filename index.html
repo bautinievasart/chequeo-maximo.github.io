@@ -500,71 +500,182 @@ min-height:70px;
     background-size: cover; /* hace que la imagen llene todo el header */
         }
     </style>
-    <script>
-    // 1. NAVEGACIÓN DE PESTAÑAS (Visible globalmente)
-    function switchTab(id) {
-        document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        
-        const targetContent = document.getElementById(id);
-        if (targetContent) targetContent.classList.add('active');
+</head>
+<body>
 
-        const map = { mecanica: 't1', danos: 't2', entregas: 't3', transferencias: 't4' };
-        const targetBtn = document.getElementById(map[id]);
-        if (targetBtn) targetBtn.classList.add('active');
-    }
-    window.switchTab = switchTab;
+<div class="container">
+     <header class="main-header"></header>
+    <div class="container">
+        <!-- resto de tu app aquí -->
+    </div>
 
-    // 2. VARIABLES GLOBALES
+    <div class="tabs">
+        <button id="t1" class="tab-btn active" onclick="switchTab('mecanica')">INSPECCIÓN</button>
+        <button id="t2" class="tab-btn" onclick="switchTab('danos')">DAÑOS</button>
+        <button id="t3" class="tab-btn" onclick="switchTab('entregas')">ENTREGAS</button>
+    </div>
+
+    <!-- INSPECCIÓN -->
+    <div id="mecanica" class="content active">
+        <div class="card">
+            <div class="section-title">Información</div>
+            <div class="grid">
+                <div><label>Fecha del Informe</label><input type="date" id="fecha1"></div>
+                <div><label>Patente Vehículo</label><input type="text" id="pat1" placeholder="ABC-123"></div>
+            </div>
+            <label>Nombre del Empleado</label><input type="text" id="emp" placeholder="Escriba su nombre">
+            <label>Kilometraje Actual</label><input type="number" id="km1">
+        </div>
+
+        <div class="card">
+            <div class="section-title">Fluidos y Mecánica</div>
+            <div class="grid">
+                <div><label>Nivel de Aceite</label><select id="aceite"><option>OK (Nivel Normal)</option><option>BAJO</option><option>RECAMBIO</option></select></div>
+                <div><label>Líquido Refrigerante</label><select id="agua"><option>OK (Nivel Normal)</option><option>BAJO</option></select></div>
+            </div>
+            <div class="grid">
+                <div><label>Estado de Frenos</label><select id="frenos"><option>OK</option><option>REVISAR (Ruidos)</option></select></div>
+                <div><label>Líquido Hidráulico</label><select id="hidra"><option>OK (Nivel Normal)</option><option>BAJO</option><option>N/A</option></select></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="section-title">Funcionamiento</div>
+            <div class="grid">
+                <div><label>Sistema de Luces</label><select id="luces"><option>OK (Todas Funcionan)</option><option>FALLA (Lámpara Quemada)</option></select></div>
+                <div><label>Neumáticos</label><select id="gomas"><option>OK</option><option>REVISAR</option></select></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="section-title">Seguridad y Accesorios</div>
+            <div class="grid">
+                <div><label>Matafuego (Extintor)</label><select id="extintor"><option>OK (Vigente)</option><option>VENCIDO o FALTA</option></select></div>
+                <div><label>Balizas</label><select id="balizas"><option>OK</option><option>FALTAN</option></select></div>
+            </div>
+            <label>Zorrinillo</label><select id="zorrillo"><option>OK (Funciona)</option><option>VACÍO)</option></select>
+        </div>
+
+        <div class="card">
+            <div class="section-title">Observaciones Adicionales</div>
+            <textarea id="obs" rows="2" placeholder="Ej: Rayón en puerta, ruidito..."></textarea>
+        </div>
+
+        <div class="card">
+            <div class="section-title">Firma del Empleado</div>
+            <div class="sig-container"><canvas id="pad1"></canvas></div>
+            <button onclick="p1.clear()" style="width:100%; margin-top:8px; border:none; background:none; color:#666; text-decoration:underline; font-size:12px; cursor:pointer;">Borrar Firma</button>
+            <button id="btn1" class="btn-main btn-check">DESCARGAR INFORME TÉCNICO</button>
+        </div>
+    </div>
+
+    <!-- DAÑOS -->
+    <div id="danos" class="content">
+        <div class="card">
+            <div class="section-title">Datos del Vehículo</div>
+            <div class="grid">
+                <div><label>Fecha</label><input type="date" id="fecha2"></div>
+                <div><label>Patente Vehículo</label><input type="text" id="pat2" placeholder="ABC-123"></div>
+            </div>
+            <label>Número de Reserva</label><input type="text" id="res2" placeholder="Ej: 12345">
+        </div>
+
+        <div class="card">
+            <div class="section-title">Fotos de Daños</div>
+            <div id="contenedor-danos" style="margin-top:10px;"></div>
+            <button onclick="addDano()" style="width:100%; padding:15px; border:2px solid var(--orange); border-radius:10px; background:none; color:var(--orange); font-weight:bold; cursor:pointer;">+ AGREGAR FOTO DE DAÑO</button>
+            <button id="btn2" class="btn-main btn-danos" style="margin-top:12px;">DESCARGAR REPORTE DE DAÑOS</button>
+        </div>
+    </div>
+
+    <!-- ENTREGAS -->
+    <div id="entregas" class="content">
+        <div class="card">
+            <div class="section-title">Datos del Movimiento</div>
+            <div class="grid">
+                <div><label>Fecha</label><input type="date" id="fecha3"></div>
+                <div><label>Tipo de Movimiento</label><select id="tipo3"><option>ENTREGA</option><option>DEVOLUCION</option></select></div>
+            </div>
+            <div class="grid">
+                <div><label>Patente Vehículo</label><input type="text" id="pat3" placeholder="ABC-123"></div>
+                <div><label>Número de Reserva</label><input type="text" id="res3" placeholder="Ej: 12345"></div>
+            </div>
+            <div class="grid">
+                <div><label>Kilometraje</label><input type="number" id="km3"></div>
+                <div><label>Nivel Combustible</label>
+                    <select id="comb3">
+                        <option value="1/8">1/8 (Reserva)</option><option value="2/8">2/8</option><option value="3/8">3/8</option><option value="4/8">4/8 (1/2)</option>
+                        <option value="5/8">5/8</option><option value="6/8">6/8 (3/4)</option><option value="7/8">7/8</option><option value="8/8">8/8 (FULL)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="section-title">Secuencia Obligatoria de Fotos</div>
+            <div id="foto-indicador">
+                <span style="font-size:12px; color:#666;">TOMAR FOTO DE:</span><br>
+                <strong id="nombre-parte" style="font-size:18px; color:var(--main);">CAPOT</strong>
+            </div>
+            <input type="file" id="cam-input" accept="image/*" capture="camera" style="display:none">
+            <button id="btn-sec" class="btn-secuencial">TOMAR FOTO</button>
+            <div id="galeria-entregas"></div>
+        </div>
+
+        <div class="card">
+            <div class="section-title">Firma de Conformidad del Cliente</div>
+            <div class="sig-container"><canvas id="pad3"></canvas></div>
+            <button onclick="p3.clear()" style="width:100%; margin-top:8px; border:none; background:none; color:#666; text-decoration:underline; font-size:12px; cursor:pointer;">Borrar Firma</button>
+            <button id="btn3" class="btn-main btn-entrega" style="margin-top:8px;">DESCARGAR INFORME MOVIMIENTO</button>
+        </div>
+    </div>
+
+<script>
+    // Variables Globales
     let p1, p3;
     let danoIdx = 0;
     const partes = ["CAPOT", "PARAGOLPE D", "GUARDABARRO C/D", "PUERTA C", "PUERTA C/T", "GUARDABARRO C/T", "BAÚL", "PARAGOLPE TRASERO", "GUARDABARRO A/T", "PUERTA A/T", "PUERTA A", "GUARDABARRO A/D", "TECHO", "PARABRISAS", "INTERIOR", "ASIENTOS", "MOTOR", "AUXILIO"];
     let parteIdx = 0;
     let fotosEntregas = [];
-    let imagenesDanosBase64 = [];
 
-    // 3. INICIALIZACIÓN (window.onload)
+    // Inicialización al Cargar la Ventana
     window.onload = () => {
         const c1 = document.getElementById('pad1');
         const c3 = document.getElementById('pad3');
-        
-        if (c1) p1 = new SignaturePad(c1);
-        if (c3) p3 = new SignaturePad(c3);
+        p1 = new SignaturePad(c1);
+        p3 = new SignaturePad(c3);
         
         const resizeCanvases = () => {
             [c1, c3].forEach(c => {
-                if (!c) return;
                 const r = Math.max(window.devicePixelRatio || 1, 1);
                 c.width = c.offsetWidth * r;
                 c.height = c.offsetHeight * r;
                 c.getContext("2d").scale(r, r);
             });
-            if (p1) p1.clear(); 
-            if (p3) p3.clear();
+            p1.clear(); p3.clear(); // Limpia para evitar trazos fantasma al rotar
         };
         
         window.onresize = resizeCanvases;
         resizeCanvases();
 
-        // Vinculación de botones con seguridad
-        const conectar = (id, funcion) => {
-            const btn = document.getElementById(id);
-            if (btn) btn.onclick = funcion;
-        };
-
-        conectar('btn1', genPDF1);
-        conectar('btn2', genPDF2);
-        conectar('btn3', genPDF3);
-        conectar('btn-sec', () => {
-            const cam = document.getElementById('cam-input');
-            if(cam) cam.click();
-        });
-        
-        const camInput = document.getElementById('cam-input');
-        if (camInput) camInput.onchange = (e) => handleSec(e.target);
+        // Vinculación de Botones (Solución al fallo de Inspección)
+        document.getElementById('btn1').onclick = genPDF1;
+        document.getElementById('btn2').onclick = genPDF2;
+        document.getElementById('btn3').onclick = genPDF3;
+        document.getElementById('btn-sec').onclick = () => document.getElementById('cam-input').click();
+        document.getElementById('cam-input').onchange = (e) => handleSec(e.target);
     };
 
-    // 4. FUNCIONES AUXILIARES PARA PDF
+    // Navegación de Pestañas
+    function switchTab(id) {
+        document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        const btnId = id === 'mecanica' ? 't1' : id === 'danos' ? 't2' : 't3';
+        document.getElementById(btnId).classList.add('active');
+    }
+
+    // Funciones Auxiliares para PDF Profesionales
     function drawHeader(doc, title, colorHex) {
         doc.setFillColor(colorHex);
         doc.rect(0, 0, 210, 40, 'F');
@@ -577,9 +688,10 @@ min-height:70px;
         doc.text(title, 20, 32);
     }
 
+    // Estilo "Tabla Excel"
     function drawRow(doc, label, value, y) {
-        doc.setDrawColor(230);
-        doc.line(20, y+2, 190, y+2);
+        doc.setDrawColor(230); // Gris muy claro
+        doc.line(20, y+2, 190, y+2); // Línea horizontal
         doc.setTextColor(50);
         doc.setFontSize(10);
         doc.setFont("helvetica", "bold");
@@ -779,283 +891,6 @@ min-height:70px;
         
         doc.save(`${tipo}_${pat}.pdf`);
     }
-</script>
-</head>
-<body>
-
-<div class="container">
-    <header class="main-header"></header>
-    
-    <div class="tabs">
-        <button id="t1" class="tab-btn active" onclick="switchTab('mecanica')">INSPECCIÓN</button>
-        <button id="t2" class="tab-btn" onclick="switchTab('danos')">DAÑOS</button>
-        <button id="t3" class="tab-btn" onclick="switchTab('entregas')">ENTREGAS</button>
-        <button id="t4" class="tab-btn" onclick="switchTab('transferencias')">TRANSFERENCIAS</button>
-    </div>
-
-
-    <!-- INSPECCIÓN -->
-    <div id="mecanica" class="content active">
-        <div class="card">
-            <div class="section-title">Información</div>
-            <div class="grid">
-                <div><label>Fecha del Informe</label><input type="date" id="fecha1"></div>
-                <div><label>Patente Vehículo</label><input type="text" id="pat1" placeholder="ABC-123"></div>
-            </div>
-            <label>Nombre del Empleado</label><input type="text" id="emp" placeholder="Escriba su nombre">
-            <label>Kilometraje Actual</label><input type="number" id="km1">
-        </div>
-
-        <div class="card">
-            <div class="section-title">Fluidos y Mecánica</div>
-            <div class="grid">
-                <div><label>Nivel de Aceite</label><select id="aceite"><option>OK (Nivel Normal)</option><option>BAJO</option><option>RECAMBIO</option></select></div>
-                <div><label>Líquido Refrigerante</label><select id="agua"><option>OK (Nivel Normal)</option><option>BAJO</option></select></div>
-            </div>
-            <div class="grid">
-                <div><label>Estado de Frenos</label><select id="frenos"><option>OK</option><option>REVISAR (Ruidos)</option></select></div>
-                <div><label>Líquido Hidráulico</label><select id="hidra"><option>OK (Nivel Normal)</option><option>BAJO</option><option>N/A</option></select></div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="section-title">Funcionamiento</div>
-            <div class="grid">
-                <div><label>Sistema de Luces</label><select id="luces"><option>OK (Todas Funcionan)</option><option>FALLA (Lámpara Quemada)</option></select></div>
-                <div><label>Neumáticos</label><select id="gomas"><option>OK</option><option>REVISAR</option></select></div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="section-title">Seguridad y Accesorios</div>
-            <div class="grid">
-                <div><label>Matafuego (Extintor)</label><select id="extintor"><option>OK (Vigente)</option><option>VENCIDO o FALTA</option></select></div>
-                <div><label>Balizas</label><select id="balizas"><option>OK</option><option>FALTAN</option></select></div>
-            </div>
-            <label>Zorrinillo</label><select id="zorrillo"><option>OK (Funciona)</option><option>VACÍO)</option></select>
-        </div>
-
-        <div class="card">
-            <div class="section-title">Observaciones Adicionales</div>
-            <textarea id="obs" rows="2" placeholder="Ej: Rayón en puerta, ruidito..."></textarea>
-        </div>
-
-        <div class="card">
-            <div class="section-title">Firma del Empleado</div>
-            <div class="sig-container"><canvas id="pad1"></canvas></div>
-            <button onclick="p1.clear()" style="width:100%; margin-top:8px; border:none; background:none; color:#666; text-decoration:underline; font-size:12px; cursor:pointer;">Borrar Firma</button>
-            <button id="btn1" class="btn-main btn-check">DESCARGAR INFORME TÉCNICO</button>
-        </div>
-    </div>
-
-    <!-- DAÑOS -->
-    <div id="danos" class="content">
-        <div class="card">
-            <div class="section-title">Datos del Vehículo</div>
-            <div class="grid">
-                <div><label>Fecha</label><input type="date" id="fecha2"></div>
-                <div><label>Patente Vehículo</label><input type="text" id="pat2" placeholder="ABC-123"></div>
-            </div>
-            <label>Número de Reserva</label><input type="text" id="res2" placeholder="Ej: 12345">
-        </div>
-
-        <div class="card">
-            <div class="section-title">Fotos de Daños</div>
-            <div id="contenedor-danos" style="margin-top:10px;"></div>
-            <button onclick="addDano()" style="width:100%; padding:15px; border:2px solid var(--orange); border-radius:10px; background:none; color:var(--orange); font-weight:bold; cursor:pointer;">+ AGREGAR FOTO DE DAÑO</button>
-            <button id="btn2" class="btn-main btn-danos" style="margin-top:12px;">DESCARGAR REPORTE DE DAÑOS</button>
-        </div>
-    </div>
-
-    <!-- ENTREGAS -->
-    <div id="entregas" class="content">
-        <div class="card">
-            <div class="section-title">Datos del Movimiento</div>
-            <div class="grid">
-                <div><label>Fecha</label><input type="date" id="fecha3"></div>
-                <div><label>Tipo de Movimiento</label><select id="tipo3"><option>ENTREGA</option><option>DEVOLUCION</option></select></div>
-            </div>
-            <div class="grid">
-                <div><label>Patente Vehículo</label><input type="text" id="pat3" placeholder="ABC-123"></div>
-                <div><label>Número de Reserva</label><input type="text" id="res3" placeholder="Ej: 12345"></div>
-            </div>
-            <div class="grid">
-                <div><label>Kilometraje</label><input type="number" id="km3"></div>
-                <div><label>Nivel Combustible</label>
-                    <select id="comb3">
-                        <option value="1/8">1/8 (Reserva)</option><option value="2/8">2/8</option><option value="3/8">3/8</option><option value="4/8">4/8 (1/2)</option>
-                        <option value="5/8">5/8</option><option value="6/8">6/8 (3/4)</option><option value="7/8">7/8</option><option value="8/8">8/8 (FULL)</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="section-title">Secuencia Obligatoria de Fotos</div>
-            <div id="foto-indicador">
-                <span style="font-size:12px; color:#666;">TOMAR FOTO DE:</span><br>
-                <strong id="nombre-parte" style="font-size:18px; color:var(--main);">CAPOT</strong>
-            </div>
-            <input type="file" id="cam-input" accept="image/*" capture="camera" style="display:none">
-            <button id="btn-sec" class="btn-secuencial">TOMAR FOTO</button>
-            <div id="galeria-entregas"></div>
-        </div>
-
-        <div class="card">
-            <div class="section-title">Firma de Conformidad del Cliente</div>
-            <div class="sig-container"><canvas id="pad3"></canvas></div>
-            <button onclick="p3.clear()" style="width:100%; margin-top:8px; border:none; background:none; color:#666; text-decoration:underline; font-size:12px; cursor:pointer;">Borrar Firma</button>
-            <button id="btn3" class="btn-main btn-entrega" style="margin-top:8px;">DESCARGAR INFORME MOVIMIENTO</button>
-        </div> 
-        </div>
-        <div id="transferencias" class="content">
-
-<div class="card">
-
-<div class="section-title">Cargar Comprobante</div>
-
-<label>Número de Reserva</label>
-<input type="text" id="reservaTransfer">
-
-<label>Subir Comprobante (imagen o PDF)</label>
-<input type="file" id="archivoTransfer">
-
-<button id="btnSubirTransfer" class="btn-main btn-check">
-SUBIR COMPROBANTE
-</button>
-
-<div id="estadoSubida"></div>
-
-</div>
-
-
-<div class="card">
-
-<div class="section-title">Buscar Estado de Transferencia</div>
-
-<label>Número de Reserva</label>
-<input type="text" id="buscarReserva">
-
-<button id="btnBuscarTransfer" class="btn-main btn-entrega">
-BUSCAR
-</button>
-
-<div id="resultadoTransfer"></div>
-
-<button id="btnAcreditar" class="btn-main btn-danos" style="display:none">
-MARCAR COMO ACREDITADA
-</button>
-
-</div>
-    </div>
-
-
-    
-<script type="module">
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"
-import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js"
-import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"
-
-const firebaseConfig = {
-  apiKey: "AIzaSyA-Mo8z-c__ZKygrVUqecrF-x-XMAq1Llw",
-  authDomain: "maximo-rentcar.firebaseapp.com",
-  projectId: "maximo-rentcar",
-  storageBucket: "maximo-rentcar.firebasestorage.app",
-  messagingSenderId: "848279174949",
-  appId: "1:848279174949:web:8778d5af7540bd8a9b64cc"
-};
-
-const app = initializeApp(firebaseConfig)
-const storage = getStorage(app)
-const db = getFirestore(app)
-
-
-// SUBIR COMPROBANTE
-
-document.getElementById("btnSubirTransfer").onclick = async () => {
-
-const reserva = document.getElementById("reservaTransfer").value.trim()
-const archivo = document.getElementById("archivoTransfer").files[0]
-const estado = document.getElementById("estadoSubida")
-
-if(!reserva || !archivo){
-estado.innerText="Complete todos los campos"
-return
-}
-
-estado.innerText="Subiendo..."
-
-try{
-
-const storageRef = ref(storage,"transferencias/"+reserva)
-
-const snap = await uploadBytes(storageRef,archivo)
-
-const url = await getDownloadURL(snap.ref)
-
-await setDoc(doc(db,"transferencias",reserva),{
-
-url:url,
-estado:"pendiente",
-fecha:new Date()
-
-})
-
-estado.innerText="Comprobante cargado correctamente"
-
-}catch(e){
-
-estado.innerText="Error al subir archivo"
-
-}
-
-}
-
-
-
-// BUSCAR TRANSFERENCIA
-
-document.getElementById("btnBuscarTransfer").onclick = async () => {
-
-const reserva = document.getElementById("buscarReserva").value.trim()
-const resultado = document.getElementById("resultadoTransfer")
-const btn = document.getElementById("btnAcreditar")
-
-resultado.innerText = "Buscando..."
-
-const docSnap = await getDoc(doc(db,"transferencias",reserva))
-
-if(docSnap.exists()){
-
-const data = docSnap.data()
-
-if(data.estado === "acreditada"){
-resultado.innerHTML = "🟢 TRANSFERENCIA ACREDITADA"
-}else{
-resultado.innerHTML = "🟡 TRANSFERENCIA PENDIENTE"
-}
-
-btn.style.display = "block"
-
-btn.onclick = async () => {
-
-await updateDoc(doc(db,"transferencias",reserva),{
-estado:"acreditada"
-})
-
-resultado.innerHTML = "🟢 TRANSFERENCIA ACREDITADA"
-
-}
-
-}else{
-
-resultado.innerText = "No hay comprobante cargado"
-
-}
-
-}
-
 </script>
 </body>
 </html>
