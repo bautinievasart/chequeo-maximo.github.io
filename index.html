@@ -513,6 +513,7 @@ min-height:70px;
         <button id="t1" class="tab-btn active" onclick="switchTab('mecanica')">INSPECCIÓN</button>
         <button id="t2" class="tab-btn" onclick="switchTab('danos')">DAÑOS</button>
         <button id="t3" class="tab-btn" onclick="switchTab('entregas')">ENTREGAS</button>
+        <button id="t4" class="tab-btn" onclick="switchTab('transferencias')">TRANSFERENCIAS</button>
     </div>
 
     <!-- INSPECCIÓN -->
@@ -627,7 +628,47 @@ min-height:70px;
             <div class="sig-container"><canvas id="pad3"></canvas></div>
             <button onclick="p3.clear()" style="width:100%; margin-top:8px; border:none; background:none; color:#666; text-decoration:underline; font-size:12px; cursor:pointer;">Borrar Firma</button>
             <button id="btn3" class="btn-main btn-entrega" style="margin-top:8px;">DESCARGAR INFORME MOVIMIENTO</button>
+        </div> 
         </div>
+        <div id="transferencias" class="content">
+
+<div class="card">
+
+<div class="section-title">Cargar Comprobante</div>
+
+<label>Número de Reserva</label>
+<input type="text" id="reservaTransfer">
+
+<label>Subir Comprobante (imagen o PDF)</label>
+<input type="file" id="archivoTransfer">
+
+<button id="btnSubirTransfer" class="btn-main btn-check">
+SUBIR COMPROBANTE
+</button>
+
+<div id="estadoSubida"></div>
+
+</div>
+
+
+<div class="card">
+
+<div class="section-title">Buscar Estado de Transferencia</div>
+
+<label>Número de Reserva</label>
+<input type="text" id="buscarReserva">
+
+<button id="btnBuscarTransfer" class="btn-main btn-entrega">
+BUSCAR
+</button>
+
+<div id="resultadoTransfer"></div>
+
+<button id="btnAcreditar" class="btn-main btn-danos" style="display:none">
+MARCAR COMO ACREDITADA
+</button>
+
+</div>
     </div>
 
 <script>
@@ -667,12 +708,26 @@ min-height:70px;
     };
 
     // Navegación de Pestañas
-    function switchTab(id) {
-        document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        const btnId = id === 'mecanica' ? 't1' : id === 'danos' ? 't2' : 't3';
-        document.getElementById(btnId).classList.add('active');
+   function switchTab(id){
+
+document.querySelectorAll('.content').forEach(c=>{
+c.classList.remove('active')
+})
+
+document.querySelectorAll('.tab-btn').forEach(b=>{
+b.classList.remove('active')
+})
+
+document.getElementById(id).classList.add('active')
+
+const map={
+mecanica:'t1',
+danos:'t2',
+entregas:'t3',
+transferencias:'t4'
+}
+
+document.getElementById(map[id]).classList.add('active')
     }
 
     // Funciones Auxiliares para PDF Profesionales
@@ -891,6 +946,111 @@ min-height:70px;
         
         doc.save(`${tipo}_${pat}.pdf`);
     }
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js"
+import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA-Mo8z-c__ZKygrVUqecrF-x-XMAq1Llw",
+  authDomain: "maximo-rentcar.firebaseapp.com",
+  projectId: "maximo-rentcar",
+  storageBucket: "maximo-rentcar.firebasestorage.app",
+  messagingSenderId: "848279174949",
+  appId: "1:848279174949:web:8778d5af7540bd8a9b64cc"
+};
+
+const app = initializeApp(firebaseConfig)
+const storage = getStorage(app)
+const db = getFirestore(app)
+
+
+// SUBIR COMPROBANTE
+
+document.getElementById("btnSubirTransfer").onclick = async () => {
+
+const reserva = document.getElementById("reservaTransfer").value.trim()
+const archivo = document.getElementById("archivoTransfer").files[0]
+const estado = document.getElementById("estadoSubida")
+
+if(!reserva || !archivo){
+estado.innerText="Complete todos los campos"
+return
+}
+
+estado.innerText="Subiendo..."
+
+try{
+
+const storageRef = ref(storage,"transferencias/"+reserva)
+
+const snap = await uploadBytes(storageRef,archivo)
+
+const url = await getDownloadURL(snap.ref)
+
+await setDoc(doc(db,"transferencias",reserva),{
+
+url:url,
+estado:"pendiente",
+fecha:new Date()
+
+})
+
+estado.innerText="Comprobante cargado correctamente"
+
+}catch(e){
+
+estado.innerText="Error al subir archivo"
+
+}
+
+}
+
+
+
+// BUSCAR TRANSFERENCIA
+
+document.getElementById("btnBuscarTransfer").onclick = async () => {
+
+const reserva = document.getElementById("buscarReserva").value.trim()
+const resultado = document.getElementById("resultadoTransfer")
+const btn = document.getElementById("btnAcreditar")
+
+resultado.innerText = "Buscando..."
+
+const docSnap = await getDoc(doc(db,"transferencias",reserva))
+
+if(docSnap.exists()){
+
+const data = docSnap.data()
+
+if(data.estado === "acreditada"){
+resultado.innerHTML = "🟢 TRANSFERENCIA ACREDITADA"
+}else{
+resultado.innerHTML = "🟡 TRANSFERENCIA PENDIENTE"
+}
+
+btn.style.display = "block"
+
+btn.onclick = async () => {
+
+await updateDoc(doc(db,"transferencias",reserva),{
+estado:"acreditada"
+})
+
+resultado.innerHTML = "🟢 TRANSFERENCIA ACREDITADA"
+
+}
+
+}else{
+
+resultado.innerText = "No hay comprobante cargado"
+
+}
+
+}
+
 </script>
 </body>
 </html>
