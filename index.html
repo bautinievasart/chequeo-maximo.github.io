@@ -541,18 +541,40 @@ min-height:70px;
     window.onload = () => {
         const c1 = document.getElementById('pad1');
         const c3 = document.getElementById('pad3');
-        p1 = new SignaturePad(c1);
-        p3 = new SignaturePad(c3);
+        
+        // Solo inicializa si el elemento existe en el HTML
+        if (c1) p1 = new SignaturePad(c1);
+        if (c3) p3 = new SignaturePad(c3);
         
         const resizeCanvases = () => {
             [c1, c3].forEach(c => {
+                if (!c) return; // Si no existe el canvas (ej. está en otra pestaña), no hace nada
                 const r = Math.max(window.devicePixelRatio || 1, 1);
                 c.width = c.offsetWidth * r;
                 c.height = c.offsetHeight * r;
                 c.getContext("2d").scale(r, r);
             });
-            p1.clear(); p3.clear(); // Limpia para evitar trazos fantasma al rotar
+            if (p1) p1.clear(); 
+            if (p3) p3.clear();
         };
+        
+        window.onresize = resizeCanvases;
+        resizeCanvases();
+
+        // Vinculación segura de botones
+        const conectar = (id, funcion) => {
+            const btn = document.getElementById(id);
+            if (btn) btn.onclick = funcion;
+        };
+
+        conectar('btn1', genPDF1);
+        conectar('btn2', genPDF2);
+        conectar('btn3', genPDF3);
+        conectar('btn-sec', () => document.getElementById('cam-input').click());
+        
+        const camInput = document.getElementById('cam-input');
+        if (camInput) camInput.onchange = (e) => handleSec(e.target);
+    };
         
         window.onresize = resizeCanvases;
         resizeCanvases();
