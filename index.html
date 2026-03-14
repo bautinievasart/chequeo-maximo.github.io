@@ -503,18 +503,18 @@ min-height:70px;
 </head>
 <body>
 
-<div class="container">
-     <header class="main-header"></header>
-    <div class="container">
-        <!-- resto de tu app aquí -->
-    </div>
 
+
+<div class="container">
+    <header class="main-header"></header>
+    
     <div class="tabs">
         <button id="t1" class="tab-btn active" onclick="switchTab('mecanica')">INSPECCIÓN</button>
         <button id="t2" class="tab-btn" onclick="switchTab('danos')">DAÑOS</button>
         <button id="t3" class="tab-btn" onclick="switchTab('entregas')">ENTREGAS</button>
         <button id="t4" class="tab-btn" onclick="switchTab('transferencias')">TRANSFERENCIAS</button>
     </div>
+
 
     <!-- INSPECCIÓN -->
     <div id="mecanica" class="content active">
@@ -946,6 +946,36 @@ document.getElementById(map[id]).classList.add('active')
         
         doc.save(`${tipo}_${pat}.pdf`);
     }
+    <script>
+    // Esta es la función que hace que las pestañas se muevan
+    function switchTab(id) {
+        // 1. Esconde todos los contenidos
+        document.querySelectorAll('.content').forEach(c => {
+            c.classList.remove('active');
+        });
+
+        // 2. Desactiva todos los botones
+        document.querySelectorAll('.tab-btn').forEach(b => {
+            b.classList.remove('active');
+        });
+
+        // 3. Muestra solo el contenido que elegiste
+        document.getElementById(id).classList.add('active');
+
+        // 4. Marca el botón correspondiente como activo
+        const map = {
+            mecanica: 't1',
+            danos: 't2',
+            entregas: 't3',
+            transferencias: 't4'
+        };
+        document.getElementById(map[id]).classList.add('active');
+    }
+
+    // ESTO ES LO MÁS IMPORTANTE: 
+    // Saca la función a la "ventana" global para que los botones la vean
+    window.switchTab = switchTab;
+</script>
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"
